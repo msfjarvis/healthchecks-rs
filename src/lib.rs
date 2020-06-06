@@ -1,7 +1,7 @@
 use ureq::get;
 use uuid::Uuid;
 
-const USER_AGENT: &'static str = "healthchecks.io/0.1.0";
+const USER_AGENT: &'static str = "healthchecks-rs/0.1.0";
 const HEALTHCHECK_PING_URL: &'static str = "https://hc-ping.com";
 
 /// Struct that encapsulates the UUID that uniquely identifies your

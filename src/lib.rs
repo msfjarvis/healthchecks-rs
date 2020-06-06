@@ -39,4 +39,12 @@ impl HealthcheckConfig {
             .call();
         res.status() == 200
     }
+
+    /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
+    pub fn start_timer(&self) -> bool {
+        let res = get(&format!("https://hc-ping.com/{}/start", self.uuid))
+            .set("User-Agent", USER_AGENT)
+            .call();
+        res.status() == 200
+    }
 }

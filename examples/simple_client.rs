@@ -1,6 +1,6 @@
 extern crate healthchecks;
 
-use healthchecks::config::create_config;
+use healthchecks::create_config;
 
 fn main() {
     let config = create_config("my-uuid-that-is-definitely-not-real");

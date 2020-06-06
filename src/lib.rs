@@ -15,9 +15,9 @@ pub struct HealthcheckConfig {
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a str uuid.
+/// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID.
 /// The method runs basic UUID validation and will panic if there's a failure parsing the provided
-/// uuid.
+/// UUID.
 pub fn create_config(uuid: String) -> HealthcheckConfig {
     if let Ok(_) = Uuid::parse_str(&uuid) {
         HealthcheckConfig {
@@ -29,6 +29,9 @@ pub fn create_config(uuid: String) -> HealthcheckConfig {
     }
 }
 
+/// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
+/// and a custom User-Agent header value. Like create_config, this method also runs basic UUID validation
+/// and panics if the UUID is not valid.
 pub fn create_config_with_user_agent(uuid: String, user_agent: String) -> HealthcheckConfig {
     if let Ok(_) = Uuid::parse_str(&uuid) {
         HealthcheckConfig {

@@ -3,6 +3,13 @@ name = "monitor"
 version = "0.1.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"
+description = "Report results of arbitrary commands to healthchecks.io"
+repository = "https://github.com/msfjarvis/healthchecks-rs"
+homepage = "https://github.com/msfjarvis/healthchecks-rs"
+license = "MIT/Apache-2.0"
+keywords = ["healthchecks"]
+readme = "README.md"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -14,3 +21,6 @@ clap = { version = "2.33.1", default-features = false, features = ["suggestions"
 lto = "fat"
 codegen-units = 1
 panic = "abort"
+
+[badges]
+maintenance = { status = "actively-developed" }

@@ -8,7 +8,7 @@ use std::io;
 use std::io::Write;
 use std::process::Command;
 
-use clap::{load_yaml, App};
+use clap::{crate_version, App, AppSettings, Arg};
 
 enum ExitCode {
     SUCCESS,
@@ -16,8 +16,43 @@ enum ExitCode {
 }
 
 fn main() {
-    let yaml = load_yaml!("monitor.yml");
-    let matches = App::from_yaml(yaml).get_matches();
+    let app = App::new("monitor")
+        .version(crate_version!())
+        .usage("monitor [FLAGS/OPTIONS] -X <command>")
+        .setting(AppSettings::ColoredHelp)
+        .setting(AppSettings::DeriveDisplayOrder)
+        .arg(
+            Arg::with_name("command")
+                .short("X")
+                .long("exec")
+                .min_values(1)
+                .required(true)
+                .allow_hyphen_values(true)
+                .value_terminator(";")
+                .value_name("cmd")
+                .help("Command to execute and monitor"),
+        )
+        .arg(
+            Arg::with_name("token")
+                .long("token")
+                .takes_value(true)
+                .help("Healthchecks.io UUID to ping after executing the task"),
+        )
+        .arg(
+            Arg::with_name("timer")
+                .long("timer")
+                .short("t")
+                .takes_value(false)
+                .help("Starts a timer before running the command"),
+        )
+        .arg(
+            Arg::with_name("user_agent")
+                .short("u")
+                .long("user_agent")
+                .takes_value(true)
+                .help("Custom User-Agent header to uniquely identify the caller in healthchecks.io logs"),
+        );
+    let matches = app.get_matches();
     let cmds = matches
         .value_of("command")
         .expect("command must be passed")

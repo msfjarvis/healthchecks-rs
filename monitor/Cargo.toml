@@ -10,12 +10,11 @@ license = "MIT/Apache-2.0"
 keywords = ["healthchecks"]
 readme = "README.md"
 
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 healthchecks = { path = "../healthchecks" }
-clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color", "yaml"] }
+clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
 
 [profile.release]
 lto = "fat"

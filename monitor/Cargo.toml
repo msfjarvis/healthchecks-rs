@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 healthchecks = { path = "../healthchecks" }
-clap = { version = "2.33.1", features = ["yaml"] }
+clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color", "yaml"] }
 
 [profile.release]
 lto = "fat"

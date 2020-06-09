@@ -1,22 +1,6 @@
 # healthchecks-rs
 
-A simple Rust library that allows pinging [healthchecks.io](https://healthchecks.io/) to indicate success or failure of a task.
-
-## Usage
-
-Usage is super simple!
-
-```rust
-extern crate healthchecks;
-
-use healthchecks::config::create_config;
-
-fn main() {
-    let config = create_config("my-uuid-that-is-definitely-not-real");
-    config.report_success();
-    config.report_failure();
-}
-```
+A Rust library for working with [healthchecks.io](https://healthchecks.io). This repository contains the [library](healthchecks) as well as a binary project called [monitor](monitor) that uses healthchecks-rs for signalling about execution of arbitrary tasks provided to it.
 
 ## Licensing
 

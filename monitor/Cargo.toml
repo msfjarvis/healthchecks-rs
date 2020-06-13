@@ -9,3 +9,8 @@ edition = "2018"
 [dependencies]
 healthchecks = { path = "../healthchecks" }
 clap = { version = "2.33.1", features = ["yaml"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = 'abort'

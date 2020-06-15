@@ -16,10 +16,5 @@ readme = "README.md"
 healthchecks = { path = "../healthchecks" }
 clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
 
-[profile.release]
-lto = "fat"
-codegen-units = 1
-panic = "abort"
-
 [badges]
 maintenance = { status = "actively-developed" }

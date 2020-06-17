@@ -13,7 +13,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = "1.1.1"
+ureq = "1.2.0"
 uuid = { version = "0.8.1", default-features = false, features = [ "v1" ] }
 
 [badges]

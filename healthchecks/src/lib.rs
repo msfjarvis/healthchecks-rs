@@ -1,7 +1,7 @@
 use ureq::get;
 use uuid::Uuid;
 
-const HEALTHCHECK_PING_URL: &'static str = "https://hc-ping.com";
+const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 
 fn get_user_agent() -> String {
     format!("healthchecks-rs/{}", env!("CARGO_PKG_VERSION"))
@@ -20,9 +20,9 @@ pub struct HealthcheckConfig {
 /// UUID.
 #[inline]
 pub fn create_config(uuid: String) -> HealthcheckConfig {
-    if let Ok(_) = Uuid::parse_str(&uuid) {
+    if Uuid::parse_str(&uuid).is_ok() {
         HealthcheckConfig {
-            uuid: uuid,
+            uuid,
             user_agent: get_user_agent(),
         }
     } else {
@@ -35,11 +35,8 @@ pub fn create_config(uuid: String) -> HealthcheckConfig {
 /// and panics if the UUID is not valid.
 #[inline]
 pub fn create_config_with_user_agent(uuid: String, user_agent: String) -> HealthcheckConfig {
-    if let Ok(_) = Uuid::parse_str(&uuid) {
-        HealthcheckConfig {
-            uuid: uuid,
-            user_agent: user_agent,
-        }
+    if Uuid::parse_str(&uuid).is_ok() {
+        HealthcheckConfig { uuid, user_agent }
     } else {
         panic!("Invalid UUID: {}", uuid)
     }

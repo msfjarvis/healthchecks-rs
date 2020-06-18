@@ -56,7 +56,7 @@ fn main() {
     let cmds = matches
         .value_of("command")
         .expect("command must be passed")
-        .split(" ")
+        .split(' ')
         .collect::<Vec<&str>>();
     let token = if let Some(token) = matches.value_of("token") {
         String::from(token)
@@ -67,7 +67,7 @@ fn main() {
     let user_agent = if let Some(ua) = matches.value_of("user_agent") {
         String::from(ua)
     } else {
-        var("HEALTHCHECKS_USERAGENT").unwrap_or(String::from(""))
+        var("HEALTHCHECKS_USERAGENT").unwrap_or_else(|_| String::from(""))
     };
     let config = if user_agent.is_empty() {
         create_config(token)

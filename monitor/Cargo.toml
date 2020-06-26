@@ -1,5 +1,5 @@
 [package]
-name = "monitor"
+name = "healthchecks-monitor"
 version = "1.0.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"

@@ -3,8 +3,8 @@ use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 
-fn get_user_agent() -> String {
-    format!("healthchecks-rs/{}", env!("CARGO_PKG_VERSION"))
+const fn default_user_agent() -> &'static str {
+    concat!("healthchecks-rs/{}", env!("CARGO_PKG_VERSION"))
 }
 
 /// Struct that encapsulates the UUID that uniquely identifies your
@@ -15,28 +15,16 @@ pub struct HealthcheckConfig {
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID.
-/// The method runs basic UUID validation and will panic if there's a failure parsing the provided
-/// UUID.
-#[inline]
-pub fn create_config(uuid: String) -> HealthcheckConfig {
-    if Uuid::parse_str(&uuid).is_ok() {
-        HealthcheckConfig {
-            uuid,
-            user_agent: get_user_agent(),
-        }
-    } else {
-        panic!("Invalid UUID: {}", uuid)
-    }
-}
-
 /// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
 /// and a custom User-Agent header value. Like create_config, this method also runs basic UUID validation
 /// and panics if the UUID is not valid.
 #[inline]
-pub fn create_config_with_user_agent(uuid: String, user_agent: String) -> HealthcheckConfig {
+pub fn create_config(uuid: String, user_agent: Option<String>) -> HealthcheckConfig {
     if Uuid::parse_str(&uuid).is_ok() {
-        HealthcheckConfig { uuid, user_agent }
+        HealthcheckConfig {
+            uuid,
+            user_agent: user_agent.unwrap_or(default_user_agent().to_owned()),
+        }
     } else {
         panic!("Invalid UUID: {}", uuid)
     }

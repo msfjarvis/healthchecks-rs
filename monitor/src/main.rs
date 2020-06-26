@@ -3,7 +3,6 @@ extern crate healthchecks;
 extern crate pretty_exec_lib;
 
 use healthchecks::create_config;
-use healthchecks::create_config_with_user_agent;
 use pretty_exec_lib::pretty_exec::PrettyExec;
 use std::env::var;
 
@@ -62,11 +61,7 @@ fn main() {
     } else {
         var("HEALTHCHECKS_USERAGENT").unwrap_or_else(|_| String::from(""))
     };
-    let config = if user_agent.is_empty() {
-        create_config(token)
-    } else {
-        create_config_with_user_agent(token, user_agent)
-    };
+    let config = create_config(token, Some(user_agent));
     if matches.is_present("timer") {
         config.start_timer();
     }

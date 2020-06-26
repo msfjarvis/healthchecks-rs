@@ -12,7 +12,7 @@ extern crate healthchecks;
 use healthchecks::config::create_config;
 
 fn main() {
-    let config = create_config("my-uuid-that-is-definitely-not-real");
+    let config = create_config("my-uuid-that-is-definitely-not-real", None);
     config.report_failure();
     config.report_success();
 }
@@ -23,10 +23,10 @@ Or if you want to set a custom user agent for filtering purposes (default is `he
 ```rust
 extern create healthchecks
 
-use healthchecks::config::create_config_with_user_agent;
+use healthchecks::config::create_config;
 
 fn main() {
-    let config = create_config_with_user_agent("my-uuid-that-is-definitely-not-real", String::from("very-fancy-useragent"));
+    let config = create_config_with_user_agent("my-uuid-that-is-definitely-not-real", Some(String::from("very-fancy-useragent")));
     config.report_failure();
     config.report_success();
 }
@@ -41,7 +41,7 @@ extern create healthchecks
 use healthchecks::config::create_config;
 
 fn main() {
-    let config = create_config("my-uuid-that-is-definitely-not-real");
+    let config = create_config("my-uuid-that-is-definitely-not-real", None);
     config.start_timer();
     do_long_running_task();
     config.report_success();

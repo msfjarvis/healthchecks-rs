@@ -61,7 +61,14 @@ fn main() {
     } else {
         var("HEALTHCHECKS_USERAGENT").unwrap_or_else(|_| String::from(""))
     };
-    let config = create_config(token, Some(user_agent));
+    let config = create_config(
+        token,
+        if user_agent.is_empty() {
+            None
+        } else {
+            Some(user_agent)
+        },
+    );
     if matches.is_present("timer") {
         config.start_timer();
     }

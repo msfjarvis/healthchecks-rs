@@ -16,8 +16,8 @@ pub struct HealthcheckConfig {
 }
 
 /// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
-/// and a custom User-Agent header value. Like create_config, this method also runs basic UUID validation
-/// and panics if the UUID is not valid.
+/// and a custom User-Agent header value. This method runs basic UUID validation and panics if
+/// the UUID is not valid.
 #[inline]
 pub fn create_config(uuid: String, user_agent: Option<String>) -> HealthcheckConfig {
     if Uuid::parse_str(&uuid).is_ok() {

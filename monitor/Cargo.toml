@@ -1,6 +1,6 @@
 [package]
 name = "healthchecks-monitor"
-version = "1.0.1"
+version = "1.0.2-alpha.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"
 description = "Report results of arbitrary commands to healthchecks.io"
@@ -13,7 +13,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-healthchecks = { path = "../healthchecks", version = "^1.0.1"}
+healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
 clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
 pretty-exec-lib = "0.0.17"
 

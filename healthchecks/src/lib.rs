@@ -4,7 +4,7 @@ use uuid::Uuid;
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 
 const fn default_user_agent() -> &'static str {
-    concat!("healthchecks-rs/{}", env!("CARGO_PKG_VERSION"))
+    concat!("healthchecks-rs/", env!("CARGO_PKG_VERSION"))
 }
 
 /// Struct that encapsulates the UUID that uniquely identifies your

@@ -17,7 +17,7 @@ fn main() {
         .arg(
             Arg::with_name("command")
                 .long("exec")
-                .short("x")
+                .short("X")
                 .min_values(1)
                 .allow_hyphen_values(true)
                 .value_terminator(";")

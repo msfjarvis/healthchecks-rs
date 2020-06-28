@@ -15,7 +15,7 @@ readme = "README.md"
 [dependencies]
 healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
 clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
-serde = { version = "1.0.114", features = ["derive"] }
+serde = { version = "1.0.114", default-features = false, features = ["derive"] }
 pretty-exec-lib = "0.0.17"
 anyhow = "1.0.31"
 envy = "0.4.1"

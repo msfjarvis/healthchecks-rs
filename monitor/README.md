@@ -17,6 +17,6 @@ FLAGS:
 
 OPTIONS:
     -X, --exec <cmd>                 Command to execute and monitor
-        --token <token>              Healthchecks.io UUID to ping after executing the task
-    -u, --user_agent <user_agent>    Custom User-Agent header to uniquely identify the caller in healthchecks.io logs
 ```
+
+You need to set the environment variable `HEALTHCHECKS_TOKEN` with the UUID provided by [healthchecks.io](https://healthchecks.io). By default, `monitor` sets the User-Agent header to `healthchecks-rs/<version>`. To change this, set the `HEALTHCHECKS_USERAGENT` env variable.

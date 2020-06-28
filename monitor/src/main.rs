@@ -1,10 +1,21 @@
+use clap::{crate_version, App, AppSettings, Arg};
 use healthchecks::create_config;
 use pretty_exec_lib::pretty_exec::PrettyExec;
-use std::env::var;
+use serde::Deserialize;
 
-use clap::{crate_version, App, AppSettings, Arg};
+#[derive(Deserialize, Debug)]
+struct Config {
+    #[serde(rename = "healthchecks_token")]
+    token: String,
+    #[serde(rename = "healthchecks_useragent")]
+    ua: Option<String>,
+}
 
 fn main() -> anyhow::Result<()> {
+    let config: Config = match envy::from_env() {
+        Ok(conf) => conf,
+        Err(error) => panic!(error),
+    };
     let app = App::new("monitor")
         .version(crate_version!())
         .usage("monitor [FLAGS/OPTIONS] -X <command>")
@@ -22,49 +33,18 @@ fn main() -> anyhow::Result<()> {
                 .help("Command to execute and monitor"),
         )
         .arg(
-            Arg::with_name("token")
-                .long("token")
-                .takes_value(true)
-                .help("Healthchecks.io UUID to ping after executing the task"),
-        )
-        .arg(
             Arg::with_name("timer")
                 .long("timer")
                 .short("t")
                 .takes_value(false)
                 .help("Starts a timer before running the command"),
-        )
-        .arg(
-            Arg::with_name("user_agent")
-                .short("u")
-                .long("user_agent")
-                .takes_value(true)
-                .help("Custom User-Agent header to uniquely identify the caller in healthchecks.io logs"),
         );
     let matches = app.get_matches();
     let cmds = matches
         .values_of("command")
         .expect("command must be passed")
         .collect::<Vec<&str>>();
-    let token = if let Some(token) = matches.value_of("token") {
-        String::from(token)
-    } else {
-        var("HEALTHCHECKS_TOKEN")
-            .expect("Either passing --token or specifying HEALTHCHECKS_TOKEN is necessary!")
-    };
-    let user_agent = if let Some(ua) = matches.value_of("user_agent") {
-        String::from(ua)
-    } else {
-        var("HEALTHCHECKS_USERAGENT").unwrap_or_else(|_| String::from(""))
-    };
-    let config = create_config(
-        token,
-        if user_agent.is_empty() {
-            None
-        } else {
-            Some(user_agent)
-        },
-    )?;
+    let config = create_config(config.token, config.ua)?;
     if matches.is_present("timer") {
         config.start_timer();
     }

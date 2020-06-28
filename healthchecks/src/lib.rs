@@ -20,7 +20,10 @@ pub struct HealthcheckConfig {
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
 #[inline]
-pub fn create_config(uuid: String, user_agent: Option<String>) -> anyhow::Result<HealthcheckConfig> {
+pub fn create_config(
+    uuid: String,
+    user_agent: Option<String>,
+) -> anyhow::Result<HealthcheckConfig> {
     if Uuid::parse_str(&uuid).is_ok() {
         Ok(HealthcheckConfig {
             uuid,

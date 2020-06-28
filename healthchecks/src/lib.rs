@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use ureq::get;
 use uuid::Uuid;
 
@@ -16,17 +17,17 @@ pub struct HealthcheckConfig {
 }
 
 /// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
-/// and a custom User-Agent header value. This method runs basic UUID validation and panics if
-/// the UUID is not valid.
+/// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
+/// when the UUID is invalid.
 #[inline]
-pub fn create_config(uuid: String, user_agent: Option<String>) -> HealthcheckConfig {
+pub fn create_config(uuid: String, user_agent: Option<String>) -> anyhow::Result<HealthcheckConfig> {
     if Uuid::parse_str(&uuid).is_ok() {
-        HealthcheckConfig {
+        Ok(HealthcheckConfig {
             uuid,
             user_agent: user_agent.unwrap_or(default_user_agent().to_owned()),
-        }
+        })
     } else {
-        panic!("Invalid UUID: {}", uuid)
+        Err(anyhow!("Invalid UUID: {}", uuid))
     }
 }
 

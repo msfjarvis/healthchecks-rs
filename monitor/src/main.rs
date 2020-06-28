@@ -1,14 +1,10 @@
-extern crate clap;
-extern crate healthchecks;
-extern crate pretty_exec_lib;
-
 use healthchecks::create_config;
 use pretty_exec_lib::pretty_exec::PrettyExec;
 use std::env::var;
 
 use clap::{crate_version, App, AppSettings, Arg};
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let app = App::new("monitor")
         .version(crate_version!())
         .usage("monitor [FLAGS/OPTIONS] -X <command>")
@@ -68,7 +64,7 @@ fn main() {
         } else {
             Some(user_agent)
         },
-    );
+    )?;
     if matches.is_present("timer") {
         config.start_timer();
     }
@@ -86,4 +82,5 @@ fn main() {
         }
         Err(err) => eprintln!("{}", err),
     };
+    Ok(())
 }

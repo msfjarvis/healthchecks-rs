@@ -7,8 +7,6 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 Usage is super simple!
 
 ```rust
-extern crate healthchecks;
-
 use healthchecks::config::create_config;
 
 fn main() {
@@ -21,8 +19,6 @@ fn main() {
 Or if you want to set a custom user agent for filtering purposes (default is `healthcheck-rs/$library_version`)
 
 ```rust
-extern create healthchecks
-
 use healthchecks::config::create_config;
 
 fn main() {
@@ -36,8 +32,6 @@ fn main() {
 You can also start a timer to record durations on [healthchecks.io](https://healthchecks.io/).
 
 ```rust
-extern create healthchecks
-
 use healthchecks::config::create_config;
 
 fn main() {

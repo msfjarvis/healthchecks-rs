@@ -1,5 +1,5 @@
 use clap::{crate_version, App, AppSettings, Arg};
-use healthchecks::create_config;
+use healthchecks::ping::create_config;
 use pretty_exec_lib::pretty_exec::PrettyExec;
 use serde::Deserialize;
 

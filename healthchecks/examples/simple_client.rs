@@ -1,4 +1,4 @@
-use healthchecks::create_config;
+use healthchecks::ping::create_config;
 
 fn main() -> anyhow::Result<()> {
     let uuid = std::env::args()

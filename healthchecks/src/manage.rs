@@ -24,6 +24,7 @@ pub fn create_config(api_key: String, user_agent: Option<String>) -> ApiConfig {
 }
 
 impl ApiConfig {
+    /// Get a list of [Check](../model/struct.Check.html)s.
     pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
         let resp = get(&format!("{}/{}", HEALTHCHECK_API_URL, "checks"))
             .set("X-Api-Key", &self.api_key)

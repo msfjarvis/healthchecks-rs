@@ -1,15 +1,12 @@
+use crate::util::default_user_agent;
 use anyhow::anyhow;
 use ureq::get;
 use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 
-const fn default_user_agent() -> &'static str {
-    concat!("healthchecks-rs/", env!("CARGO_PKG_VERSION"))
-}
-
 /// Struct that encapsulates the UUID that uniquely identifies your
-/// healthchecks.io endpoint. Instances of this exposes methods to
+/// healthchecks.io endpoint. Instances of this expose methods to
 /// report status to healthchecks.io
 pub struct HealthcheckConfig {
     pub(crate) uuid: String,

@@ -6,7 +6,7 @@ fn main() -> anyhow::Result<()> {
         .expect("Providing an API key as the first parameter is required");
     let config = create_config(api_key, None);
     for check in config.get_checks()? {
-        println!("{}", check.name);
+        println!("{:?}", check);
     }
     Ok(())
 }

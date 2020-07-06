@@ -1,3 +1,4 @@
+use crate::model::Check;
 use crate::model::ChecksResult;
 use crate::util::default_user_agent;
 use anyhow::anyhow;
@@ -23,13 +24,13 @@ pub fn create_config(api_key: String, user_agent: Option<String>) -> ApiConfig {
 }
 
 impl ApiConfig {
-    pub fn get_checks(&self) -> anyhow::Result<ChecksResult> {
+    pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
         let resp = get(&format!("{}/{}", HEALTHCHECK_API_URL, "checks"))
             .set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)
             .call();
         if resp.ok() {
-            Ok(resp.into_json_deserialize::<ChecksResult>()?)
+            Ok(resp.into_json_deserialize::<ChecksResult>()?.checks)
         } else {
             Err(anyhow!("error {}: {}", resp.status(), resp.into_string()?))
         }

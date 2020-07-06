@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ChecksResult {
+pub(crate) struct ChecksResult {
     pub checks: Vec<Check>,
 }
 #[derive(Deserialize, Debug)]

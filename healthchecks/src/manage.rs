@@ -37,7 +37,7 @@ impl ApiConfig {
         }
     }
 
-    /// Get a [Check](../model/struct.Check.html) with the given UUID.
+    /// Get a [Check](../model/struct.Check.html) with the given UUID or unique key.
     pub fn get_check(&self, check_id: &str) -> anyhow::Result<Check> {
         let resp = get(&format!(
             "{}/{}/{}",

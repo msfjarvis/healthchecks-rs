@@ -5,6 +5,7 @@ use serde::Deserialize;
 pub(crate) struct ChecksResult {
     pub checks: Vec<Check>,
 }
+
 /// This struct encapsulates a check as represented in the healthchecks.io
 /// API. Fields marked optional are either optional within the actual configuration
 /// or can be None in the case where the token is a read-only one
@@ -54,4 +55,6 @@ pub struct Check {
     pub schedule: Option<String>,
     /// The timezone for the server which pings for this check's status. Can be None by itself or when no schedule is configured
     pub tz: Option<String>,
+    /// A stable identifier generated when using a read-only API key. This can be used in place of an exact UUID to get individual checks
+    pub unique_key: Option<String>,
 }

@@ -36,4 +36,25 @@ impl ApiConfig {
             Err(anyhow!("error {}: {}", resp.status(), resp.into_string()?))
         }
     }
+
+    /// Get a [Check](../model/struct.Check.html) with the given UUID.
+    pub fn get_check(&self, check_id: &str) -> anyhow::Result<Check> {
+        let resp = get(&format!(
+            "{}/{}/{}",
+            HEALTHCHECK_API_URL, "checks", check_id
+        ))
+        .set("X-Api-Key", &self.api_key)
+        .set("User-Agent", &self.user_agent)
+        .call();
+        match resp.status() {
+            200 => Ok(resp.into_json_deserialize::<Check>()?),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
 }

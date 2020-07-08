@@ -1,3 +1,5 @@
+use crate::model::Channel;
+use crate::model::ChannelsResult;
 use crate::model::Check;
 use crate::model::ChecksResult;
 use crate::util::default_user_agent;
@@ -53,6 +55,21 @@ impl ApiConfig {
             404 => Err(anyhow!(
                 "Failed to find a check with the uuid: {}",
                 check_id
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Returns a list of integrations belonging to the project.
+    pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
+        let resp = get(&format!("{}/{}", HEALTHCHECK_API_URL, "channels"))
+            .set("X-Api-Key", &self.api_key)
+            .set("User-Agent", &self.user_agent)
+            .call();
+        match resp.status() {
+            200 => Ok(resp.into_json_deserialize::<ChannelsResult>()?.channels),
+            401 => Err(anyhow!(
+                "Invalid API key: make sure you're not using a read-only key"
             )),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }

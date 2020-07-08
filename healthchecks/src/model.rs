@@ -58,3 +58,18 @@ pub struct Check {
     /// A stable identifier generated when using a read-only API key. This can be used in place of an exact UUID to get individual checks
     pub unique_key: Option<String>,
 }
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ChannelsResult {
+    pub channels: Vec<Channel>,
+}
+
+/// Represents an integration, like email or sms.
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct Channel {
+    pub id: String,
+    pub name: String,
+    pub kind: String,
+}

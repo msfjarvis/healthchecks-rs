@@ -32,10 +32,10 @@ impl ApiConfig {
             .set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)
             .call();
-        if resp.ok() {
-            Ok(resp.into_json_deserialize::<ChecksResult>()?.checks)
-        } else {
-            Err(anyhow!("error {}: {}", resp.status(), resp.into_string()?))
+        match resp.status() {
+            200 => Ok(resp.into_json_deserialize::<ChecksResult>()?.checks),
+            401 => Err(anyhow!("Invalid API key")),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
     }
 

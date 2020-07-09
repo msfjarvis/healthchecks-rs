@@ -17,8 +17,8 @@ pub struct ApiConfig {
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [ApiConfig](struct.ApiConfig.html) from a given API key. There's no
-/// validation being performed on the provided key.
+/// Create an instance of [ApiConfig](struct.ApiConfig.html) from a given API key. No validation
+/// is performed.
 #[inline]
 pub fn create_config(api_key: String, user_agent: Option<String>) -> anyhow::Result<ApiConfig> {
     if api_key.is_empty() {

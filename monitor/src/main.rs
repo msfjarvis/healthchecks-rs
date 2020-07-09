@@ -49,7 +49,7 @@ fn main() -> anyhow::Result<()> {
         config.start_timer();
     }
     let mut exec = PrettyExec::new(&cmds.get(0).expect("Should have at least one command"));
-    for cmd in cmds[1..cmds.len()].iter() {
+    for cmd in cmds.iter().skip(1) {
         exec.arg(cmd);
     }
     match exec.spawn() {

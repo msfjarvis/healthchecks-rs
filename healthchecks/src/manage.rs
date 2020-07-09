@@ -5,6 +5,7 @@ use crate::model::ChecksResult;
 use crate::util::default_user_agent;
 use anyhow::anyhow;
 use ureq::get;
+use ureq::post;
 use ureq::Request;
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
@@ -86,6 +87,28 @@ impl ApiConfig {
             200 => Ok(resp.into_json_deserialize::<ChannelsResult>()?.channels),
             401 => Err(anyhow!(
                 "Invalid API key: make sure you're not using a read-only key"
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Pauses the check associated with a given check_id.
+    pub fn pause(&self, check_id: &str) -> anyhow::Result<Check> {
+        let mut r = &mut post(&format!(
+            "{}/checks/{}/pause",
+            HEALTHCHECK_API_URL, check_id
+        ));
+        // healthchecks documentation recommends using --data "" to ensure cURL passes
+        // in a Content-Length: 0 header. We do that directly here.
+        r = self.set_headers(r).set("Content-Length", "0");
+        let resp = r.call();
+        match resp.status() {
+            200 => Ok(resp.into_json_deserialize::<Check>()?),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
             )),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }

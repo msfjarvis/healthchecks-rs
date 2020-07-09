@@ -106,10 +106,8 @@ impl ApiConfig {
             "{}/checks/{}/pause",
             HEALTHCHECK_API_URL, check_id
         ));
-        // healthchecks documentation recommends using --data "" to ensure cURL passes
-        // in a Content-Length: 0 header. We do that directly here.
-        r = self.set_headers(r).set("Content-Length", "0");
-        let resp = r.call();
+        r = self.set_headers(r);
+        let resp = r.send_string("");
         match resp.status() {
             200 => Ok(resp
                 .into_json_deserialize::<Check>()

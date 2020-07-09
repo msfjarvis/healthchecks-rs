@@ -5,6 +5,7 @@ use crate::model::ChecksResult;
 use crate::util::default_user_agent;
 use anyhow::anyhow;
 use ureq::get;
+use ureq::Request;
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 
@@ -39,12 +40,16 @@ pub fn create_config(api_key: String, user_agent: Option<String>) -> anyhow::Res
 }
 
 impl ApiConfig {
+    fn set_headers<'a>(&self, req: &'a mut Request) -> &'a mut Request {
+        req.set("X-Api-Key", &self.api_key)
+            .set("User-Agent", &self.user_agent)
+    }
+
     /// Get a list of [Check](../model/struct.Check.html)s.
     pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
-        let resp = get(&format!("{}/{}", HEALTHCHECK_API_URL, "checks"))
-            .set("X-Api-Key", &self.api_key)
-            .set("User-Agent", &self.user_agent)
-            .call();
+        let mut r = &mut get(&format!("{}/{}", HEALTHCHECK_API_URL, "checks"));
+        r = self.set_headers(r);
+        let resp = r.call();
         match resp.status() {
             200 => Ok(resp.into_json_deserialize::<ChecksResult>()?.checks),
             401 => Err(anyhow!("Invalid API key")),
@@ -54,13 +59,12 @@ impl ApiConfig {
 
     /// Get a [Check](../model/struct.Check.html) with the given UUID or unique key.
     pub fn get_check(&self, check_id: &str) -> anyhow::Result<Check> {
-        let resp = get(&format!(
+        let mut r = &mut get(&format!(
             "{}/{}/{}",
             HEALTHCHECK_API_URL, "checks", check_id
-        ))
-        .set("X-Api-Key", &self.api_key)
-        .set("User-Agent", &self.user_agent)
-        .call();
+        ));
+        r = self.set_headers(r);
+        let resp = r.call();
         match resp.status() {
             200 => Ok(resp.into_json_deserialize::<Check>()?),
             401 => Err(anyhow!("Invalid API key")),
@@ -75,10 +79,9 @@ impl ApiConfig {
 
     /// Returns a list of integrations belonging to the project.
     pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
-        let resp = get(&format!("{}/{}", HEALTHCHECK_API_URL, "channels"))
-            .set("X-Api-Key", &self.api_key)
-            .set("User-Agent", &self.user_agent)
-            .call();
+        let mut r = &mut get(&format!("{}/{}", HEALTHCHECK_API_URL, "channels"));
+        r = self.set_headers(r);
+        let resp = r.call();
         match resp.status() {
             200 => Ok(resp.into_json_deserialize::<ChannelsResult>()?.channels),
             401 => Err(anyhow!(

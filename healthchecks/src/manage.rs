@@ -3,7 +3,7 @@ use crate::model::ChannelsResult;
 use crate::model::Check;
 use crate::model::ChecksResult;
 use crate::util::default_user_agent;
-use anyhow::anyhow;
+use anyhow::{anyhow, Context};
 use ureq::get;
 use ureq::post;
 use ureq::Request;
@@ -52,7 +52,10 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp.into_json_deserialize::<ChecksResult>()?.checks),
+            200 => Ok(resp
+                .into_json_deserialize::<ChecksResult>()
+                .context("Failed to parse API response")?
+                .checks),
             401 => Err(anyhow!("Invalid API key")),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
@@ -67,7 +70,9 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp.into_json_deserialize::<Check>()?),
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
+                .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
             404 => Err(anyhow!(
@@ -84,7 +89,10 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp.into_json_deserialize::<ChannelsResult>()?.channels),
+            200 => Ok(resp
+                .into_json_deserialize::<ChannelsResult>()
+                .context("Failed to parse API response")?
+                .channels),
             401 => Err(anyhow!(
                 "Invalid API key: make sure you're not using a read-only key"
             )),
@@ -103,7 +111,9 @@ impl ApiConfig {
         r = self.set_headers(r).set("Content-Length", "0");
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp.into_json_deserialize::<Check>()?),
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
+                .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
             404 => Err(anyhow!(

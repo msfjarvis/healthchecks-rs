@@ -1,12 +1,9 @@
-use crate::model::Channel;
-use crate::model::ChannelsResult;
-use crate::model::Check;
-use crate::model::ChecksResult;
-use crate::util::default_user_agent;
+use crate::{
+    model::{Channel, ChannelsResult, Check, ChecksResult},
+    util::default_user_agent,
+};
 use anyhow::{anyhow, Context};
-use ureq::get;
-use ureq::post;
-use ureq::Request;
+use ureq::{get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 

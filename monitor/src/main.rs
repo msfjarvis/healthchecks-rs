@@ -1,7 +1,8 @@
 use clap::{crate_version, App, AppSettings, Arg};
+use execute::Execute;
 use healthchecks::ping::create_config;
-use pretty_exec_lib::pretty_exec::PrettyExec;
 use serde::Deserialize;
+use std::process::Command;
 
 #[derive(Deserialize, Debug)]
 struct Config {
@@ -48,19 +49,18 @@ fn main() -> anyhow::Result<()> {
     if matches.is_present("timer") {
         config.start_timer();
     }
-    let mut exec = PrettyExec::new(&cmds.get(0).expect("Should have at least one command"));
+    let mut command = Command::new(&cmds.get(0).expect("Should have at least one command"));
     for cmd in cmds.iter().skip(1) {
-        exec.arg(cmd);
+        command.arg(cmd);
     }
-    match exec.spawn() {
-        Ok(status) => {
-            if status.success() {
-                config.report_success()
-            } else {
-                config.report_failure()
-            };
+    if let Some(exit_code) = command.execute_output()?.status.code() {
+        if exit_code == 0 {
+            config.report_success();
+        } else {
+            config.report_failure();
         }
-        Err(err) => eprintln!("{}", err),
+    } else {
+        eprintln!("Interrupted!");
     };
     Ok(())
 }

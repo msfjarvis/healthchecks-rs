@@ -23,18 +23,16 @@ pub fn create_config(
 ) -> anyhow::Result<HealthcheckConfig> {
     if Uuid::parse_str(&uuid).is_err() {
         Err(anyhow!("Invalid UUID: {}", uuid))
+    } else if let Some(ua) = user_agent {
+        Ok(HealthcheckConfig {
+            uuid,
+            user_agent: ua,
+        })
     } else {
-        if let Some(ua) = user_agent {
-            Ok(HealthcheckConfig {
-                uuid,
-                user_agent: ua,
-            })
-        } else {
-            Ok(HealthcheckConfig {
-                uuid,
-                user_agent: default_user_agent().to_owned(),
-            })
-        }
+        Ok(HealthcheckConfig {
+            uuid,
+            user_agent: default_user_agent().to_owned(),
+        })
     }
 }
 

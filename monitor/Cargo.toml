@@ -13,12 +13,12 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
-clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
-serde = { version = "1.0.114", default-features = false, features = ["derive"] }
 anyhow = "1.0.31"
+clap = { version = "2.33.1", default-features = false, features = ["suggestions", "color"] }
 envy = "0.4.1"
 execute = "0.2.6"
+healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
+serde = { version = "1.0.114", default-features = false, features = ["derive"] }
 
 [badges]
 maintenance = { status = "actively-developed" }

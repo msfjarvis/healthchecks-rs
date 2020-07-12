@@ -38,6 +38,7 @@ pub fn create_config(api_key: String, user_agent: Option<String>) -> anyhow::Res
 }
 
 impl ApiConfig {
+    #[inline]
     fn set_headers<'a>(&self, req: &'a mut Request) -> &'a mut Request {
         req.set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)

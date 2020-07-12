@@ -26,6 +26,13 @@ jobs:
         toolchain: nightly
         components: rustfmt, clippy
 
+    - name: Install cargo-audit binary crate
+      uses: actions-rs/install@v0.1
+      with:
+        crate: cargo-audit
+        version: latest
+        use-tool-cache: true
+
     - name: Security audit
       uses: actions-rs/audit-check@v1
       with:

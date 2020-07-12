@@ -35,7 +35,7 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: fmt
-        args: --check
+        args: -- --check
 
     - name: Annotate commit with clippy warnings
       uses: actions-rs/clippy-check@v1

@@ -3,7 +3,7 @@ use crate::{
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
-use ureq::{get, post, Request};
+use ureq::{delete, get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 
@@ -106,6 +106,27 @@ impl ApiConfig {
         ));
         r = self.set_headers(r);
         let resp = r.send_string("");
+        match resp.status() {
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
+                .context("Failed to parse API response")?),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    pub fn delete(&self, check_id: &str) -> anyhow::Result<Check> {
+        let mut r = &mut delete(&format!(
+            "{}/{}/{}",
+            HEALTHCHECK_API_URL, "checks", check_id
+        ));
+        r = self.set_headers(r);
+        let resp = r.call();
         match resp.status() {
             200 => Ok(resp
                 .into_json_deserialize::<Check>()

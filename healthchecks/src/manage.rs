@@ -81,7 +81,7 @@ impl ApiConfig {
         }
     }
 
-    /// Returns a list of integrations belonging to the project.
+    /// Returns a list of [Channel](../model/struct.Channel.html)s belonging to the project.
     pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
         let mut r = &mut get(&format!("{}/{}", HEALTHCHECK_API_URL, "channels"));
         r = self.set_headers(r);
@@ -98,7 +98,7 @@ impl ApiConfig {
         }
     }
 
-    /// Pauses the check associated with a given check_id.
+    /// Pauses the [Check](../model/struct.Check.html) with the given UUID or unique key.
     pub fn pause(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut post(&format!(
             "{}/checks/{}/pause",
@@ -120,7 +120,7 @@ impl ApiConfig {
         }
     }
 
-    /// Deletes the check associated with the given check_id.
+    /// Deletes the [Check](../model/struct.Check.html) with the given UUID or unique key.
     pub fn delete(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut delete(&format!(
             "{}/{}/{}",

@@ -120,6 +120,7 @@ impl ApiConfig {
         }
     }
 
+    /// Deletes the check associated with the given check_id.
     pub fn delete(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut delete(&format!(
             "{}/{}/{}",

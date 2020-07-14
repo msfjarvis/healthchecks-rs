@@ -27,7 +27,7 @@ pub struct Check {
     pub status: String,
     /// UTC timestamp of the last known ping.
     #[serde(rename = "last_ping")]
-    pub last_ping: String,
+    pub last_ping: Option<String>,
     /// UTC timestamp of the next expected ping based on grace period. Will be
     /// None in case no grace period is set.
     #[serde(rename = "next_ping")]

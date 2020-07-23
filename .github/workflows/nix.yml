@@ -9,14 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v1
-
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      uses: actions/checkout@v2
 
     - name: Install Nix
       uses: cachix/install-nix-action@v10
@@ -25,6 +18,17 @@ jobs:
 
     - name: Enter nix-shell
       run: nix-shell --pure
+
+    - name: Generate lockfile
+      run: cargo generate-lockfile
+
+    - name: Cache cargo registry and build outputs
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
 
     - name: Run cargo check
       run: cargo check

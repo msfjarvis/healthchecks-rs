@@ -58,4 +58,5 @@ jobs:
     - name: Run cargo doc
       uses: actions-rs/cargo@v1
       with:
-        command: doc --no-deps
+        command: doc
+        args: --no-deps

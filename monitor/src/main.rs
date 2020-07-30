@@ -1,21 +1,25 @@
 use clap::{crate_version, App, AppSettings, Arg};
 use execute::Execute;
 use healthchecks::ping::create_config;
-use serde::Deserialize;
+use std::env::var;
 use std::process::Command;
 
-#[derive(Deserialize, Debug)]
+#[derive(Debug)]
 struct Config {
-    #[serde(rename = "healthchecks_token")]
     token: String,
-    #[serde(rename = "healthchecks_useragent")]
     ua: Option<String>,
 }
 
 fn main() -> anyhow::Result<()> {
-    let config: Config = match envy::from_env() {
-        Ok(conf) => conf,
-        Err(error) => panic!(error),
+    let mut _ua = var("HEALTHCHECKS_USERAGENT");
+    let ua = if _ua.is_ok() {
+        Some(_ua.unwrap())
+    } else {
+        None
+    };
+    let config = Config {
+        token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
+        ua: ua,
     };
     let app = App::new("monitor")
         .version(crate_version!())

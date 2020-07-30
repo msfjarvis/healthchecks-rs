@@ -3,6 +3,7 @@ use crate::{
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
+use nanoserde::DeJson;
 use ureq::{delete, get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
@@ -50,10 +51,11 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp
-                .into_json_deserialize::<ChecksResult>()
-                .context("Failed to parse API response")?
-                .checks),
+            200 => {
+                let res: ChecksResult = DeJson::deserialize_json(&resp.into_string()?)
+                    .context("Failed to parse API response")?;
+                Ok(res.checks)
+            }
             401 => Err(anyhow!("Invalid API key")),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
@@ -68,8 +70,7 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp
-                .into_json_deserialize::<Check>()
+            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
@@ -87,10 +88,11 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp
-                .into_json_deserialize::<ChannelsResult>()
-                .context("Failed to parse API response")?
-                .channels),
+            200 => {
+                let res: ChannelsResult = DeJson::deserialize_json(&resp.into_string()?)
+                    .context("Failed to parse API response")?;
+                Ok(res.channels)
+            }
             401 => Err(anyhow!(
                 "Invalid API key: make sure you're not using a read-only key"
             )),
@@ -107,8 +109,7 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.send_string("");
         match resp.status() {
-            200 => Ok(resp
-                .into_json_deserialize::<Check>()
+            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
@@ -129,8 +130,7 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(resp
-                .into_json_deserialize::<Check>()
+            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),

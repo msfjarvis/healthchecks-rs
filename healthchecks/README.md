@@ -2,6 +2,26 @@
 
 A simple Rust library that allows pinging [healthchecks.io](https://healthchecks.io/) to indicate success or failure of a task.
 
+## Supported API methods
+
+### Pinging API
+
+- [x] Signal success
+- [x] Signal failure
+- [x] Signal start
+
+### Management API
+
+- [x] Get a list of all checks
+- [x] Get a single check
+- [ ] Create a new check
+- [ ] Update an existing check
+- [x] Pause monitoring of a check
+- [x] Delete check
+- [ ] Get a list of check's logged pings
+- [ ] Get a list of check's status changes
+- [x] Get a list of existing integrations
+
 ## Usage
 
 Usage is super simple!

@@ -11,15 +11,13 @@ struct Config {
 }
 
 fn main() -> anyhow::Result<()> {
-    let mut _ua = var("HEALTHCHECKS_USERAGENT");
-    let ua = if _ua.is_ok() {
-        Some(_ua.unwrap())
-    } else {
-        None
+    let ua = match var("HEALTHCHECKS_USERAGENT") {
+        Ok(f) => Some(f),
+        Err(_) => None,
     };
     let config = Config {
         token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
-        ua: ua,
+        ua,
     };
     let app = App::new("monitor")
         .version(crate_version!())

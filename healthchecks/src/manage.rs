@@ -1,5 +1,5 @@
 use crate::{
-    model::{Channel, Check, NewCheck},
+    model::{Channel, Check, NewCheck, UpdatedCheck},
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
@@ -169,6 +169,33 @@ impl ApiConfig {
             )),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("The account's check limit has been reached")),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Update the check with the given `check_id` with the data from `check`.
+    pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> anyhow::Result<Check> {
+        let check_str = SerJson::serialize_json(&check);
+        let mut r = &mut post(&format!(
+            "{}/{}/{}",
+            HEALTHCHECK_API_URL, "checks", check_id
+        ));
+        r = self.set_headers(r);
+        let resp = r
+            .set("Content-Type", "application/json")
+            .send_string(&check_str);
+        match resp.status() {
+            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+                .context("Failed to parse API response")?),
+            400 => Err(anyhow!(
+                "The request is not well-formed, violates schema, or uses invalid field values"
+            )),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
+            )),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
     }

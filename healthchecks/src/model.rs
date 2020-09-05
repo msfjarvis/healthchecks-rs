@@ -88,3 +88,29 @@ pub struct NewCheck {
     /// List of fields that must be unique before the check is created.
     pub unique: Option<Vec<String>>,
 }
+
+/// All fields in this struct are optional and every non-None value signifies that
+/// we want the server to replace the existing value with the one we're sending.
+#[derive(Clone, Debug, Default, DeJson, SerJson)]
+pub struct UpdatedCheck {
+    /// Name of the check.
+    pub name: Option<String>,
+    /// Space separated list of tags set on this check.
+    pub tags: Option<String>,
+    /// Description of the check.
+    pub desc: Option<String>,
+    /// Expected period of the check, in seconds. Is None when no timeout is set.
+    pub timeout: Option<i32>,
+    /// Grace period in minutes before the check is considered as failed.
+    pub grace: Option<i32>,
+    /// A cron expression defining this check's schedule. Is None when no schedule is configured.
+    pub schedule: Option<String>,
+    /// The timezone for the server which pings for this check's status. Can be None by itself or when no schedule is configured.
+    pub tz: Option<String>,
+    /// Indicates if the ping has been manually paused and will not resume automatically
+    /// on a new ping. These checks need to manually be resumed from the web dashboard.
+    pub manual_resume: Option<String>,
+    /// Comma-separated list of IDs of the integration channels associated with this check. Is None when no integrations
+    /// are configured.
+    pub channels: Option<String>,
+}

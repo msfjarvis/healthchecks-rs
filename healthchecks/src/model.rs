@@ -1,10 +1,5 @@
 use nanoserde::{DeJson, SerJson};
 
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
-pub struct ChecksResult {
-    pub checks: Vec<Check>,
-}
-
 /// This struct encapsulates a check as represented in the healthchecks.io
 /// API. Fields marked optional are either optional in the default API response
 /// or can be present or missing if a read-only API key is used.
@@ -55,11 +50,6 @@ pub struct Check {
     pub tz: Option<String>,
     /// A stable identifier generated when using a read-only API key. This can be used in place of an exact UUID to get individual checks.
     pub unique_key: Option<String>,
-}
-
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
-pub struct ChannelsResult {
-    pub channels: Vec<Channel>,
 }
 
 /// Represents an integration, like email or sms.

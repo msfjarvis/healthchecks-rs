@@ -1,5 +1,5 @@
 use crate::{
-    model::{Channel, ChannelsResult, Check, ChecksResult},
+    model::{Channel, Check},
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
@@ -47,6 +47,10 @@ impl ApiConfig {
 
     /// Get a list of [Check](../model/struct.Check.html)s.
     pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
+        #[derive(DeJson)]
+        struct ChecksResult {
+            pub checks: Vec<Check>,
+        }
         let mut r = &mut get(&format!("{}/{}", HEALTHCHECK_API_URL, "checks"));
         r = self.set_headers(r);
         let resp = r.call();
@@ -84,6 +88,10 @@ impl ApiConfig {
 
     /// Returns a list of [Channel](../model/struct.Channel.html)s belonging to the project.
     pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
+        #[derive(DeJson)]
+        struct ChannelsResult {
+            pub channels: Vec<Channel>,
+        }
         let mut r = &mut get(&format!("{}/{}", HEALTHCHECK_API_URL, "channels"));
         r = self.set_headers(r);
         let resp = r.call();

@@ -1,9 +1,9 @@
 use crate::{
-    model::{Channel, Check},
+    model::{Channel, Check, NewCheck},
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
-use nanoserde::DeJson;
+use nanoserde::{DeJson, SerJson};
 use ureq::{delete, get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
@@ -146,6 +146,29 @@ impl ApiConfig {
                 "Failed to find a check with the uuid: {}",
                 check_id
             )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Creates a new check with the given [NewCheck](../model/struct.NewCheck.html) configuration.
+    pub fn create_check(&self, check: NewCheck) -> anyhow::Result<Check> {
+        let check_str = SerJson::serialize_json(&check);
+        let mut r = &mut post(&format!("{}/{}/", HEALTHCHECK_API_URL, "checks"));
+        r = self.set_headers(r);
+        let resp = r
+            .set("Content-Type", "application/json")
+            .send_string(&check_str);
+        match resp.status() {
+            201 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+                .context("Failed to parse API response")?),
+            200 => Err(anyhow!(
+                "An existing check was matched based on the \"unique\" parameter"
+            )),
+            400 => Err(anyhow!(
+                "The request is not well-formed, violates schema, or uses invalid field values"
+            )),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("The account's check limit has been reached")),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
     }

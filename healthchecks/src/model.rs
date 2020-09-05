@@ -59,3 +59,20 @@ pub struct Channel {
     pub name: String,
     pub kind: String,
 }
+
+/// Represents a new check that is initialized locally then created on healthchecks.io
+/// using the admin API. It contains a lot less fields than the [Check](struct.Check.html)
+/// struct so we implement it separately.
+#[derive(Clone, Debug, Default, DeJson, SerJson)]
+pub struct NewCheck {
+    pub name: Option<String>,
+    pub tags: Option<String>,
+    pub desc: Option<String>,
+    pub timeout: Option<i32>,
+    pub grace: Option<i32>,
+    pub schedule: Option<String>,
+    pub tz: Option<String>,
+    pub manual_resume: Option<String>,
+    pub channels: Option<String>,
+    pub unique: Option<Vec<String>>,
+}

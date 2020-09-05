@@ -9,7 +9,7 @@ fn main() -> anyhow::Result<()> {
     for check in config.get_checks()? {
         println!("{:?}", check);
     }
-    let new_check  = NewCheck {
+    let new_check = NewCheck {
         name: None,
         tags: None,
         channels: None,

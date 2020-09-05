@@ -14,7 +14,7 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 
 - [x] Get a list of all checks
 - [x] Get a single check
-- [ ] Create a new check
+- [x] Create a new check
 - [ ] Update an existing check
 - [x] Pause monitoring of a check
 - [x] Delete check

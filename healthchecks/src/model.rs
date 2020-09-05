@@ -19,25 +19,19 @@ pub struct Check {
     /// Current status of the check.
     pub status: String,
     /// UTC timestamp of the last known ping.
-    #[nserde(rename = "last_ping")]
     pub last_ping: Option<String>,
     /// UTC timestamp of the next expected ping based on grace period. Will be
     /// None in case no grace period is set.
-    #[nserde(rename = "next_ping")]
     pub next_ping: Option<String>,
     /// Indicates if the ping has been manually paused and will not resume automatically
     /// on a new ping. These checks need to manually be resumed from the web dashboard.
-    #[nserde(rename = "manual_resume")]
     pub manual_resume: bool,
     /// A GET request to this URL is a valid ping for this check. This field is None if a read-only API token is used.
-    #[nserde(rename = "ping_url")]
     pub ping_url: Option<String>,
     /// URL to GET this specific check or POST an updated version. This field is None if a read-only API token is used.
-    #[nserde(rename = "update_url")]
     pub update_url: Option<String>,
     /// URL to pause monitoring for this check. The next ping will resume monitoring.
     /// This field is None if a read-only API token is used.
-    #[nserde(rename = "pause_url")]
     pub pause_url: Option<String>,
     /// Comma-separated list of IDs of the integration channels associated with this check. Is None when no integrations
     /// are configured.

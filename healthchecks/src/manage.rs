@@ -175,7 +175,9 @@ impl ApiConfig {
 
     /// Update the check with the given `check_id` with the data from `check`.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> anyhow::Result<Check> {
-        let check_str = SerJson::serialize_json(&check);
+        //TODO: this hack converts the returned JSON string to a JSON object. We want to avoid this, and have
+        //the serialization library handle it instead. Maybe serde might have to return.
+        let check_str = SerJson::serialize_json(&check).replace(",}", "}");
         let mut r = &mut post(&format!(
             "{}/{}/{}",
             HEALTHCHECK_API_URL, "checks", check_id

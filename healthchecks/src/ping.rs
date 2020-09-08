@@ -16,7 +16,6 @@ pub struct HealthcheckConfig {
 /// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
-#[inline]
 pub fn create_config(
     uuid: String,
     user_agent: Option<String>,
@@ -38,7 +37,6 @@ pub fn create_config(
 
 impl HealthcheckConfig {
     /// Report success to healthchecks.io. Returns a boolean indicating whether the request succeeded.
-    #[inline]
     pub fn report_success(&self) -> bool {
         let res = get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)
@@ -47,7 +45,6 @@ impl HealthcheckConfig {
     }
 
     /// Report failure to healthchecks.io. Returns a boolean indicating whether the request succeeded.
-    #[inline]
     pub fn report_failure(&self) -> bool {
         let res = get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)
@@ -56,7 +53,6 @@ impl HealthcheckConfig {
     }
 
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
-    #[inline]
     pub fn start_timer(&self) -> bool {
         let res = get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)

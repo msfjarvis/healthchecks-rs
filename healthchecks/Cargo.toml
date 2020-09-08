@@ -13,10 +13,10 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.31"
-nanoserde = "0.1.17"
-nanoserde-derive = "0.1.11"
-ureq = "1.3.0"
+anyhow = "1.0.32"
+nanoserde = "0.1.19"
+nanoserde-derive = "0.1.12"
+ureq = "1.4.0"
 uuid = { version = "0.8.1", default-features = false, features = [ "v1" ] }
 
 [badges]

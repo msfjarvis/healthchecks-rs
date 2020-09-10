@@ -136,3 +136,46 @@ pub struct UpdatedCheck {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::to_value;
+
+    #[test]
+    fn new_check_does_not_serialize_nulls() {
+        let new_check = NewCheck {
+            name: None,
+            tags: None,
+            channels: None,
+            desc: None,
+            timeout: None,
+            grace: None,
+            schedule: None,
+            tz: None,
+            unique: None,
+            manual_resume: None,
+        };
+        let value = to_value(new_check);
+        assert!(value.is_ok());
+        assert!(value.unwrap().to_string().eq("{}"));
+    }
+
+    #[test]
+    fn updated_check_does_not_serialize_nulls() {
+        let updated_check = UpdatedCheck {
+            name: None,
+            desc: None,
+            tags: None,
+            channels: None,
+            timeout: None,
+            grace: None,
+            schedule: None,
+            tz: None,
+            manual_resume: None,
+        };
+        let value = to_value(updated_check);
+        assert!(value.is_ok());
+        assert!(value.unwrap().to_string().eq("{}"));
+    }
+}

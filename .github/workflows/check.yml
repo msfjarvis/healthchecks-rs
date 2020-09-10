@@ -60,6 +60,11 @@ jobs:
       with:
         command: check
 
+    - name: Run cargo test
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
+
     - name: Run cargo doc
       uses: actions-rs/cargo@v1
       with:

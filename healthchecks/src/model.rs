@@ -1,9 +1,9 @@
-use nanoserde::{DeJson, SerJson};
+use serde::{Deserialize, Serialize};
 
 /// This struct encapsulates a check as represented in the healthchecks.io
 /// API. Fields marked optional are either optional in the default API response
 /// or can be present or missing if a read-only API key is used.
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Check {
     /// Name of the check.
     pub name: String,
@@ -14,7 +14,6 @@ pub struct Check {
     /// Grace period in minutes before the check is considered as failed.
     pub grace: i64,
     /// Number of times the check has pinged healthchecks.io.
-    #[nserde(rename = "n_pings")]
     pub n_pings: i64,
     /// Current status of the check.
     pub status: String,
@@ -47,7 +46,7 @@ pub struct Check {
 }
 
 /// Represents an integration, like email or sms.
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Channel {
     pub id: String,
     pub name: String,
@@ -57,7 +56,7 @@ pub struct Channel {
 /// Represents a new check that is initialized locally then created on healthchecks.io
 /// using the admin API. It contains a lot less fields than the [Check](struct.Check.html)
 /// struct so we implement it separately.
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NewCheck {
     /// Name of the check.
     pub name: Option<String>,
@@ -85,7 +84,7 @@ pub struct NewCheck {
 
 /// All fields in this struct are optional and every non-None value signifies that
 /// we want the server to replace the existing value with the one we're sending.
-#[derive(Clone, Debug, Default, DeJson, SerJson)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatedCheck {
     /// Name of the check.
     pub name: Option<String>,

@@ -3,7 +3,6 @@ use crate::{
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
-use nanoserde::{DeJson, SerJson};
 use ureq::{delete, get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
@@ -46,7 +45,7 @@ impl ApiConfig {
 
     /// Get a list of [Check](../model/struct.Check.html)s.
     pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
-        #[derive(DeJson)]
+        #[derive(serde::Deserialize)]
         struct ChecksResult {
             pub checks: Vec<Check>,
         }
@@ -54,11 +53,10 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => {
-                let res: ChecksResult = DeJson::deserialize_json(&resp.into_string()?)
-                    .context("Failed to parse API response")?;
-                Ok(res.checks)
-            }
+            200 => Ok(resp
+                .into_json_deserialize::<ChecksResult>()
+                .context("Failed to parse API response")?
+                .checks),
             401 => Err(anyhow!("Invalid API key")),
             _ => Err(anyhow!("Unexpected error: {}", resp.error())),
         }
@@ -73,7 +71,8 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
@@ -87,7 +86,7 @@ impl ApiConfig {
 
     /// Returns a list of [Channel](../model/struct.Channel.html)s belonging to the project.
     pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
-        #[derive(DeJson)]
+        #[derive(serde::Deserialize)]
         struct ChannelsResult {
             pub channels: Vec<Channel>,
         }
@@ -95,11 +94,10 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => {
-                let res: ChannelsResult = DeJson::deserialize_json(&resp.into_string()?)
-                    .context("Failed to parse API response")?;
-                Ok(res.channels)
-            }
+            200 => Ok(resp
+                .into_json_deserialize::<ChannelsResult>()
+                .context("Failed to parse API response")?
+                .channels),
             401 => Err(anyhow!(
                 "Invalid API key: make sure you're not using a read-only key"
             )),
@@ -116,7 +114,8 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.send_string("");
         match resp.status() {
-            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
@@ -137,7 +136,8 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r.call();
         match resp.status() {
-            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),
@@ -151,14 +151,16 @@ impl ApiConfig {
 
     /// Creates a new check with the given [NewCheck](../model/struct.NewCheck.html) configuration.
     pub fn create_check(&self, check: NewCheck) -> anyhow::Result<Check> {
-        let check_str = SerJson::serialize_json(&check);
+        let check_json =
+            serde_json::to_value(check).expect("Failed to convert check into valid JSON");
         let mut r = &mut post(&format!("{}/{}/", HEALTHCHECK_API_URL, "checks"));
         r = self.set_headers(r);
         let resp = r
             .set("Content-Type", "application/json")
-            .send_string(&check_str);
+            .send_json(check_json);
         match resp.status() {
-            201 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+            201 => Ok(resp
+                .into_json_deserialize::<Check>()
                 .context("Failed to parse API response")?),
             200 => Err(anyhow!(
                 "An existing check was matched based on the \"unique\" parameter"
@@ -174,9 +176,8 @@ impl ApiConfig {
 
     /// Update the check with the given `check_id` with the data from `check`.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> anyhow::Result<Check> {
-        //TODO: this hack converts the returned JSON string to a JSON object. We want to avoid this, and have
-        //the serialization library handle it instead. Maybe serde might have to return.
-        let check_str = SerJson::serialize_json(&check).replace(",}", "}");
+        let check_json =
+            serde_json::to_value(check).expect("Failed to convert check into valid JSON");
         let mut r = &mut post(&format!(
             "{}/{}/{}",
             HEALTHCHECK_API_URL, "checks", check_id
@@ -184,9 +185,10 @@ impl ApiConfig {
         r = self.set_headers(r);
         let resp = r
             .set("Content-Type", "application/json")
-            .send_string(&check_str);
+            .send_json(check_json);
         match resp.status() {
-            200 => Ok(DeJson::deserialize_json(&resp.into_string()?)
+            200 => Ok(resp
+                .into_json_deserialize::<Check>()
                 .context("Failed to parse API response")?),
             400 => Err(anyhow!(
                 "The request is not well-formed, violates schema, or uses invalid field values"

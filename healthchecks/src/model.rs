@@ -102,6 +102,23 @@ pub struct NewCheck {
     pub unique: Option<Vec<String>>,
 }
 
+impl Default for NewCheck {
+    fn default() -> Self {
+        NewCheck {
+            name: None,
+            tags: None,
+            channels: None,
+            desc: None,
+            timeout: None,
+            grace: None,
+            schedule: None,
+            tz: None,
+            unique: None,
+            manual_resume: None,
+        }
+    }
+}
+
 /// All fields in this struct are optional and every non-None value signifies that
 /// we want the server to replace the existing value with the one we're sending.
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -137,6 +154,22 @@ pub struct UpdatedCheck {
     pub channels: Option<String>,
 }
 
+impl Default for UpdatedCheck {
+    fn default() -> Self {
+        UpdatedCheck {
+            name: None,
+            tags: None,
+            desc: None,
+            timeout: None,
+            grace: None,
+            schedule: None,
+            tz: None,
+            manual_resume: None,
+            channels: None,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -144,18 +177,7 @@ mod tests {
 
     #[test]
     fn new_check_does_not_serialize_nulls() {
-        let new_check = NewCheck {
-            name: None,
-            tags: None,
-            channels: None,
-            desc: None,
-            timeout: None,
-            grace: None,
-            schedule: None,
-            tz: None,
-            unique: None,
-            manual_resume: None,
-        };
+        let new_check: NewCheck = Default::default();
         let value = to_value(new_check);
         assert!(value.is_ok());
         assert!(value.unwrap().to_string().eq("{}"));
@@ -163,17 +185,7 @@ mod tests {
 
     #[test]
     fn updated_check_does_not_serialize_nulls() {
-        let updated_check = UpdatedCheck {
-            name: None,
-            desc: None,
-            tags: None,
-            channels: None,
-            timeout: None,
-            grace: None,
-            schedule: None,
-            tz: None,
-            manual_resume: None,
-        };
+        let updated_check: UpdatedCheck = Default::default();
         let value = to_value(updated_check);
         assert!(value.is_ok());
         assert!(value.unwrap().to_string().eq("{}"));

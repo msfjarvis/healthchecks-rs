@@ -180,7 +180,7 @@ mod tests {
         let new_check: NewCheck = Default::default();
         let value = to_value(new_check);
         assert!(value.is_ok());
-        assert!(value.unwrap().to_string().eq("{}"));
+        assert_eq!(value.unwrap().to_string(), "{}");
     }
 
     #[test]
@@ -188,7 +188,7 @@ mod tests {
         let updated_check: UpdatedCheck = Default::default();
         let value = to_value(updated_check);
         assert!(value.is_ok());
-        assert!(value.unwrap().to_string().eq("{}"));
+        assert_eq!(value.unwrap().to_string(), "{}");
     }
 
     #[test]

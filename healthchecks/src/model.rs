@@ -190,4 +190,15 @@ mod tests {
         assert!(value.is_ok());
         assert!(value.unwrap().to_string().eq("{}"));
     }
+
+    #[test]
+    fn default_impl_for_updated_check_fills_nulls() {
+        let updated_check = UpdatedCheck {
+            name: Some("Updated check".to_string()),
+            ..Default::default()
+        };
+        let value = to_value(updated_check);
+        assert!(value.is_ok());
+        assert_eq!(value.unwrap().to_string(), "{\"name\":\"Updated check\"}");
+    }
 }

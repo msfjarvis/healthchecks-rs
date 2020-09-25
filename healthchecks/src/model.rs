@@ -173,23 +173,6 @@ impl NewCheck {
     }
 }
 
-impl Default for NewCheck {
-    fn default() -> Self {
-        NewCheck {
-            name: None,
-            tags: None,
-            channels: None,
-            desc: None,
-            timeout: None,
-            grace: None,
-            schedule: None,
-            tz: None,
-            unique: None,
-            manual_resume: None,
-        }
-    }
-}
-
 /// All fields in this struct are optional and every non-None value signifies that
 /// we want the server to replace the existing value with the one we're sending.
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -248,7 +231,7 @@ mod tests {
 
     #[test]
     fn new_check_does_not_serialize_nulls() {
-        let new_check: NewCheck = Default::default();
+        let new_check = NewCheck::new().build();
         let value = to_value(new_check);
         assert!(value.is_ok());
         assert_eq!(value.unwrap().to_string(), "{}");

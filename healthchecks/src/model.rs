@@ -102,6 +102,77 @@ pub struct NewCheck {
     pub unique: Option<Vec<String>>,
 }
 
+impl NewCheck {
+    pub fn new() -> NewCheck {
+        NewCheck {
+            name: None,
+            tags: None,
+            channels: None,
+            desc: None,
+            timeout: None,
+            grace: None,
+            schedule: None,
+            tz: None,
+            unique: None,
+            manual_resume: None,
+        }
+    }
+
+    pub fn name<'builder>(&'builder mut self, name: String) -> &'builder mut NewCheck {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn tags<'builder>(&'builder mut self, tags: String) -> &'builder mut NewCheck {
+        self.tags = Some(tags);
+        self
+    }
+
+    pub fn channels<'builder>(&'builder mut self, channels: String) -> &'builder mut NewCheck {
+        self.channels = Some(channels);
+        self
+    }
+
+    pub fn desc<'builder>(&'builder mut self, desc: String) -> &'builder mut NewCheck {
+        self.desc = Some(desc);
+        self
+    }
+
+    pub fn timeout<'builder>(&'builder mut self, timeout: i32) -> &'builder mut NewCheck {
+        self.timeout = Some(timeout);
+        self
+    }
+
+    pub fn grace<'builder>(&'builder mut self, grace: i32) -> &'builder mut NewCheck {
+        self.grace = Some(grace);
+        self
+    }
+
+    pub fn schedule<'builder>(&'builder mut self, schedule: String) -> &'builder mut NewCheck {
+        self.schedule = Some(schedule);
+        self
+    }
+
+    pub fn tz<'builder>(&'builder mut self, tz: String) -> &'builder mut NewCheck {
+        self.tz = Some(tz);
+        self
+    }
+
+    pub fn unique<'builder>(&'builder mut self, unique: Vec<String>) -> &'builder mut NewCheck {
+        self.unique = Some(unique);
+        self
+    }
+
+    pub fn manual_resume<'builder>(&'builder mut self, manual_resume: String) -> &'builder mut NewCheck {
+        self.manual_resume = Some(manual_resume);
+        self
+    }
+
+    pub fn build(self) -> NewCheck {
+        self
+    }
+}
+
 impl Default for NewCheck {
     fn default() -> Self {
         NewCheck {

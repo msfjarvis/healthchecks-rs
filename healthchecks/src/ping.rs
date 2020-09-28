@@ -13,7 +13,7 @@ pub struct HealthcheckConfig {
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [HealthcheckConfig](struct.HealthcheckConfig.html) from a String UUID
+/// Create an instance of [`HealthcheckConfig`] from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
 pub fn create_config(

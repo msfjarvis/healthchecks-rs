@@ -9,7 +9,18 @@ fn main() -> anyhow::Result<()> {
     for check in config.get_checks()? {
         println!("{:?}", check);
     }
-    let new_check = NewCheck::new().build();
+    let new_check = NewCheck {
+        name: None,
+        tags: None,
+        channels: None,
+        desc: None,
+        timeout: None,
+        grace: None,
+        schedule: None,
+        tz: None,
+        unique: None,
+        manual_resume: None,
+    };
     println!("{:?}", config.create_check(new_check)?);
     Ok(())
 }

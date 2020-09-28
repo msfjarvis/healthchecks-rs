@@ -64,7 +64,7 @@ pub struct Channel {
 }
 
 /// Represents a new check that is initialized locally then created on healthchecks.io
-/// using the admin API. It contains a lot less fields than the [Check](struct.Check.html)
+/// using the admin API. It contains a lot less fields than the [`Check`]
 /// struct so we implement it separately.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NewCheck {

@@ -14,7 +14,7 @@ pub struct ApiConfig {
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [ApiConfig](struct.ApiConfig.html) from a given API key. No validation
+/// Create an instance of [`ApiConfig`] from a given API key. No validation
 /// is performed.
 pub fn create_config(api_key: String, user_agent: Option<String>) -> anyhow::Result<ApiConfig> {
     if api_key.is_empty() {
@@ -43,7 +43,7 @@ impl ApiConfig {
             .set("User-Agent", &self.user_agent)
     }
 
-    /// Get a list of [Check](../model/struct.Check.html)s.
+    /// Get a list of [`Check`]s.
     pub fn get_checks(&self) -> anyhow::Result<Vec<Check>> {
         #[derive(serde::Deserialize)]
         struct ChecksResult {
@@ -62,7 +62,7 @@ impl ApiConfig {
         }
     }
 
-    /// Get a [Check](../model/struct.Check.html) with the given UUID or unique key.
+    /// Get a [`Check`] with the given UUID or unique key.
     pub fn get_check(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut get(&format!(
             "{}/{}/{}",
@@ -84,7 +84,7 @@ impl ApiConfig {
         }
     }
 
-    /// Returns a list of [Channel](../model/struct.Channel.html)s belonging to the project.
+    /// Returns a list of [`Channel`]s belonging to the project.
     pub fn get_channels(&self) -> anyhow::Result<Vec<Channel>> {
         #[derive(serde::Deserialize)]
         struct ChannelsResult {
@@ -105,7 +105,7 @@ impl ApiConfig {
         }
     }
 
-    /// Pauses the [Check](../model/struct.Check.html) with the given UUID or unique key.
+    /// Pauses the [`Check`] with the given UUID or unique key.
     pub fn pause(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut post(&format!(
             "{}/checks/{}/pause",
@@ -127,7 +127,7 @@ impl ApiConfig {
         }
     }
 
-    /// Deletes the [Check](../model/struct.Check.html) with the given UUID or unique key.
+    /// Deletes the [`Check`] with the given UUID or unique key.
     pub fn delete(&self, check_id: &str) -> anyhow::Result<Check> {
         let mut r = &mut delete(&format!(
             "{}/{}/{}",
@@ -149,7 +149,7 @@ impl ApiConfig {
         }
     }
 
-    /// Creates a new check with the given [NewCheck](../model/struct.NewCheck.html) configuration.
+    /// Creates a new check with the given [`NewCheck`] configuration.
     pub fn create_check(&self, check: NewCheck) -> anyhow::Result<Check> {
         let check_json =
             serde_json::to_value(check).expect("Failed to convert check into valid JSON");

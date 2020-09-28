@@ -11,7 +11,7 @@ pub struct Check {
     pub tags: String,
     /// Description of the check.
     pub desc: String,
-    /// Grace period in minutes before the check is considered as failed.
+    /// When a check is late, how long to wait until an alert is sent.
     pub grace: i64,
     /// Number of times the check has pinged healthchecks.io.
     pub n_pings: i64,
@@ -21,33 +21,33 @@ pub struct Check {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_ping: Option<String>,
     /// UTC timestamp of the next expected ping based on grace period. Will be
-    /// None in case no grace period is set.
+    /// [`None`] in case no grace period is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_ping: Option<String>,
     /// Indicates if the ping has been manually paused and will not resume automatically
     /// on a new ping. These checks need to manually be resumed from the web dashboard.
     pub manual_resume: bool,
-    /// A GET request to this URL is a valid ping for this check. This field is None if a read-only API token is used.
+    /// A GET request to this URL is a valid ping for this check. This field is [`None`] if a read-only API token is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ping_url: Option<String>,
-    /// URL to GET this specific check or POST an updated version. This field is None if a read-only API token is used.
+    /// URL to GET this specific check or POST an updated version. This field is [`None`] if a read-only API token is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub update_url: Option<String>,
     /// URL to pause monitoring for this check. The next ping will resume monitoring.
-    /// This field is None if a read-only API token is used.
+    /// This field is [`None`] if a read-only API token is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pause_url: Option<String>,
-    /// Comma-separated list of IDs of the integration channels associated with this check. Is None when no integrations
+    /// Comma-separated list of IDs of the integration channels associated with this check. Is [`None`] when no integrations
     /// are configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<String>,
-    /// Expected period of the check, in seconds. Is None when no timeout is set.
+    /// Expected time between pings, in seconds. Is [`None`] when no timeout is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
-    /// A cron expression defining this check's schedule. Is None when no schedule is configured.
+    /// A cron expression defining this check's schedule. Is [`None`] when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// The timezone for the server which pings for this check's status. Can be None by itself or when no schedule is configured.
+    /// The timezone for the server which pings for this check's status. Can be [`None`] by itself or when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tz: Option<String>,
     /// A stable identifier generated when using a read-only API key. This can be used in place of an exact UUID to get individual checks.
@@ -77,23 +77,23 @@ pub struct NewCheck {
     /// Description of the check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub desc: Option<String>,
-    /// Expected period of the check, in seconds. Is None when no timeout is set.
+    /// Expected time between pings, in seconds. Is [`None`] when no timeout is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i32>,
-    /// Grace period in minutes before the check is considered as failed.
+    /// When a check is late, how long to wait until an alert is sent. Value in minutes, is [`None`] when no timeout is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub grace: Option<i32>,
-    /// A cron expression defining this check's schedule. Is None when no schedule is configured.
+    /// A cron expression defining this check's schedule. Is [`None`] when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// The timezone for the server which pings for this check's status. Can be None by itself or when no schedule is configured.
+    /// The timezone for the server which pings for this check's status. Can be [`None`] by itself or when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tz: Option<String>,
     /// Indicates if the ping has been manually paused and will not resume automatically
     /// on a new ping. These checks need to manually be resumed from the web dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manual_resume: Option<String>,
-    /// Comma-separated list of IDs of the integration channels associated with this check. Is None when no integrations
+    /// Comma-separated list of IDs of the integration channels associated with this check. Is [`None`] when no integrations
     /// are configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<String>,
@@ -186,23 +186,23 @@ pub struct UpdatedCheck {
     /// Description of the check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub desc: Option<String>,
-    /// Expected period of the check, in seconds. Is None when no timeout is set.
+    /// Expected time between pings, in seconds. Is [`None`] when no timeout is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i32>,
-    /// Grace period in minutes before the check is considered as failed.
+    /// When a check is late, how long to wait until an alert is sent. Value in minutes, is [`None`] when no timeout is set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub grace: Option<i32>,
-    /// A cron expression defining this check's schedule. Is None when no schedule is configured.
+    /// A cron expression defining this check's schedule. Is [`None`] when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    /// The timezone for the server which pings for this check's status. Can be None by itself or when no schedule is configured.
+    /// The timezone for the server which pings for this check's status. Can be [`None`] by itself or when no schedule is configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tz: Option<String>,
     /// Indicates if the ping has been manually paused and will not resume automatically
     /// on a new ping. These checks need to manually be resumed from the web dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manual_resume: Option<String>,
-    /// Comma-separated list of IDs of the integration channels associated with this check. Is None when no integrations
+    /// Comma-separated list of IDs of the integration channels associated with this check. Is [`None`] when no integrations
     /// are configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<String>,

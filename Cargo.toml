@@ -6,5 +6,5 @@ members = [
 
 [profile.release]
 codegen-units = 1
-lto = "fat"
+lto = "thin"
 panic = "abort"

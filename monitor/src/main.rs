@@ -1,11 +1,11 @@
 use clap::{crate_version, App, AppSettings, Arg};
 use execute::Execute;
-use healthchecks::ping::create_config;
+use healthchecks::ping::get_config;
 use std::env::var;
 use std::process::Command;
 
 #[derive(Debug)]
-struct Config {
+struct Settings {
     token: String,
     ua: Option<String>,
 }
@@ -15,7 +15,7 @@ fn main() -> anyhow::Result<()> {
         Ok(f) => Some(f),
         Err(_) => None,
     };
-    let config = Config {
+    let settings = Settings {
         token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
         ua,
     };
@@ -47,7 +47,10 @@ fn main() -> anyhow::Result<()> {
         .values_of("command")
         .expect("command must be passed")
         .collect::<Vec<&str>>();
-    let config = create_config(config.token, config.ua)?;
+    let mut config = get_config(&settings.token)?;
+    if let Some(user_agent) = settings.ua {
+        config = config.set_user_agent(&user_agent)
+    }
     if matches.is_present("timer") {
         config.start_timer();
     }

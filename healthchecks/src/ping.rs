@@ -16,26 +16,24 @@ pub struct HealthcheckConfig {
 /// Create an instance of [`HealthcheckConfig`] from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
-pub fn create_config(
-    uuid: String,
-    user_agent: Option<String>,
-) -> anyhow::Result<HealthcheckConfig> {
-    if Uuid::parse_str(&uuid).is_err() {
+pub fn get_config(uuid: &str) -> anyhow::Result<HealthcheckConfig> {
+    if Uuid::parse_str(uuid).is_err() {
         Err(anyhow!("Invalid UUID: {}", uuid))
-    } else if let Some(ua) = user_agent {
-        Ok(HealthcheckConfig {
-            uuid,
-            user_agent: ua,
-        })
     } else {
         Ok(HealthcheckConfig {
-            uuid,
+            uuid: uuid.to_owned(),
             user_agent: default_user_agent().to_owned(),
         })
     }
 }
 
 impl HealthcheckConfig {
+    /// Set the user agent for the given config
+    pub fn set_user_agent(mut self, user_agent: &str) -> HealthcheckConfig {
+        self.user_agent = user_agent.to_owned();
+        self
+    }
+
     /// Report success to healthchecks.io. Returns a boolean indicating whether the request succeeded.
     pub fn report_success(&self) -> bool {
         let res = get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))

@@ -19,23 +19,6 @@ jobs:
         toolchain: nightly
         components: rustfmt, clippy
 
-    - name: Install cargo-audit binary crate
-      uses: actions-rs/install@v0.1
-      with:
-        crate: cargo-audit
-        version: latest
-        use-tool-cache: false
-
-    - name: Security audit
-      uses: actions-rs/audit-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Generate lockfile
-      uses: actions-rs/cargo@v1
-      with:
-        command: generate-lockfile
-
     - name: Cache cargo registry and build outputs
       uses: actions/cache@v2
       with:

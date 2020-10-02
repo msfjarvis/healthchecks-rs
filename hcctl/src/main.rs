@@ -1,49 +1,45 @@
 #[macro_use]
 extern crate prettytable;
 
-use anyhow::{anyhow, Result};
+use anyhow::anyhow;
+use clap::{crate_version, App, AppSettings};
 use healthchecks::manage;
 use prettytable::{format, Table};
-use structopt::StructOpt;
+use std::env::var;
 
-#[derive(Debug, StructOpt)]
-struct Opts {
-    /// API token to use when interacting with the healthchecks API
-    #[structopt(
-        long = "api-token",
-        global = true,
-        env = "HEALTHCHECKS_API_TOKEN",
-        // This is annoying but you can't set a global option without a default
-        default_value = ""
-    )]
-    api_token: String,
-
-    #[structopt(subcommand)]
-    command: Command,
+#[derive(Debug)]
+struct Settings {
+    token: String,
+    ua: Option<String>,
 }
 
-#[derive(Debug, StructOpt)]
-enum Command {
-    /// List the checks in your account
-    List,
-}
-
-fn main() -> Result<()> {
-    let opts = Opts::from_args();
-
-    if opts.api_token.is_empty() {
-        return Err(anyhow!("No API token given"));
-    }
-
-    match opts.command {
-        Command::List => list(&opts.api_token)?,
+fn main() -> anyhow::Result<()> {
+    let ua = match var("HEALTHCHECKS_USERAGENT") {
+        Ok(f) => Some(f),
+        Err(_) => None,
     };
+    let settings = Settings {
+        token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
+        ua,
+    };
+
+    let matches = App::new("hcctl")
+        .version(crate_version!())
+        .setting(AppSettings::ColoredHelp)
+        .setting(AppSettings::DeriveDisplayOrder)
+        .subcommand(App::new("list").about("Lists the checks in your account with their last ping"))
+        .get_matches();
+
+    match matches.subcommand() {
+        ("list", _) => list(settings)?,
+        (cmd, _) => return Err(anyhow!("unknown subcommand: {}", cmd)),
+    }
 
     Ok(())
 }
 
-fn list(api_token: &str) -> Result<()> {
-    let api = manage::get_config(api_token.to_string(), None)?;
+fn list(settings: Settings) -> anyhow::Result<()> {
+    let api = manage::get_config(settings.token, settings.ua)?;
     let checks = api.get_checks()?;
 
     let mut table = Table::new();

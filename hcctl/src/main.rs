@@ -27,6 +27,7 @@ fn main() -> anyhow::Result<()> {
         .version(crate_version!())
         .setting(AppSettings::ColoredHelp)
         .setting(AppSettings::DeriveDisplayOrder)
+        .setting(AppSettings::SubcommandRequiredElseHelp)
         .subcommand(App::new("list").about("Lists the checks in your account with their last ping"))
         .get_matches();
 

@@ -1,12 +1,16 @@
 #[macro_use]
 extern crate prettytable;
 
+use std::env::var;
+use std::time::SystemTime;
+
 use anyhow::anyhow;
 use chrono::prelude::DateTime;
+use chrono::Duration;
 use clap::{crate_version, App, AppSettings};
-use healthchecks::manage;
 use prettytable::{format, Table};
-use std::env::var;
+
+use healthchecks::manage;
 
 #[derive(Debug)]
 struct Settings {
@@ -50,8 +54,14 @@ fn list(settings: Settings) -> anyhow::Result<()> {
 
     for check in checks {
         let date = if let Some(date_str) = check.last_ping {
+            let now = SystemTime::now();
             let date = DateTime::parse_from_rfc3339(&date_str)?;
-            date.to_rfc2822().to_string()
+            let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
+            format!(
+                "{} hour(s) and {} minute(s) ago",
+                duration.num_hours(),
+                duration.num_minutes()
+            )
         } else {
             "-".to_owned()
         };

@@ -1,5 +1,5 @@
 use crate::{
-    model::{Channel, Check, NewCheck, UpdatedCheck},
+    model::{Channel, Check, Flip, NewCheck, Ping, UpdatedCheck},
     util::default_user_agent,
 };
 use anyhow::{anyhow, Context};
@@ -116,6 +116,55 @@ impl ApiConfig {
         match resp.status() {
             200 => Ok(resp
                 .into_json_deserialize::<Check>()
+                .context("Failed to parse API response")?),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Get a list of check's logged pings with the given UUID or unique key.
+    pub fn list_logged_pings(&self, check_id: &str) -> anyhow::Result<Vec<Ping>> {
+        #[derive(serde::Deserialize)]
+        struct PingsResult {
+            pub pings: Vec<Ping>,
+        }
+        let mut r = &mut post(&format!(
+            "{}/checks/{}/pings",
+            HEALTHCHECK_API_URL, check_id
+        ));
+        r = self.set_headers(r);
+        let resp = r.send_string("");
+        match resp.status() {
+            200 => Ok(resp
+                .into_json_deserialize::<PingsResult>()
+                .context("Failed to parse API response")?
+                .pings),
+            401 => Err(anyhow!("Invalid API key")),
+            403 => Err(anyhow!("Access denied")),
+            404 => Err(anyhow!(
+                "Failed to find a check with the uuid: {}",
+                check_id
+            )),
+            _ => Err(anyhow!("Unexpected error: {}", resp.error())),
+        }
+    }
+
+    /// Get a list of check's status changes with the given UUID or unique key.
+    pub fn list_status_changes(&self, check_id: &str) -> anyhow::Result<Vec<Flip>> {
+        let mut r = &mut post(&format!(
+            "{}/checks/{}/flips",
+            HEALTHCHECK_API_URL, check_id
+        ));
+        r = self.set_headers(r);
+        let resp = r.call();
+        match resp.status() {
+            200 => Ok(resp
+                .into_json_deserialize::<Vec<Flip>>()
                 .context("Failed to parse API response")?),
             401 => Err(anyhow!("Invalid API key")),
             403 => Err(anyhow!("Access denied")),

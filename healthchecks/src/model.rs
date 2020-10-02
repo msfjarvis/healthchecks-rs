@@ -203,6 +203,28 @@ impl Default for UpdatedCheck {
     }
 }
 
+/// Represents a ping this check has received.
+#[derive(serde::Deserialize)]
+pub struct Ping {
+    #[serde(rename = "type")]
+    pub type_field: String,
+    pub date: String,
+    pub n: i64,
+    pub scheme: String,
+    pub remote_addr: String,
+    pub method: String,
+    pub ua: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<f64>,
+}
+
+/// Represents a "flip" this check has experienced.
+#[derive(serde::Deserialize)]
+pub struct Flip {
+    pub timestamp: String,
+    pub up: i64,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -11,3 +11,4 @@ healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
 anyhow = "1.0.32"
 clap = { version = "2.33.3", default-features = false, features = ["suggestions", "color"] }
 prettytable-rs = "0.8.0"
+chrono = "0.4.19"

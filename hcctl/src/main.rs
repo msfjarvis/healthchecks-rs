@@ -2,6 +2,7 @@
 extern crate prettytable;
 
 use anyhow::anyhow;
+use chrono::prelude::DateTime;
 use clap::{crate_version, App, AppSettings};
 use healthchecks::manage;
 use prettytable::{format, Table};
@@ -48,7 +49,13 @@ fn list(settings: Settings) -> anyhow::Result<()> {
     table.set_titles(row!["Name", "Last Ping"]);
 
     for check in checks {
-        table.add_row(row![check.name, check.last_ping.unwrap_or("-".to_string())]);
+        let date = if let Some(date_str) = check.last_ping {
+            let date = DateTime::parse_from_rfc3339(&date_str)?;
+            date.to_rfc2822().to_string()
+        } else {
+            "-".to_owned()
+        };
+        table.add_row(row![check.name, date]);
     }
 
     table.printstd();

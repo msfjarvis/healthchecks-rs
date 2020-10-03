@@ -50,10 +50,10 @@ fn list(settings: Settings) -> anyhow::Result<()> {
 
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(row!["Name", "Last Ping"]);
+    table.set_titles(row!["ID", "Name", "Last Ping"]);
 
     for check in checks {
-        let date = if let Some(date_str) = check.last_ping {
+        let date = if let Some(ref date_str) = check.last_ping {
             let now = SystemTime::now();
             let date = DateTime::parse_from_rfc3339(&date_str)?;
             let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
@@ -65,7 +65,8 @@ fn list(settings: Settings) -> anyhow::Result<()> {
         } else {
             "-".to_owned()
         };
-        table.add_row(row![check.name, date]);
+        let id = check.id().unwrap_or("-".to_owned());
+        table.add_row(row![id, check.name, date]);
     }
 
     table.printstd();

@@ -71,6 +71,21 @@ pub struct Check {
     pub unique_key: Option<String>,
 }
 
+impl Check {
+    /// Get the unique identifier of a [`Check`].
+    pub fn id(&self) -> Option<String> {
+        if let Some(ref url) = self.ping_url {
+            if let Some(id) = url.split("/").last() {
+                Some(id.to_owned())
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+
 /// Represents an integration, like email or sms.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Channel {

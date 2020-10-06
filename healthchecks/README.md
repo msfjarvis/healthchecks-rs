@@ -18,8 +18,8 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 - [x] Update an existing check
 - [x] Pause monitoring of a check
 - [x] Delete check
-- [ ] Get a list of check's logged pings
-- [ ] Get a list of check's status changes
+- [x] Get a list of check's logged pings
+- [x] Get a list of check's status changes
 - [x] Get a list of existing integrations
 
 ## Usage

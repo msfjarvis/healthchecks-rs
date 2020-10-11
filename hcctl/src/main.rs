@@ -29,6 +29,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     let matches = App::new("hcctl")
+        .about("Command-line tool for interacting with a https://healthchecks.io account")
         .version(crate_version!())
         .setting(AppSettings::ColoredHelp)
         .setting(AppSettings::DeriveDisplayOrder)

@@ -256,7 +256,10 @@ pub struct Ping {
 /// Represents a "flip" this check has experienced.
 #[derive(serde::Deserialize)]
 pub struct Flip {
+    /// RFC3339 timestamp for when the change occured
     pub timestamp: String,
+
+    /// 1 or 0 depending on whether or not the 'flip' changed the check's status to 'up' or 'down' respectively.
     pub up: i64,
 }
 

@@ -218,18 +218,38 @@ impl Default for UpdatedCheck {
     }
 }
 
-/// Represents a ping this check has received.
+/// Represents a ping that a check has received.
 #[derive(serde::Deserialize)]
 pub struct Ping {
+    /// Type of ping: one of 'start', 'success' or 'failure'. 'start' indicates the beginning
+    /// of a timer that is counted server-side until the next 'success' or 'failure' ping.
     #[serde(rename = "type")]
     pub type_field: String,
+
+    /// RFC3339-style timestamp for when this ping occured.
     pub date: String,
+
+    /// Index of the ping. The healthchecks.io dashboard keeps track of all pings and assigns
+    /// them each an index that is sequentially incremented.
     pub n: i64,
+
+    /// The method used to make this ping. As far as I can tell, is one of 'http' or 'https'.
+    /// I do not use email for my pings and am not aware if it affects the scheme field, let
+    /// me know if you are.
     pub scheme: String,
+
+    /// The IP address of the remote machine that initiated the ping.
     pub remote_addr: String,
+
+    /// The HTTP method used to initiate this ping. Might differ for email pings, again, let me know
+    /// if you know.
     pub method: String,
+
+    /// User-Agent header for the network request that created this ping.
     pub ua: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    /// Duration for which this ping ran, Will be [None] for untimed pings.
     pub duration: Option<f64>,
 }
 

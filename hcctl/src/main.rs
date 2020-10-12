@@ -100,9 +100,9 @@ fn list(settings: Settings) -> anyhow::Result<()> {
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row!["ID", "Name", "Last Ping"]);
 
+    let now = SystemTime::now();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
-            let now = SystemTime::now();
             let date = DateTime::parse_from_rfc3339(&date_str)?;
             let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
             format!(

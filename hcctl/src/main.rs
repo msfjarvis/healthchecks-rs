@@ -75,7 +75,7 @@ fn pings(settings: Settings, matches: Option<&ArgMatches>) -> anyhow::Result<()>
                     time.minute(),
                 );
                 let duration_str = if let Some(duration) = ping.duration {
-                    format!("{} sec", duration)
+                    format!("{0:.3} sec", duration)
                 } else {
                     "".to_owned()
                 };

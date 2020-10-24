@@ -7,7 +7,7 @@ use std::time::SystemTime;
 use anyhow::anyhow;
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
-use clap::{crate_version, App, AppSettings, Arg, ArgMatches};
+use clap::{crate_version, App, AppSettings, Arg};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -47,48 +47,44 @@ fn main() -> anyhow::Result<()> {
 
     match matches.subcommand() {
         ("list", _) => list(settings)?,
-        ("pings", matches) => pings(settings, matches)?,
+        ("pings", matches) => pings(settings, matches.unwrap().value_of("check_id").unwrap())?,
         (cmd, _) => return Err(anyhow!("unknown subcommand: {}", cmd)),
     }
 
     Ok(())
 }
 
-fn pings(settings: Settings, matches: Option<&ArgMatches>) -> anyhow::Result<()> {
-    if let Some(m) = matches {
-        if let Some(check_id) = m.value_of("check_id") {
-            let api = manage::get_config(settings.token, settings.ua)?;
-            let mut pings = api.list_logged_pings(check_id)?;
-            let mut table = Table::new();
-            table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-            table.set_titles(row!["Number", "Time", "Type", "Duration"]);
-            pings.truncate(10);
-            for ping in pings {
-                let utc_time = DateTime::parse_from_rfc3339(&ping.date)?.naive_utc();
-                let date = utc_time.date();
-                let time = utc_time.time();
-                let time_str = format!(
-                    "{}/{} {}:{}",
-                    date.day(),
-                    date.month(),
-                    time.hour(),
-                    time.minute(),
-                );
-                let duration_str = if let Some(duration) = ping.duration {
-                    format!("{0:.3} sec", duration)
-                } else {
-                    "".to_owned()
-                };
-                table.add_row(row![
-                    format!("#{}", ping.n),
-                    time_str,
-                    ping.type_field,
-                    duration_str
-                ]);
-            }
-            table.printstd();
-        }
+fn pings(settings: Settings, check_id: &str) -> anyhow::Result<()> {
+    let api = manage::get_config(settings.token, settings.ua)?;
+    let mut pings = api.list_logged_pings(check_id)?;
+    let mut table = Table::new();
+    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+    table.set_titles(row!["Number", "Time", "Type", "Duration"]);
+    pings.truncate(10);
+    for ping in pings {
+        let utc_time = DateTime::parse_from_rfc3339(&ping.date)?.naive_utc();
+        let date = utc_time.date();
+        let time = utc_time.time();
+        let time_str = format!(
+            "{}/{} {}:{}",
+            date.day(),
+            date.month(),
+            time.hour(),
+            time.minute(),
+        );
+        let duration_str = if let Some(duration) = ping.duration {
+            format!("{0:.3} sec", duration)
+        } else {
+            "".to_owned()
+        };
+        table.add_row(row![
+            format!("#{}", ping.n),
+            time_str,
+            ping.type_field,
+            duration_str
+        ]);
     }
+    table.printstd();
     Ok(())
 }
 

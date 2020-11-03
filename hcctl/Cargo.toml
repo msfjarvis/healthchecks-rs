@@ -7,8 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
-anyhow = "1.0.32"
-clap = { version = "2.33.3", default-features = false, features = ["suggestions", "color"] }
-prettytable-rs = "0.8.0"
+anyhow = "1.0.33"
 chrono = "0.4.19"
+clap = { version = "2.33.3", default-features = false, features = ["suggestions", "color"] }
+healthchecks = { path = "../healthchecks", version = "^1.0.2-alpha.0"}
+prettytable-rs = "0.8.0"

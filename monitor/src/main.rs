@@ -1,4 +1,4 @@
-use clap::{crate_version, App, AppSettings, Arg};
+use clap::{App, AppSettings, Arg};
 use execute::Execute;
 use healthchecks::ping::get_config;
 use std::env::var;
@@ -20,27 +20,27 @@ fn main() -> anyhow::Result<()> {
         ua,
     };
     let app = App::new("monitor")
-        .version(crate_version!())
-        .usage("monitor [FLAGS/OPTIONS] -X <command>")
+        .version(env!("CARGO_PKG_VERSION"))
+        .about("monitor runs the given command and reports execution result to https://healthchecks.io")
         .setting(AppSettings::ColoredHelp)
         .setting(AppSettings::DeriveDisplayOrder)
         .arg(
-            Arg::with_name("command")
+            Arg::new("command")
                 .long("exec")
-                .short("X")
+                .short('X')
                 .min_values(1)
                 .allow_hyphen_values(true)
                 .value_terminator(";")
                 .value_name("cmd")
                 .required(true)
-                .help("Command to execute and monitor"),
+                .about("Command to execute and monitor"),
         )
         .arg(
-            Arg::with_name("timer")
+            Arg::new("timer")
                 .long("timer")
-                .short("t")
+                .short('t')
                 .takes_value(false)
-                .help("Starts a timer before running the command"),
+                .about("Starts a timer before running the command"),
         );
     let matches = app.get_matches();
     let cmds = matches

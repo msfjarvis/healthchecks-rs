@@ -109,7 +109,7 @@ fn list(settings: Settings) -> anyhow::Result<()> {
         } else {
             "-".to_owned()
         };
-        let id = check.id().unwrap_or("-".to_owned());
+        let id = check.id().unwrap_or_else(|| "-".to_owned());
         table.add_row(row![id, check.name, date]);
     }
 

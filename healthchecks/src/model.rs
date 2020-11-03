@@ -219,7 +219,7 @@ impl Default for UpdatedCheck {
 }
 
 /// Represents a ping that a check has received.
-#[derive(serde::Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Ping {
     /// Type of ping: one of 'start', 'success' or 'failure'. 'start' indicates the beginning
     /// of a timer that is counted server-side until the next 'success' or 'failure' ping.
@@ -254,7 +254,7 @@ pub struct Ping {
 }
 
 /// Represents a "flip" this check has experienced.
-#[derive(serde::Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Flip {
     /// RFC3339 timestamp for when the change occured
     pub timestamp: String,

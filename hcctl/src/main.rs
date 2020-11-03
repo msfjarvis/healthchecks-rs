@@ -7,7 +7,7 @@ use std::time::SystemTime;
 use anyhow::anyhow;
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
-use clap::{crate_version, App, AppSettings, Arg};
+use clap::{App, AppSettings, Arg};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -30,7 +30,7 @@ fn main() -> anyhow::Result<()> {
 
     let matches = App::new("hcctl")
         .about("Command-line tool for interacting with a https://healthchecks.io account")
-        .version(crate_version!())
+        .version(env!("CARGO_PKG_VERSION"))
         .setting(AppSettings::ColoredHelp)
         .setting(AppSettings::DeriveDisplayOrder)
         .setting(AppSettings::SubcommandRequiredElseHelp)
@@ -38,16 +38,16 @@ fn main() -> anyhow::Result<()> {
         .subcommand(
             App::new("pings")
                 .about("Get the last 10 pings for the given check ID")
-                .args(&[Arg::with_name("check_id")
-                    .help("ID of the check whose pings are being fetched")
+                .args(&[Arg::new("check_id")
+                    .about("ID of the check whose pings are being fetched")
                     .required(true)
                     .index(1)]),
         )
         .get_matches();
 
-    match matches.subcommand() {
+    match matches.subcommand().unwrap() {
         ("list", _) => list(settings)?,
-        ("pings", matches) => pings(settings, matches.unwrap().value_of("check_id").unwrap())?,
+        ("pings", matches) => pings(settings, matches.value_of("check_id").unwrap())?,
         (cmd, _) => return Err(anyhow!("unknown subcommand: {}", cmd)),
     }
 

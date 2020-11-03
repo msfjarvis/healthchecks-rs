@@ -75,7 +75,7 @@ impl Check {
     /// Get the unique identifier of a [`Check`].
     pub fn id(&self) -> Option<String> {
         if let Some(ref url) = self.ping_url {
-            if let Some(id) = url.split("/").last() {
+            if let Some(id) = url.split('/').last() {
                 Some(id.to_owned())
             } else {
                 None

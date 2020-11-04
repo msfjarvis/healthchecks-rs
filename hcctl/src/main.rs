@@ -4,10 +4,9 @@ extern crate prettytable;
 use std::env::var;
 use std::time::SystemTime;
 
-use anyhow::anyhow;
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
-use clap::{App, AppSettings, Arg};
+use clap::{crate_version, Clap};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -16,6 +15,31 @@ use healthchecks::manage;
 struct Settings {
     token: String,
     ua: Option<String>,
+}
+
+/// Command-line tool for interacting with a https://healthchecks.io account
+#[derive(Clap)]
+#[clap(version = crate_version!())]
+struct Opts {
+    #[clap(subcommand)]
+    subcommand: SubCommand,
+}
+
+#[derive(Clap)]
+enum SubCommand {
+    List(List),
+    Pings(Pings),
+}
+
+/// Lists the checks in your account with their last ping
+#[derive(Clap)]
+struct List {}
+
+/// Get the last 10 pings for the given check ID
+#[derive(Clap)]
+struct Pings {
+    /// ID of the check whose pings are being fetched
+    check_id: String,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -27,28 +51,15 @@ fn main() -> anyhow::Result<()> {
         token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
         ua,
     };
+    let opts = Opts::parse();
 
-    let matches = App::new("hcctl")
-        .about("Command-line tool for interacting with a https://healthchecks.io account")
-        .version(env!("CARGO_PKG_VERSION"))
-        .setting(AppSettings::ColoredHelp)
-        .setting(AppSettings::DeriveDisplayOrder)
-        .setting(AppSettings::SubcommandRequiredElseHelp)
-        .subcommand(App::new("list").about("Lists the checks in your account with their last ping"))
-        .subcommand(
-            App::new("pings")
-                .about("Get the last 10 pings for the given check ID")
-                .args(&[Arg::new("check_id")
-                    .about("ID of the check whose pings are being fetched")
-                    .required(true)
-                    .index(1)]),
-        )
-        .get_matches();
-
-    match matches.subcommand().unwrap() {
-        ("list", _) => list(settings)?,
-        ("pings", matches) => pings(settings, matches.value_of("check_id").unwrap())?,
-        (cmd, _) => return Err(anyhow!("unknown subcommand: {}", cmd)),
+    match opts.subcommand {
+        SubCommand::List(_) => {
+            list(settings)?;
+        }
+        SubCommand::Pings(p) => {
+            pings(settings, &p.check_id)?;
+        }
     }
 
     Ok(())

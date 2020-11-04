@@ -6,7 +6,7 @@ use std::time::SystemTime;
 
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
-use clap::Clap;
+use clap::{crate_version, Clap};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -19,7 +19,7 @@ struct Settings {
 
 /// Command-line tool for interacting with a https://healthchecks.io account
 #[derive(Clap)]
-#[clap(version = env ! ("CARGO_PKG_VERSION"))]
+#[clap(version = crate_version!())]
 struct Opts {
     #[clap(subcommand)]
     subcommand: SubCommand,
@@ -39,7 +39,7 @@ struct List {}
 #[derive(Clap)]
 struct Pings {
     /// ID of the check whose pings are being fetched
-    check_id: String
+    check_id: String,
 }
 
 fn main() -> anyhow::Result<()> {

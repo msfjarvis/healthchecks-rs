@@ -1,8 +1,8 @@
+use anyhow::Context;
 use clap::{App, AppSettings, Arg};
 use healthchecks::ping::get_config;
 use std::env::var;
 use std::process::Command;
-use anyhow::Context;
 
 #[derive(Debug)]
 struct Settings {
@@ -52,11 +52,7 @@ fn main() -> anyhow::Result<()> {
         cmds.get(0)
             .expect("This definitely has one command")
             .split(';')
-            .map(|c| {
-                c.split(' ')
-                .filter(|x| !x.is_empty())
-                .collect()
-            })
+            .map(|c| c.split(' ').filter(|x| !x.is_empty()).collect())
             .collect()
     } else {
         vec![cmds]
@@ -73,12 +69,16 @@ fn main() -> anyhow::Result<()> {
         for cmd in cmds.iter().skip(1) {
             command.arg(cmd);
         }
-        match command.status().context(format!("Failed on command: {:?}", cmds.join(" ")))?.code() {
+        match command
+            .status()
+            .context(format!("Failed on command: {:?}", cmds.join(" ")))?
+            .code()
+        {
             Some(code) => {
                 if code != 0 {
                     config.report_failure();
                 }
-            },
+            }
             None => {
                 eprintln!("Interrupted!");
                 config.report_failure();

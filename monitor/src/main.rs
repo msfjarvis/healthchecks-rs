@@ -1,5 +1,4 @@
 use clap::{App, AppSettings, Arg};
-use execute::Execute;
 use healthchecks::ping::get_config;
 use std::env::var;
 use std::process::Command;
@@ -74,12 +73,16 @@ fn main() -> anyhow::Result<()> {
         for cmd in cmds.iter().skip(1) {
             command.arg(cmd);
         }
-        if let Some(exit_code) = command.execute_output().context(format!("Failed on command: {:?}", cmds.join(" ")))?.status.code() {
-            if exit_code != 0 {
+        match command.status().context(format!("Failed on command: {:?}", cmds.join(" ")))?.code() {
+            Some(code) => {
+                if code != 0 {
+                    config.report_failure();
+                }
+            },
+            None => {
+                eprintln!("Interrupted!");
                 config.report_failure();
             }
-        } else {
-            eprintln!("Interrupted!");
         };
     }
     config.report_success();

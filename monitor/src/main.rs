@@ -6,7 +6,7 @@ use std::process::Command;
 
 #[derive(Debug)]
 struct Settings {
-    token: String,
+    check_id: String,
     ua: Option<String>,
 }
 
@@ -16,7 +16,7 @@ fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
+        check_id: var("HEALTHCHECKS_CHECK_ID").expect("HEALTHCHECKS_CHECK_ID must be set to run monitor"),
         ua,
     };
     let app = App::new("monitor")
@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
         .values_of("command")
         .expect("command must be passed")
         .collect::<Vec<&str>>();
-    let mut config = get_config(&settings.token)?;
+    let mut config = get_config(&settings.check_id)?;
     if let Some(user_agent) = settings.ua {
         config = config.set_user_agent(&user_agent)
     }

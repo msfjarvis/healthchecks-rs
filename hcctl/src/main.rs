@@ -6,7 +6,7 @@ use std::time::SystemTime;
 
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
-use clap::{crate_version, Clap};
+use clap::{crate_authors, crate_version, AppSettings, Clap};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -19,7 +19,13 @@ struct Settings {
 
 /// Command-line tool for interacting with a https://healthchecks.io account
 #[derive(Clap)]
-#[clap(version = crate_version!())]
+#[clap(
+    version = crate_version!(),
+    author = crate_authors!(),
+    setting = AppSettings::ColoredHelp,
+    setting = AppSettings::DeriveDisplayOrder,
+    setting = AppSettings::SubcommandRequiredElseHelp,
+)]
 struct Opts {
     #[clap(subcommand)]
     subcommand: SubCommand,

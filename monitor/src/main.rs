@@ -1,5 +1,5 @@
 use anyhow::Context;
-use clap::{crate_version, Clap};
+use clap::{crate_authors, crate_version, AppSettings, Clap};
 use healthchecks::ping::get_config;
 use std::env::var;
 use std::process::Command;
@@ -12,7 +12,13 @@ struct Settings {
 
 /// monitor runs the given command and reports execution result to https://healthchecks.io
 #[derive(Clap)]
-#[clap(version = crate_version!(), author = "Harsh Shandilya <me@msfjarvis.dev>")]
+#[clap(
+    version = crate_version!(),
+    author = crate_authors!(),
+    setting = AppSettings::ColoredHelp,
+    setting = AppSettings::DeriveDisplayOrder,
+    setting = AppSettings::SubcommandRequiredElseHelp,
+)]
 struct Opts {
     /// command to execute and monitor
     #[clap(short = 'X', long = "exec")]

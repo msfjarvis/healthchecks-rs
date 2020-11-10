@@ -39,10 +39,12 @@ enum SubCommand {
 
 /// Lists the checks in your account with their last ping
 #[derive(Clap)]
+#[clap(setting = AppSettings::ColoredHelp)]
 struct List {}
 
 /// Get the last 10 pings for the given check ID
 #[derive(Clap)]
+#[clap(setting = AppSettings::ColoredHelp)]
 struct Pings {
     /// ID of the check whose pings are being fetched
     check_id: String,

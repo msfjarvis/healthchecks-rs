@@ -51,6 +51,8 @@ struct Pings {
 }
 
 fn main() -> anyhow::Result<()> {
+    let opts = Opts::parse();
+
     let ua = match var("HEALTHCHECKS_USERAGENT") {
         Ok(f) => Some(f),
         Err(_) => None,
@@ -59,8 +61,6 @@ fn main() -> anyhow::Result<()> {
         token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
         ua,
     };
-    let opts = Opts::parse();
-
     match opts.subcommand {
         SubCommand::List(_) => {
             list(settings)?;

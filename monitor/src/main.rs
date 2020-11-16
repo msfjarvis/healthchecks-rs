@@ -29,6 +29,7 @@ struct Opts {
 }
 
 fn main() -> anyhow::Result<()> {
+    let opts = Opts::parse();
     let ua = match var("HEALTHCHECKS_USERAGENT") {
         Ok(f) => Some(f),
         Err(_) => None,
@@ -38,7 +39,6 @@ fn main() -> anyhow::Result<()> {
             .expect("HEALTHCHECKS_CHECK_ID must be set to run monitor"),
         ua,
     };
-    let opts = Opts::parse();
     let commands: Vec<Vec<String>> = if opts.command.len() == 1 {
         opts.command
             .get(0)

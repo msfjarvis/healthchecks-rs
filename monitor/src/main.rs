@@ -17,7 +17,6 @@ struct Settings {
     author = crate_authors!(),
     setting = AppSettings::ColoredHelp,
     setting = AppSettings::DeriveDisplayOrder,
-    setting = AppSettings::SubcommandRequiredElseHelp,
 )]
 struct Opts {
     /// command to execute and monitor

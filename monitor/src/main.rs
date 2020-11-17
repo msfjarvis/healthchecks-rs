@@ -1,4 +1,4 @@
-use anyhow::Context;
+use anyhow::{anyhow, Context};
 use clap::{crate_authors, crate_version, AppSettings, Clap};
 use healthchecks::ping::get_config;
 use std::env::var;
@@ -34,8 +34,11 @@ fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        check_id: var("HEALTHCHECKS_CHECK_ID")
-            .expect("HEALTHCHECKS_CHECK_ID must be set to run monitor"),
+        check_id: if let Ok(token) = var("HEALTHCHECKS_CHECK_ID") {
+            token
+        } else {
+            return Err(anyhow!("HEALTHCHECKS_CHECK_ID must be set to run monitor"));
+        },
         ua,
     };
     let commands: Vec<Vec<String>> = if opts.command.len() == 1 {

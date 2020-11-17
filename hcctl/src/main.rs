@@ -12,6 +12,8 @@ use prettytable::{format, Table};
 
 use healthchecks::manage;
 
+const HEALTHCHECKS_TOKEN_VAR: &str = "HEALTHCHECKS_TOKEN";
+
 #[derive(Debug)]
 struct Settings {
     token: String,
@@ -59,10 +61,10 @@ fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        token: if let Ok(token) = var("HEALTHCHECKS_TOKEN") {
+        token: if let Ok(token) = var(HEALTHCHECKS_TOKEN_VAR) {
             token
         } else {
-            return Err(anyhow!("HEALTHCHECKS_TOKEN must be set to run hcctl"));
+            return Err(anyhow!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN_VAR));
         },
         ua,
     };

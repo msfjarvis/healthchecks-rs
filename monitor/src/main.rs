@@ -4,6 +4,8 @@ use healthchecks::ping::get_config;
 use std::env::var;
 use std::process::Command;
 
+const HEALTHCHECKS_CHECK_ID_VAR: &str = "HEALTHCHECKS_CHECK_ID";
+
 #[derive(Debug)]
 struct Settings {
     check_id: String,
@@ -34,10 +36,10 @@ fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        check_id: if let Ok(token) = var("HEALTHCHECKS_CHECK_ID") {
+        check_id: if let Ok(token) = var(HEALTHCHECKS_CHECK_ID_VAR) {
             token
         } else {
-            return Err(anyhow!("HEALTHCHECKS_CHECK_ID must be set to run monitor"));
+            return Err(anyhow!("{} must be set to run monitor", HEALTHCHECKS_CHECK_ID_VAR));
         },
         ua,
     };

@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate prettytable;
 
+use anyhow::anyhow;
 use std::env::var;
 use std::time::SystemTime;
 
@@ -58,7 +59,11 @@ fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        token: var("HEALTHCHECKS_TOKEN").expect("HEALTHCHECKS_TOKEN must be set to run monitor"),
+        token: if let Ok(token) = var("HEALTHCHECKS_TOKEN") {
+            token
+        } else {
+            return Err(anyhow!("HEALTHCHECKS_TOKEN must be set to run hcctl"));
+        },
         ua,
     };
     match opts.subcommand {

@@ -39,7 +39,10 @@ fn main() -> anyhow::Result<()> {
         check_id: if let Ok(token) = var(HEALTHCHECKS_CHECK_ID_VAR) {
             token
         } else {
-            return Err(anyhow!("{} must be set to run monitor", HEALTHCHECKS_CHECK_ID_VAR));
+            return Err(anyhow!(
+                "{} must be set to run monitor",
+                HEALTHCHECKS_CHECK_ID_VAR
+            ));
         },
         ua,
     };
@@ -51,7 +54,9 @@ fn main() -> anyhow::Result<()> {
         config.start_timer();
     }
     let cmd = opts.command.join(" ");
-    let exit_status = Exec::shell(&cmd).join().context(format!("Failed to execute {}", cmd))?;
+    let exit_status = Exec::shell(&cmd)
+        .join()
+        .context(format!("Failed to execute {}", cmd))?;
     if exit_status.success() {
         config.report_success();
     } else {

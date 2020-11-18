@@ -64,7 +64,10 @@ fn main() -> anyhow::Result<()> {
         token: if let Ok(token) = var(HEALTHCHECKS_TOKEN_VAR) {
             token
         } else {
-            return Err(anyhow!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN_VAR));
+            return Err(anyhow!(
+                "{} must be set to run hcctl",
+                HEALTHCHECKS_TOKEN_VAR
+            ));
         },
         ua,
     };

@@ -1,7 +1,9 @@
+use healthchecks::errors::HealthchecksApiError;
 use healthchecks::manage::get_config;
 use healthchecks::model::NewCheck;
+use std::result::Result;
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<(), HealthchecksApiError> {
     let api_key = std::env::args()
         .nth(1)
         .expect("Providing an API key as the first parameter is required");

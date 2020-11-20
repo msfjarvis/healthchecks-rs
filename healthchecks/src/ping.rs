@@ -1,5 +1,6 @@
+use crate::errors::HealthchecksConfigError;
 use crate::util::default_user_agent;
-use anyhow::anyhow;
+use std::result::Result;
 use ureq::get;
 use uuid::Uuid;
 
@@ -16,9 +17,9 @@ pub struct HealthcheckConfig {
 /// Create an instance of [`HealthcheckConfig`] from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
-pub fn get_config(uuid: &str) -> anyhow::Result<HealthcheckConfig> {
+pub fn get_config(uuid: &str) -> Result<HealthcheckConfig, HealthchecksConfigError> {
     if Uuid::parse_str(uuid).is_err() {
-        Err(anyhow!("Invalid UUID: {}", uuid))
+        Err(HealthchecksConfigError::InvalidUUID(uuid.to_string()))
     } else {
         Ok(HealthcheckConfig {
             uuid: uuid.to_owned(),

@@ -1,6 +1,6 @@
 [package]
 name = "healthchecks-monitor"
-version = "1.0.2-alpha.0"
+version = "2.0.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"
 description = "Report results of arbitrary commands to healthchecks.io"

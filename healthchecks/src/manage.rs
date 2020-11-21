@@ -8,6 +8,9 @@ use ureq::{delete, get, post, Request};
 
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 
+/// Typealias to prevent some repetitiveness in function definitions
+type ApiResult<T> = Result<T, HealthchecksApiError>;
+
 /// Struct that encapsulates the API key used to communicate with the healthchecks.io
 /// management API. Instances of this struct expose methods to query the API.
 pub struct ApiConfig {
@@ -48,7 +51,7 @@ impl ApiConfig {
     }
 
     /// Get a list of [`Check`]s.
-    pub fn get_checks(&self) -> Result<Vec<Check>, HealthchecksApiError> {
+    pub fn get_checks(&self) -> ApiResult<Vec<Check>> {
         #[derive(serde::Deserialize)]
         struct ChecksResult {
             pub checks: Vec<Check>,
@@ -64,7 +67,7 @@ impl ApiConfig {
     }
 
     /// Get a [`Check`] with the given UUID or unique key.
-    pub fn get_check(&self, check_id: &str) -> Result<Check, HealthchecksApiError> {
+    pub fn get_check(&self, check_id: &str) -> ApiResult<Check> {
         let mut r = &mut get(&format!(
             "{}/{}/{}",
             HEALTHCHECK_API_URL, "checks", check_id
@@ -81,7 +84,7 @@ impl ApiConfig {
     }
 
     /// Returns a list of [`Channel`]s belonging to the project.
-    pub fn get_channels(&self) -> Result<Vec<Channel>, HealthchecksApiError> {
+    pub fn get_channels(&self) -> ApiResult<Vec<Channel>> {
         #[derive(serde::Deserialize)]
         struct ChannelsResult {
             pub channels: Vec<Channel>,
@@ -97,7 +100,7 @@ impl ApiConfig {
     }
 
     /// Pauses the [`Check`] with the given UUID or unique key.
-    pub fn pause(&self, check_id: &str) -> Result<Check, HealthchecksApiError> {
+    pub fn pause(&self, check_id: &str) -> ApiResult<Check> {
         let mut r = &mut post(&format!(
             "{}/checks/{}/pause",
             HEALTHCHECK_API_URL, check_id
@@ -114,7 +117,7 @@ impl ApiConfig {
     }
 
     /// Get a list of check's logged pings with the given UUID or unique key.
-    pub fn list_logged_pings(&self, check_id: &str) -> Result<Vec<Ping>, HealthchecksApiError> {
+    pub fn list_logged_pings(&self, check_id: &str) -> ApiResult<Vec<Ping>> {
         #[derive(serde::Deserialize)]
         struct PingsResult {
             pub pings: Vec<Ping>,
@@ -135,7 +138,7 @@ impl ApiConfig {
     }
 
     /// Get a list of check's status changes with the given UUID or unique key.
-    pub fn list_status_changes(&self, check_id: &str) -> Result<Vec<Flip>, HealthchecksApiError> {
+    pub fn list_status_changes(&self, check_id: &str) -> ApiResult<Vec<Flip>> {
         let mut r = &mut post(&format!(
             "{}/checks/{}/flips",
             HEALTHCHECK_API_URL, check_id
@@ -152,7 +155,7 @@ impl ApiConfig {
     }
 
     /// Deletes the [`Check`] with the given UUID or unique key.
-    pub fn delete(&self, check_id: &str) -> Result<Check, HealthchecksApiError> {
+    pub fn delete(&self, check_id: &str) -> ApiResult<Check> {
         let mut r = &mut delete(&format!(
             "{}/{}/{}",
             HEALTHCHECK_API_URL, "checks", check_id
@@ -169,7 +172,7 @@ impl ApiConfig {
     }
 
     /// Creates a new check with the given [`NewCheck`] configuration.
-    pub fn create_check(&self, check: NewCheck) -> Result<Check, HealthchecksApiError> {
+    pub fn create_check(&self, check: NewCheck) -> ApiResult<Check> {
         let check_json =
             serde_json::to_value(check).expect("Failed to convert check into valid JSON");
         let mut r = &mut post(&format!("{}/{}/", HEALTHCHECK_API_URL, "checks"));
@@ -188,11 +191,7 @@ impl ApiConfig {
     }
 
     /// Update the check with the given `check_id` with the data from `check`.
-    pub fn update_check(
-        &self,
-        check: UpdatedCheck,
-        check_id: &str,
-    ) -> Result<Check, HealthchecksApiError> {
+    pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
         let mut r = &mut post(&format!(
             "{}/{}/{}",

@@ -22,9 +22,7 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 - [x] Get a list of check's status changes
 - [x] Get a list of existing integrations
 
-## Usage
-
-Usage is super simple!
+## Usage (pinging API)
 
 ```rust
 use healthchecks::config::get_config;
@@ -36,7 +34,7 @@ fn main() {
 }
 ```
 
-Or if you want to set a custom user agent for filtering purposes (default is `healthcheck-rs/$library_version`)
+If you want to set a custom user agent for filtering purposes (default is `healthcheck-rs/$library_version`)
 
 ```rust
 use healthchecks::config::get_config;

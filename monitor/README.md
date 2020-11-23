@@ -4,19 +4,19 @@ Simple binary that's designed to execute arbitrary tasks and notify a provided h
 
 ## Usage
 
-### Execute an arbitrary task
+### Execute a shell command
 
 ```shell
 HEALTHCHECKS_CHECK_ID=<check_id> healthchecks-monitor -X "sleep 10"
 ```
 
-### Start off a timer server-side
+### Track execution time at healthchecks.io
 
 ```shell
 HEALTHCHECKS_CHECK_ID=<check_id> healthchecks-monitor -tX "sleep 10"
 ```
 
-### Use a custom user agent
+### Use a custom user agent for reporting
 
 ```shell
 HEALTHCHECKS_USERAGENT=crontab HEALTHCHECKS_CHECK_ID=<check_id> healthchecks-monitor -tX "sleep 10"

@@ -1,7 +1,6 @@
 use crate::errors::HealthchecksConfigError;
 use crate::util::default_user_agent;
 use std::result::Result;
-use ureq::get;
 use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
@@ -37,25 +36,25 @@ impl HealthcheckConfig {
 
     /// Report success to healthchecks.io. Returns a boolean indicating whether the request succeeded.
     pub fn report_success(&self) -> bool {
-        let res = get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
+        let resp = ureq::get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)
             .call();
-        res.status() == 200
+        resp.ok()
     }
 
     /// Report failure to healthchecks.io. Returns a boolean indicating whether the request succeeded.
     pub fn report_failure(&self) -> bool {
-        let res = get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
+        let resp = ureq::get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)
             .call();
-        res.status() == 200
+        resp.ok()
     }
 
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
     pub fn start_timer(&self) -> bool {
-        let res = get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
+        let resp = ureq::get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent)
             .call();
-        res.status() == 200
+        resp.ok()
     }
 }

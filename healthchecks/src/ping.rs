@@ -1,6 +1,7 @@
 use crate::errors::HealthchecksConfigError;
 use crate::util::default_user_agent;
 use std::result::Result;
+use std::time::Duration;
 use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
@@ -43,7 +44,10 @@ impl HealthcheckConfig {
         let mut retries: i8 = 0;
         let mut request = ureq::get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid));
         while retries < MAX_RETRIES {
-            let resp = request.set("User-Agent", &self.user_agent).call();
+            let resp = request
+                .set("User-Agent", &self.user_agent)
+                .timeout(Duration::from_secs(5))
+                .call();
             if resp.ok() {
                 return true;
             }
@@ -57,7 +61,10 @@ impl HealthcheckConfig {
         let mut retries: i8 = 0;
         let mut request = ureq::get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid));
         while retries < MAX_RETRIES {
-            let resp = request.set("User-Agent", &self.user_agent).call();
+            let resp = request
+                .set("User-Agent", &self.user_agent)
+                .timeout(Duration::from_secs(5))
+                .call();
             if resp.ok() {
                 return true;
             }
@@ -71,7 +78,10 @@ impl HealthcheckConfig {
         let mut retries: i8 = 0;
         let mut request = ureq::get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid));
         while retries < MAX_RETRIES {
-            let resp = request.set("User-Agent", &self.user_agent).call();
+            let resp = request
+                .set("User-Agent", &self.user_agent)
+                .timeout(Duration::from_secs(5))
+                .call();
             if resp.ok() {
                 return true;
             }

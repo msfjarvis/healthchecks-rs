@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Context};
-use clap::{crate_description, crate_authors, crate_name, crate_version, AppSettings, Clap};
+use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
 use healthchecks::ping::get_config;
 use std::env::var;
 use subprocess::Exec;

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Add `healthchecks::ping::report_failure_with_logs` to attach `&str` data as debug information..
+
 ## [2.0.0]
 
 ### Changed

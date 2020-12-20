@@ -2,7 +2,7 @@ use anyhow::{anyhow, Context};
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
 use healthchecks::ping::get_config;
 use std::env::var;
-use subprocess::Exec;
+use subprocess::{Exec, Redirection};
 
 const HEALTHCHECKS_CHECK_ID_VAR: &str = "HEALTHCHECKS_CHECK_ID";
 
@@ -28,6 +28,9 @@ struct Opts {
     /// starts a timer before running the command
     #[clap(short = 't', long = "timer")]
     timer: bool,
+    /// saves the execution logs with the failure ping to allow debugging on healthchecks.io
+    #[clap(short = 'l', long = "logs")]
+    save_logs: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -55,13 +58,26 @@ fn main() -> anyhow::Result<()> {
         config.start_timer();
     }
     let cmd = opts.command.join(" ");
-    let exit_status = Exec::shell(&cmd)
-        .join()
-        .context(format!("Failed to execute {}", cmd))?;
-    if exit_status.success() {
-        config.report_success();
+    if opts.save_logs {
+        let capture_data = Exec::shell(&cmd)
+            .stdout(Redirection::Pipe)
+            .stderr(Redirection::Merge)
+            .capture()
+            .context(format!("Failed to execute {}", cmd))?;
+        if capture_data.success() {
+            config.report_success();
+        } else {
+            config.report_failure_with_logs(&capture_data.stdout_str());
+        }
     } else {
-        config.report_failure();
+        let exit_status = Exec::shell(&cmd)
+            .join()
+            .context(format!("Failed to execute {}", cmd))?;
+        if exit_status.success() {
+            config.report_success();
+        } else {
+            config.report_failure();
+        }
     }
     Ok(())
 }

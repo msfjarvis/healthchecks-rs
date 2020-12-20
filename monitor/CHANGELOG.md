@@ -23,3 +23,7 @@ All notable changes to this project will be documented in this file.
 ## [1.0.0]
 
 Initial release
+
+[1.0.0]: https://github.com/msfjarvis/healthchecks-rs
+[1.0.1]: https://github.com/msfjarvis/healthchecks-rs
+[2.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/monitor-2.0.0

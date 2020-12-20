@@ -73,6 +73,24 @@ impl HealthcheckConfig {
         false
     }
 
+    /// Report failure to healthchecks.io with an accompanying log snippet to help debug the failure. Returns
+    /// a boolean indicating wther the request succeeded.
+    pub fn report_failure_with_logs<'a>(&self, data: &'a str) -> bool {
+        let mut retries: i8 = 0;
+        let mut request = ureq::post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid));
+        while retries < MAX_RETRIES {
+            let resp = request
+                .set("User-Agent", &self.user_agent)
+                .timeout(Duration::from_secs(5))
+                .send_string(data);
+            if resp.ok() {
+                return true;
+            }
+            retries += 1;
+        }
+        false
+    }
+
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
     pub fn start_timer(&self) -> bool {
         let mut retries: i8 = 0;

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Add `-l/--logs` flag to attach execution logs to failure ping.
+- Add `-u/--user-agent` back as an alternative for setting `HEALTHCHECKS_USER_AGENT`. When both are provided, `--user-agent` takes precedence.
 
 ## [2.0.0]
 

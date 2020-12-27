@@ -5,6 +5,8 @@ use std::env::var;
 use subprocess::{Exec, Redirection};
 
 const HEALTHCHECKS_CHECK_ID_VAR: &str = "HEALTHCHECKS_CHECK_ID";
+/// This is useful to have a good-looking default in the clap generated help.
+const FAKE_EMPTY_STRING: &str = "\"\"";
 
 #[derive(Debug)]
 struct Settings {
@@ -31,13 +33,25 @@ struct Opts {
     /// saves the execution logs with the failure ping to allow debugging on healthchecks.io
     #[clap(short = 'l', long = "logs")]
     save_logs: bool,
+    /// user agent to be logged at healthchecks.io
+    #[clap(
+        short = 'u',
+        long = "user-agent",
+        required = false,
+        default_value = FAKE_EMPTY_STRING,
+    )]
+    user_agent: String,
 }
 
 fn main() -> anyhow::Result<()> {
     let opts = Opts::parse();
-    let ua = match var("HEALTHCHECKS_USERAGENT") {
-        Ok(f) => Some(f),
-        Err(_) => None,
+    let ua = if opts.user_agent == FAKE_EMPTY_STRING {
+        match var("HEALTHCHECKS_USERAGENT") {
+            Ok(f) => Some(f),
+            Err(_) => None,
+        }
+    } else {
+        Some(opts.user_agent)
     };
     let settings = Settings {
         check_id: if let Ok(token) = var(HEALTHCHECKS_CHECK_ID_VAR) {

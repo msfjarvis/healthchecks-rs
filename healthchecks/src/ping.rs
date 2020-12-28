@@ -21,6 +21,16 @@ pub struct PingClient {
 /// Create an instance of [`PingClient`] from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
+///
+/// # Usage
+///
+/// Starts a timer, sleeps for a second and then reports success.
+///
+/// ```rust
+/// use healthchecks::ping::get_client;
+///
+/// let client = get_client("2d0a34bd-854d-490e-be2c-1493f7053460").unwrap();
+/// ```
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     if Uuid::parse_str(uuid).is_err() {
         Err(HealthchecksConfigError::InvalidUUID(uuid.to_string()))
@@ -40,6 +50,19 @@ impl PingClient {
     }
 
     /// Report success to healthchecks.io. Returns a boolean indicating whether the request succeeded.
+    ///
+    /// # Example usage with timer
+    ///
+    /// ```rust
+    /// # use healthchecks::ping::get_client;
+    /// # use std::thread::sleep;
+    /// # use std::time::Duration;
+    /// #
+    /// # let client = get_client("2d0a34bd-854d-490e-be2c-1493f7053460").unwrap();
+    /// client.start_timer();
+    /// std::thread::sleep(Duration::from_millis(1000));
+    /// client.report_success();
+    /// ```
     pub fn report_success(&self) -> bool {
         let mut retries: i8 = 0;
         let mut request = ureq::get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid));
@@ -75,6 +98,19 @@ impl PingClient {
 
     /// Report failure to healthchecks.io with an accompanying log snippet to help debug the failure. Returns
     /// a boolean indicating wther the request succeeded.
+    ///
+    /// # Example usage with timer
+    ///
+    /// ```rust
+    /// # use healthchecks::ping::get_client;
+    /// # use std::thread::sleep;
+    /// # use std::time::Duration;
+    /// #
+    /// # let client = get_client("2d0a34bd-854d-490e-be2c-1493f7053460").unwrap();
+    /// client.start_timer();
+    /// std::thread::sleep(Duration::from_millis(1000));
+    /// client.report_failure_with_logs("slept too much...zzzzzzz");
+    /// ```
     pub fn report_failure_with_logs<'a>(&self, data: &'a str) -> bool {
         let mut retries: i8 = 0;
         let mut request = ureq::post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid));

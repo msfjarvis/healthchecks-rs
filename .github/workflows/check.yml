@@ -39,17 +39,23 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-features
 
-    - name: Run cargo check
+    - name: Analyze and report errors
       uses: actions-rs/cargo@v1
       with:
         command: check
 
-    - name: Run cargo test
+    - name: Run unit tests
       uses: actions-rs/cargo@v1
       with:
         command: test
 
-    - name: Run cargo doc
+    - name: Run doctests
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --doc
+
+    - name: Generate docs
       uses: actions-rs/cargo@v1
       with:
         command: doc

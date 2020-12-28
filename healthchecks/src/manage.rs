@@ -13,37 +13,37 @@ type ApiResult<T> = Result<T, HealthchecksApiError>;
 
 /// Struct that encapsulates the API key used to communicate with the healthchecks.io
 /// management API. Instances of this struct expose methods to query the API.
-pub struct ApiConfig {
+pub struct ManageClient {
     pub(crate) api_key: String,
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [`ApiConfig`] from a given API key. No validation
+/// Create an instance of [`ManageClient`] from a given API key. No validation
 /// is performed.
-pub fn get_config(
+pub fn get_client(
     api_key: String,
     user_agent: Option<String>,
-) -> Result<ApiConfig, HealthchecksConfigError> {
+) -> Result<ManageClient, HealthchecksConfigError> {
     if api_key.is_empty() {
         Err(HealthchecksConfigError::EmptyApiKey)
     } else if let Some(ua) = user_agent {
         if ua.is_empty() {
             Err(HealthchecksConfigError::EmptyUserAgent)
         } else {
-            Ok(ApiConfig {
+            Ok(ManageClient {
                 api_key,
                 user_agent: ua,
             })
         }
     } else {
-        Ok(ApiConfig {
+        Ok(ManageClient {
             api_key,
             user_agent: default_user_agent().to_owned(),
         })
     }
 }
 
-impl ApiConfig {
+impl ManageClient {
     #[inline]
     fn set_headers<'a>(&self, req: &'a mut Request) -> &'a mut Request {
         req.set("X-Api-Key", &self.api_key)

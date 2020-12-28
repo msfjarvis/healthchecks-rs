@@ -85,8 +85,8 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn pings(settings: Settings, check_id: &str) -> anyhow::Result<()> {
-    let api = manage::get_config(settings.token, settings.ua)?;
-    let mut pings = api.list_logged_pings(check_id)?;
+    let client = manage::get_client(settings.token, settings.ua)?;
+    let mut pings = client.list_logged_pings(check_id)?;
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row!["Number", "Time", "Type", "Duration"]);
@@ -119,8 +119,8 @@ fn pings(settings: Settings, check_id: &str) -> anyhow::Result<()> {
 }
 
 fn list(settings: Settings) -> anyhow::Result<()> {
-    let api = manage::get_config(settings.token, settings.ua)?;
-    let checks = api.get_checks()?;
+    let client = manage::get_client(settings.token, settings.ua)?;
+    let checks = client.get_checks()?;
 
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);

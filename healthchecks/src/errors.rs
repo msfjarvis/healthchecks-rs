@@ -42,7 +42,7 @@ pub enum HealthchecksApiError {
     },
 }
 
-/// Errors raised by invalid input to [`ApiConfig::get_config`](crate::manage::get_config) or [`HealthcheckConfig::get_config`](crate::ping::get_config)
+/// Errors raised by invalid input to [`ManageClient::get_client`](crate::manage::get_client) or [`PingClient::get_client`](crate::ping::get_client)
 #[derive(Debug, Error)]
 pub enum HealthchecksConfigError {
     /// Empty API key

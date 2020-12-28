@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Context};
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
-use healthchecks::ping::get_config;
+use healthchecks::ping::get_client;
 use std::env::var;
 use subprocess::{Exec, Redirection};
 
@@ -64,12 +64,12 @@ fn main() -> anyhow::Result<()> {
         },
         ua,
     };
-    let mut config = get_config(&settings.check_id)?;
+    let mut client = get_client(&settings.check_id)?;
     if let Some(user_agent) = settings.ua {
-        config = config.set_user_agent(&user_agent)
+        client = client.set_user_agent(&user_agent)
     }
     if opts.timer {
-        config.start_timer();
+        client.start_timer();
     }
     let cmd = opts.command.join(" ");
     if opts.save_logs {
@@ -79,18 +79,18 @@ fn main() -> anyhow::Result<()> {
             .capture()
             .context(format!("Failed to execute {}", cmd))?;
         if capture_data.success() {
-            config.report_success();
+            client.report_success();
         } else {
-            config.report_failure_with_logs(&capture_data.stdout_str());
+            client.report_failure_with_logs(&capture_data.stdout_str());
         }
     } else {
         let exit_status = Exec::shell(&cmd)
             .join()
             .context(format!("Failed to execute {}", cmd))?;
         if exit_status.success() {
-            config.report_success();
+            client.report_success();
         } else {
-            config.report_failure();
+            client.report_failure();
         }
     }
     Ok(())

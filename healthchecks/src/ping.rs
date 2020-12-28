@@ -13,28 +13,28 @@ const MAX_RETRIES: i8 = 20;
 /// Struct that encapsulates the UUID that uniquely identifies your
 /// healthchecks.io endpoint. Instances of this expose methods to
 /// report status to healthchecks.io
-pub struct HealthcheckConfig {
+pub struct PingClient {
     pub(crate) uuid: String,
     pub(crate) user_agent: String,
 }
 
-/// Create an instance of [`HealthcheckConfig`] from a String UUID
+/// Create an instance of [`PingClient`] from a String UUID
 /// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
 /// when the UUID is invalid.
-pub fn get_config(uuid: &str) -> Result<HealthcheckConfig, HealthchecksConfigError> {
+pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     if Uuid::parse_str(uuid).is_err() {
         Err(HealthchecksConfigError::InvalidUUID(uuid.to_string()))
     } else {
-        Ok(HealthcheckConfig {
+        Ok(PingClient {
             uuid: uuid.to_owned(),
             user_agent: default_user_agent().to_owned(),
         })
     }
 }
 
-impl HealthcheckConfig {
+impl PingClient {
     /// Set the user agent for the given config
-    pub fn set_user_agent(mut self, user_agent: &str) -> HealthcheckConfig {
+    pub fn set_user_agent(mut self, user_agent: &str) -> PingClient {
         self.user_agent = user_agent.to_owned();
         self
     }

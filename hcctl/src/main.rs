@@ -131,10 +131,11 @@ fn list(settings: Settings) -> anyhow::Result<()> {
         let date = if let Some(ref date_str) = check.last_ping {
             let date = DateTime::parse_from_rfc3339(&date_str)?;
             let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
+            let hours = duration.num_hours();
             format!(
                 "{} hour(s) and {} minute(s) ago",
-                duration.num_hours(),
-                duration.num_minutes()
+                hours,
+                duration.num_minutes() % hours
             )
         } else {
             "-".to_owned()

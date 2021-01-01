@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Minutes were counted incorrectly in `hcctl list` output (contributed by @SphericalKat)
+
+
 ## [1.0.0]
 
 Initial release

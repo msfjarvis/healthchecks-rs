@@ -135,7 +135,7 @@ fn list(settings: Settings) -> anyhow::Result<()> {
             format!(
                 "{} hour(s) and {} minute(s) ago",
                 hours,
-                duration.num_minutes() % hours
+                duration.num_minutes() % if hours > 0 { hours } else { 1 }
             )
         } else {
             "-".to_owned()

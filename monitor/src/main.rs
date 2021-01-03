@@ -1,5 +1,5 @@
-use anyhow::{anyhow, Context};
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
+use color_eyre::{eyre::eyre, eyre::WrapErr, Result};
 use healthchecks::ping::get_client;
 use std::env::var;
 use subprocess::{Exec, Redirection};
@@ -43,7 +43,7 @@ struct Opts {
     user_agent: String,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let opts = Opts::parse();
     let ua = if opts.user_agent == FAKE_EMPTY_STRING {
         match var("HEALTHCHECKS_USERAGENT") {
@@ -57,7 +57,7 @@ fn main() -> anyhow::Result<()> {
         check_id: if let Ok(token) = var(HEALTHCHECKS_CHECK_ID_VAR) {
             token
         } else {
-            return Err(anyhow!(
+            return Err(eyre!(
                 "{} must be set to run monitor",
                 HEALTHCHECKS_CHECK_ID_VAR
             ));

@@ -1,13 +1,13 @@
 #[macro_use]
 extern crate prettytable;
 
-use anyhow::anyhow;
 use std::env::var;
 use std::time::SystemTime;
 
 use chrono::prelude::{DateTime, Datelike, Timelike};
 use chrono::Duration;
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
+use color_eyre::{eyre::eyre, Result};
 use prettytable::{format, Table};
 
 use healthchecks::manage;
@@ -54,7 +54,7 @@ struct Pings {
     check_id: String,
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let opts = Opts::parse();
 
     let ua = match var("HEALTHCHECKS_USERAGENT") {
@@ -65,10 +65,7 @@ fn main() -> anyhow::Result<()> {
         token: if let Ok(token) = var(HEALTHCHECKS_TOKEN_VAR) {
             token
         } else {
-            return Err(anyhow!(
-                "{} must be set to run hcctl",
-                HEALTHCHECKS_TOKEN_VAR
-            ));
+            return Err(eyre!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN_VAR));
         },
         ua,
     };
@@ -84,7 +81,7 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn pings(settings: Settings, check_id: &str) -> anyhow::Result<()> {
+fn pings(settings: Settings, check_id: &str) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
     let mut pings = client.list_logged_pings(check_id)?;
     let mut table = Table::new();
@@ -118,7 +115,7 @@ fn pings(settings: Settings, check_id: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn list(settings: Settings) -> anyhow::Result<()> {
+fn list(settings: Settings) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
     let checks = client.get_checks()?;
 

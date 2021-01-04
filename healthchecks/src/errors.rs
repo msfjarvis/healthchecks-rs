@@ -25,6 +25,9 @@ pub enum HealthchecksApiError {
     /// The check limit for the account was reached
     #[error("the account's check limit has been reached")]
     CheckLimitReached,
+    /// Unexpected error in network operation
+    #[error("unexpected transport error: {0:?}")]
+    TransportError(ureq::Transport),
     /// Unexpected error from API, please file an issue if you ever run into this
     #[error("unexpected error: {0}")]
     UnexpectedError(String),

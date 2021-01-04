@@ -2,13 +2,14 @@ use crate::errors::HealthchecksConfigError;
 use crate::util::default_user_agent;
 use std::result::Result;
 use std::time::Duration;
+use ureq::{Agent, AgentBuilder};
 use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 // This number is sourced from a blog post on healthchecks.io that attempts
 // a statistical analysis of what cURL options improve reliability by the biggest
 // factor: https://blog.healthchecks.io/2020/01/fighting-packet-loss-with-curl/
-const MAX_RETRIES: i8 = 20;
+/* const MAX_RETRIES: i8 = 20; */
 
 /// Struct that encapsulates the UUID that uniquely identifies your
 /// healthchecks.io endpoint. Instances of this expose methods to
@@ -16,6 +17,7 @@ const MAX_RETRIES: i8 = 20;
 pub struct PingClient {
     pub(crate) uuid: String,
     pub(crate) user_agent: String,
+    pub(crate) ureq_agent: Agent,
 }
 
 /// Create an instance of [`PingClient`] from a String UUID
@@ -38,6 +40,7 @@ pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
         Ok(PingClient {
             uuid: uuid.to_owned(),
             user_agent: default_user_agent().to_owned(),
+            ureq_agent: AgentBuilder::new().timeout(Duration::from_secs(5)).build(),
         })
     }
 }
@@ -64,34 +67,40 @@ impl PingClient {
     /// client.report_success();
     /// ```
     pub fn report_success(&self) -> bool {
-        let mut retries: i8 = 0;
-        let mut request = ureq::get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid));
-        while retries < MAX_RETRIES {
-            let resp = request
-                .set("User-Agent", &self.user_agent)
-                .timeout(Duration::from_secs(5))
-                .call();
-            if resp.ok() {
+        /* let mut retries: i8 = 0; */
+        let request = self
+            .ureq_agent
+            .get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
+            .set("User-Agent", &self.user_agent);
+        /* while retries < MAX_RETRIES {
+            let resp = request.call();
+            if resp.is_ok() {
                 return true;
             }
             retries += 1;
+        } */
+        if request.call().is_ok() {
+            return true;
         }
         false
     }
 
     /// Report failure to healthchecks.io. Returns a boolean indicating whether the request succeeded.
     pub fn report_failure(&self) -> bool {
-        let mut retries: i8 = 0;
-        let mut request = ureq::get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid));
-        while retries < MAX_RETRIES {
-            let resp = request
-                .set("User-Agent", &self.user_agent)
-                .timeout(Duration::from_secs(5))
-                .call();
-            if resp.ok() {
+        /* let mut retries: i8 = 0; */
+        let request = self
+            .ureq_agent
+            .get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
+            .set("User-Agent", &self.user_agent);
+        /* while retries < MAX_RETRIES {
+            let resp = request.call();
+            if resp.is_ok() {
                 return true;
             }
             retries += 1;
+        } */
+        if request.call().is_ok() {
+            return true;
         }
         false
     }
@@ -112,34 +121,41 @@ impl PingClient {
     /// client.report_failure_with_logs("slept too much...zzzzzzz");
     /// ```
     pub fn report_failure_with_logs<'a>(&self, data: &'a str) -> bool {
-        let mut retries: i8 = 0;
-        let mut request = ureq::post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid));
-        while retries < MAX_RETRIES {
+        /* let mut retries: i8 = 0; */
+        let request = self
+            .ureq_agent
+            .post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
+            .set("User-Agent", &self.user_agent);
+        /* while retries < MAX_RETRIES {
             let resp = request
-                .set("User-Agent", &self.user_agent)
-                .timeout(Duration::from_secs(5))
                 .send_string(data);
-            if resp.ok() {
+            if resp.is_ok() {
                 return true;
             }
             retries += 1;
+        } */
+        if request.send_string(data).is_ok() {
+            return true;
         }
         false
     }
 
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
     pub fn start_timer(&self) -> bool {
-        let mut retries: i8 = 0;
-        let mut request = ureq::get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid));
-        while retries < MAX_RETRIES {
-            let resp = request
-                .set("User-Agent", &self.user_agent)
-                .timeout(Duration::from_secs(5))
-                .call();
-            if resp.ok() {
+        /* let mut retries: i8 = 0; */
+        let request = self
+            .ureq_agent
+            .get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
+            .set("User-Agent", &self.user_agent);
+        /* while retries < MAX_RETRIES {
+            let resp = request.call();
+            if resp.is_ok() {
                 return true;
             }
             retries += 1;
+        } */
+        if request.call().is_ok() {
+            return true;
         }
         false
     }

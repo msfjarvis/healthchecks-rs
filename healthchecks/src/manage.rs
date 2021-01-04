@@ -75,7 +75,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -92,7 +92,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -109,7 +109,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -126,7 +126,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -147,7 +147,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -164,7 +164,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -181,7 +181,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -207,7 +207,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 
@@ -229,7 +229,7 @@ impl ManageClient {
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(err)),
+            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
         }
     }
 }

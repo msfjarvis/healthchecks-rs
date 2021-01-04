@@ -27,7 +27,7 @@ pub enum HealthchecksApiError {
     CheckLimitReached,
     /// Unexpected error in network operation
     #[error("unexpected transport error: {0:?}")]
-    TransportError(ureq::Transport),
+    TransportError(Box<ureq::Transport>),
     /// Unexpected error from API, please file an issue if you ever run into this
     #[error("unexpected error: {0}")]
     UnexpectedError(String),

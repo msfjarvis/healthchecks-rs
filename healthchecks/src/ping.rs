@@ -120,7 +120,7 @@ impl PingClient {
     /// std::thread::sleep(Duration::from_millis(1000));
     /// client.report_failure_with_logs("slept too much...zzzzzzz");
     /// ```
-    pub fn report_failure_with_logs<'a>(&self, data: &'a str) -> bool {
+    pub fn report_failure_with_logs<'a>(&self, data: &str) -> bool {
         /* let mut retries: i8 = 0; */
         let request = self
             .ureq_agent

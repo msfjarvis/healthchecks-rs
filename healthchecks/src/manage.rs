@@ -9,7 +9,7 @@ use ureq::{delete, get, post, Error, Request};
 const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 
 /// Typealias to prevent some repetitiveness in function definitions
-type ApiResult<T> = Result<T, HealthchecksApiError>;
+pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 
 /// Struct that encapsulates the API key used to communicate with the healthchecks.io
 /// management API. Instances of this struct expose methods to query the API.

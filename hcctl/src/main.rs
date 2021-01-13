@@ -55,6 +55,7 @@ struct Pings {
 }
 
 fn main() -> Result<()> {
+    color_eyre::install()?;
     let opts = Opts::parse();
 
     let ua = match var("HEALTHCHECKS_USERAGENT") {

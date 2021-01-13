@@ -44,6 +44,7 @@ struct Opts {
 }
 
 fn main() -> Result<()> {
+    color_eyre::install()?;
     let opts = Opts::parse();
     let ua = if opts.user_agent == FAKE_EMPTY_STRING {
         match var("HEALTHCHECKS_USERAGENT") {

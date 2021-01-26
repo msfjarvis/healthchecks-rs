@@ -127,14 +127,7 @@ fn list(settings: Settings) -> Result<()> {
     let now = SystemTime::now();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
-            let date = DateTime::parse_from_rfc3339(&date_str)?;
-            let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
-            let hours = duration.num_hours();
-            format!(
-                "{} hour(s) and {} minute(s) ago",
-                hours,
-                duration.num_minutes() % if hours > 0 { hours } else { 1 }
-            )
+            human_readable_duration(&now, date_str)?
         } else {
             "-".to_owned()
         };
@@ -145,4 +138,15 @@ fn list(settings: Settings) -> Result<()> {
     table.printstd();
 
     Ok(())
+}
+
+fn human_readable_duration(now: &SystemTime, date_str: &String) -> Result<String> {
+    let date = DateTime::parse_from_rfc3339(&date_str)?;
+    let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
+    let hours = duration.num_hours();
+    Ok(format!(
+        "{} hour(s) and {} minute(s) ago",
+        hours,
+        duration.num_minutes() % hours
+    ))
 }

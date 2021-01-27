@@ -2,10 +2,11 @@
 extern crate prettytable;
 
 use std::env::var;
-use std::time::SystemTime;
 
-use chrono::prelude::{DateTime, Datelike, Timelike};
-use chrono::Duration;
+use chrono::{
+    prelude::{DateTime, Datelike, Timelike},
+    Utc,
+};
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
 use color_eyre::{eyre::eyre, Result};
 use prettytable::{format, Table};
@@ -124,17 +125,10 @@ fn list(settings: Settings) -> Result<()> {
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row!["ID", "Name", "Last Ping"]);
 
-    let now = SystemTime::now();
+    let now = Utc::now();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
-            let date = DateTime::parse_from_rfc3339(&date_str)?;
-            let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
-            let hours = duration.num_hours();
-            format!(
-                "{} hour(s) and {} minute(s) ago",
-                hours,
-                duration.num_minutes() % if hours > 0 { hours } else { 1 }
-            )
+            human_readable_duration(&now, date_str)?
         } else {
             "-".to_owned()
         };
@@ -145,4 +139,42 @@ fn list(settings: Settings) -> Result<()> {
     table.printstd();
 
     Ok(())
+}
+
+fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String> {
+    let date = DateTime::parse_from_rfc3339(&date_str)?;
+    let duration = now.signed_duration_since(date);
+    let hours = duration.num_hours();
+    Ok(format!(
+        "{} hour(s) and {} minute(s) ago",
+        hours,
+        if hours == 0 {
+            duration.num_minutes()
+        } else {
+            duration.num_minutes() % hours
+        }
+    ))
+}
+
+#[cfg(test)]
+mod tests {
+    use chrono::TimeZone;
+
+    use super::*;
+
+    #[test]
+    fn duration_parses_correctly() {
+        let now = &Utc.ymd(2021, 1, 26).and_hms(19, 38, 0);
+        let duration =
+            human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
+        assert_eq!(duration, "5 hour(s) and 2 minute(s) ago")
+    }
+
+    #[test]
+    fn duration_parses_correctly_with_only_minutes() {
+        let now = &Utc.ymd(2021, 1, 26).and_hms(14, 38, 0);
+        let duration =
+            human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
+        assert_eq!(duration, "0 hour(s) and 37 minute(s) ago")
+    }
 }

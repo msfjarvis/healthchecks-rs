@@ -167,7 +167,7 @@ mod tests {
         let now = &Utc.ymd(2021, 1, 26).and_hms(19, 38, 0);
         let duration =
             human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
-        assert!(duration == "5 hour(s) and 2 minute(s) ago")
+        assert_eq!(duration, "5 hour(s) and 2 minute(s) ago")
     }
 
     #[test]
@@ -175,6 +175,6 @@ mod tests {
         let now = &Utc.ymd(2021, 1, 26).and_hms(14, 38, 0);
         let duration =
             human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
-        assert!(duration == "0 hour(s) and 37 minute(s) ago")
+        assert_eq!(duration, "0 hour(s) and 37 minute(s) ago")
     }
 }

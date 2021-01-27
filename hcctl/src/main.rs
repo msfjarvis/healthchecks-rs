@@ -156,3 +156,25 @@ fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String
     ))
 }
 
+#[cfg(test)]
+mod tests {
+    use chrono::TimeZone;
+
+    use super::*;
+
+    #[test]
+    fn duration_parses_correctly() {
+        let now = &Utc.ymd(2021, 1, 26).and_hms(19, 38, 0);
+        let duration =
+            human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
+        assert!(duration == "5 hour(s) and 2 minute(s) ago")
+    }
+
+    #[test]
+    fn duration_parses_correctly_with_only_minutes() {
+        let now = &Utc.ymd(2021, 1, 26).and_hms(14, 38, 0);
+        let duration =
+            human_readable_duration(now, &"2021-01-26T14:00:24+00:00".to_owned()).unwrap();
+        assert!(duration == "0 hour(s) and 37 minute(s) ago")
+    }
+}

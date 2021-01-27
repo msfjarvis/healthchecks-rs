@@ -2,10 +2,11 @@
 extern crate prettytable;
 
 use std::env::var;
-use std::time::SystemTime;
 
-use chrono::prelude::{DateTime, Datelike, Timelike};
-use chrono::Duration;
+use chrono::{
+    prelude::{DateTime, Datelike, Timelike},
+    Utc,
+};
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
 use color_eyre::{eyre::eyre, Result};
 use prettytable::{format, Table};
@@ -124,7 +125,7 @@ fn list(settings: Settings) -> Result<()> {
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row!["ID", "Name", "Last Ping"]);
 
-    let now = SystemTime::now();
+    let now = Utc::now();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
             human_readable_duration(&now, date_str)?
@@ -140,13 +141,18 @@ fn list(settings: Settings) -> Result<()> {
     Ok(())
 }
 
-fn human_readable_duration(now: &SystemTime, date_str: &String) -> Result<String> {
+fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String> {
     let date = DateTime::parse_from_rfc3339(&date_str)?;
-    let duration = Duration::from_std(now.duration_since(SystemTime::from(date))?)?;
+    let duration = now.signed_duration_since(date);
     let hours = duration.num_hours();
     Ok(format!(
         "{} hour(s) and {} minute(s) ago",
         hours,
-        duration.num_minutes() % hours
+        if hours == 0 {
+            duration.num_minutes()
+        } else {
+            duration.num_minutes() % hours
+        }
     ))
 }
+

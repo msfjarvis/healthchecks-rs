@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate prettytable;
-
 use std::env::var;
 
 use chrono::{
@@ -9,7 +6,7 @@ use chrono::{
 };
 use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
 use color_eyre::{eyre::eyre, Result};
-use prettytable::{format, Table};
+use prettytable::{cell, format, row, Table};
 
 use healthchecks::manage;
 
@@ -123,7 +120,7 @@ fn list(settings: Settings) -> Result<()> {
 
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(row!["ID", "Name", "Last Ping"]);
+    table.set_titles(prettytable::row!["ID", "Name", "Last Ping"]);
 
     let now = Utc::now();
     for check in checks {
@@ -133,7 +130,7 @@ fn list(settings: Settings) -> Result<()> {
             "-".to_owned()
         };
         let id = check.id().unwrap_or_else(|| "-".to_owned());
-        table.add_row(row![id, check.name, date]);
+        table.add_row(prettytable::row![id, check.name, date]);
     }
 
     table.printstd();

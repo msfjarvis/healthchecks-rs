@@ -13,11 +13,11 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-thiserror = "1.0.23"
-serde = { version = "1.0.120", default-features = false, features = [ "derive" ] }
-serde_json = "1.0.61"
-ureq = { version = "2.0.1", features = [ "json" ] }
-uuid = { version = "0.8.2", default-features = false, features = [ "v1" ] }
+thiserror = "~1.0"
+serde = { version = "~1.0", default-features = false, features = [ "derive" ] }
+serde_json = "~1.0"
+ureq = { version = "~2.0", features = [ "json" ] }
+uuid = { version = "~0.8", default-features = false, features = [ "v1" ] }
 
 [badges]
 maintenance = { status = "actively-developed" }

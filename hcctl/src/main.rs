@@ -145,11 +145,7 @@ fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String
     Ok(format!(
         "{} hour(s) and {} minute(s) ago",
         hours,
-        if hours == 0 {
-            duration.num_minutes()
-        } else {
-            duration.num_minutes() % hours
-        }
+        duration.num_minutes() % if hours > 0 { hours } else { 1 }
     ))
 }
 

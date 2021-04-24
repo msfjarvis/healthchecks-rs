@@ -82,7 +82,13 @@ fn main() -> Result<()> {
         if capture_data.success() {
             client.report_success();
         } else {
-            client.report_failure_with_logs(&capture_data.stdout_str());
+            let stdout = capture_data.stdout_str();
+            client.report_failure_with_logs(&stdout);
+            return Err(eyre!(
+                "Failed to run '{}', stdout: {}",
+                opts.command.join(" "),
+                stdout
+            ));
         }
     } else {
         let exit_status = Exec::shell(&cmd)
@@ -92,6 +98,7 @@ fn main() -> Result<()> {
             client.report_success();
         } else {
             client.report_failure();
+            return Err(eyre!("Failed to run '{}'", opts.command.join(" ")));
         }
     }
     Ok(())

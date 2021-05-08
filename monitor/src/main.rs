@@ -1,12 +1,12 @@
-use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
+mod cli;
+
+use clap::Clap;
 use color_eyre::{eyre::eyre, eyre::WrapErr, Result};
 use healthchecks::ping::get_client;
 use std::env::var;
 use subprocess::{Exec, Redirection};
 
 const HEALTHCHECKS_CHECK_ID_VAR: &str = "HEALTHCHECKS_CHECK_ID";
-/// This is useful to have a good-looking default in the clap generated help.
-const FAKE_EMPTY_STRING: &str = "\"\"";
 
 #[derive(Debug)]
 struct Settings {
@@ -14,39 +14,10 @@ struct Settings {
     ua: Option<String>,
 }
 
-#[derive(Clap)]
-#[clap(
-    name = crate_name!(),
-    version = crate_version!(),
-    author = crate_authors!(),
-    about = crate_description!(),
-    setting = AppSettings::ColoredHelp,
-    setting = AppSettings::DeriveDisplayOrder,
-)]
-struct Opts {
-    /// command to execute and monitor
-    #[clap(short = 'X', long = "exec")]
-    command: Vec<String>,
-    /// starts a timer before running the command
-    #[clap(short = 't', long = "timer")]
-    timer: bool,
-    /// saves the execution logs with the failure ping to allow debugging on healthchecks.io
-    #[clap(short = 'l', long = "logs")]
-    save_logs: bool,
-    /// user agent to be logged at healthchecks.io
-    #[clap(
-        short = 'u',
-        long = "user-agent",
-        required = false,
-        default_value = FAKE_EMPTY_STRING,
-    )]
-    user_agent: String,
-}
-
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let opts = Opts::parse();
-    let ua = if opts.user_agent == FAKE_EMPTY_STRING {
+    let opts = cli::Opts::parse();
+    let ua = if opts.has_user_agent() {
         match var("HEALTHCHECKS_USERAGENT") {
             Ok(f) => Some(f),
             Err(_) => None,

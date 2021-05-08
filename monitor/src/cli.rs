@@ -22,6 +22,9 @@ pub(crate) struct Opts {
     /// saves the execution logs with the failure ping to allow debugging on healthchecks.io
     #[clap(short = 'l', long = "logs")]
     pub(crate) save_logs: bool,
+    /// number of times to retry the command before logging a failure
+    #[clap(short = 'r', long = "retries", default_value = "1", required = false)]
+    pub(crate) retry_count: u8,
     /// user agent to be logged at healthchecks.io
     #[clap(
         short = 'u',

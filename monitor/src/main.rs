@@ -1,10 +1,10 @@
 mod cli;
+mod exec;
 
 use clap::Clap;
-use color_eyre::{eyre::eyre, eyre::WrapErr, Result};
+use color_eyre::{eyre::eyre, Result};
 use healthchecks::ping::get_client;
 use std::env::var;
-use subprocess::{Exec, Redirection};
 
 const HEALTHCHECKS_CHECK_ID_VAR: &str = "HEALTHCHECKS_CHECK_ID";
 
@@ -44,33 +44,26 @@ fn main() -> Result<()> {
         client.start_timer();
     }
     let cmd = opts.command.join(" ");
-    if opts.save_logs {
-        let capture_data = Exec::shell(&cmd)
-            .stdout(Redirection::Pipe)
-            .stderr(Redirection::Merge)
-            .capture()
-            .context(format!("Failed to execute {}", cmd))?;
-        if capture_data.success() {
+    let mut tries = 1;
+    let mut command_result = exec::run_command(&cmd, opts.save_logs);
+    while tries < opts.retry_count && command_result.is_err() {
+        command_result = exec::run_command(&cmd, opts.save_logs);
+        tries += 1;
+    }
+    match command_result {
+        Ok(_) => {
             client.report_success();
-        } else {
-            let stdout = capture_data.stdout_str();
-            client.report_failure_with_logs(&stdout);
-            return Err(eyre!(
-                "Failed to run '{}', stdout: {}",
-                opts.command.join(" "),
-                stdout
-            ));
         }
-    } else {
-        let exit_status = Exec::shell(&cmd)
-            .join()
-            .context(format!("Failed to execute {}", cmd))?;
-        if exit_status.success() {
-            client.report_success();
-        } else {
-            client.report_failure();
-            return Err(eyre!("Failed to run '{}'", opts.command.join(" ")));
-        }
+        Err(logs) => match logs {
+            Some(log) => {
+                client.report_failure_with_logs(&log);
+                return Err(eyre!("Failed to run '{}', stdout: {}", &cmd, &log));
+            }
+            None => {
+                client.report_failure();
+                return Err(eyre!("Failed to run '{}'", &cmd));
+            }
+        },
     }
     Ok(())
 }

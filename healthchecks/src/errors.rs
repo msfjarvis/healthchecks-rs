@@ -5,7 +5,7 @@ use thiserror::Error;
 pub enum HealthchecksApiError {
     /// Server rejected this API key
     #[error("invalid API key")]
-    InvalidAPIKey,
+    InvalidApiKey,
     /// The server rejected this API key from a write operation, so it is possible
     /// this is a read-only key
     #[error("invalid API key, make sure you're not using a read-only key")]
@@ -33,13 +33,13 @@ pub enum HealthchecksApiError {
     UnexpectedError(String),
     /// Unexpected IO errors, please file an issue if you ever run into this
     #[error("unexpected IO error")]
-    IO {
+    Io {
         #[from]
         source: std::io::Error,
     },
     /// Unexpected JSON parsing errors, please file an issue if you ever run into this
     #[error("unexpected error while (de)serializing JSON response")]
-    JSON {
+    Json {
         #[from]
         source: serde_json::Error,
     },
@@ -56,5 +56,5 @@ pub enum HealthchecksConfigError {
     EmptyUserAgent,
     /// Invalid UUID
     #[error("invalid UUID: {0}")]
-    InvalidUUID(String),
+    InvalidUuid(String),
 }

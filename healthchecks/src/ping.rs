@@ -35,7 +35,7 @@ pub struct PingClient {
 /// ```
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     if Uuid::parse_str(uuid).is_err() {
-        Err(HealthchecksConfigError::InvalidUUID(uuid.to_string()))
+        Err(HealthchecksConfigError::InvalidUuid(uuid.to_string()))
     } else {
         Ok(PingClient {
             uuid: uuid.to_owned(),

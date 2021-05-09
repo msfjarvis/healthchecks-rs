@@ -71,7 +71,7 @@ impl ManageClient {
         let r = self.ureq_get(format!("{}/{}", HEALTHCHECK_API_URL, "checks"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChecksResult>()?.checks),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
             )),
@@ -84,7 +84,7 @@ impl ManageClient {
         let r = self.ureq_get(format!("{}/{}/{}", HEALTHCHECK_API_URL, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
             Err(Error::Status(404, _)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
@@ -139,7 +139,7 @@ impl ManageClient {
         let r = self.ureq_post(format!("{}/checks/{}/pings", HEALTHCHECK_API_URL, check_id));
         match r.send_string("") {
             Ok(response) => Ok(response.into_json::<PingsResult>()?.pings),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
             Err(Error::Status(404, _)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
@@ -156,7 +156,7 @@ impl ManageClient {
         let r = self.ureq_post(format!("{}/checks/{}/flips", HEALTHCHECK_API_URL, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Vec<Flip>>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
             Err(Error::Status(404, _)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
@@ -173,7 +173,7 @@ impl ManageClient {
         let r = self.ureq_delete(format!("{}/{}/{}", HEALTHCHECK_API_URL, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
             Err(Error::Status(404, _)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
@@ -202,7 +202,7 @@ impl ManageClient {
                 ))),
             },
             Err(Error::Status(400, _)) => Err(HealthchecksApiError::NotWellFormed),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::CheckLimitReached),
             Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
                 response.into_string()?,
@@ -221,7 +221,7 @@ impl ManageClient {
         {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(400, _)) => Err(HealthchecksApiError::NotWellFormed),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidAPIKey),
+            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
             Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
             Err(Error::Status(404, _)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))

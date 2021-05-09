@@ -4,7 +4,7 @@ pub(crate) fn run_command(
     command: &str,
     save_logs: bool,
 ) -> std::result::Result<(), Option<String>> {
-    return if save_logs {
+    if save_logs {
         let capture_data = Exec::shell(command)
             .stdout(Redirection::Pipe)
             .stderr(Redirection::Merge)
@@ -25,5 +25,5 @@ pub(crate) fn run_command(
         } else {
             Err(None)
         }
-    };
+    }
 }

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+##[3.0.0]
+
 ### Added
 
 - Add `healthchecks::ping::report_failure_with_logs` to attach `&str` data as debug information..
@@ -39,3 +41,4 @@ Initial release
 [1.0.0]: https://github.com/msfjarvis/healthchecks-rs
 [1.0.1]: https://github.com/msfjarvis/healthchecks-rs
 [2.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-2.0.0
+[2.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-3.0.0

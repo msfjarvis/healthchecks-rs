@@ -8,7 +8,7 @@ use clap::{crate_authors, crate_description, crate_name, crate_version, AppSetti
 use color_eyre::{eyre::eyre, Result};
 use prettytable::{cell, format, row, Table};
 
-use healthchecks::manage;
+use healthchecks::{manage, model::Check};
 
 const HEALTHCHECKS_TOKEN_VAR: &str = "HEALTHCHECKS_TOKEN";
 
@@ -37,6 +37,7 @@ struct Opts {
 enum SubCommand {
     List(List),
     Pings(Pings),
+    Search(Search),
 }
 
 /// Lists the checks in your account with their last ping
@@ -50,6 +51,14 @@ struct List {}
 struct Pings {
     /// ID of the check whose pings are being fetched
     check_id: String,
+}
+
+/// Search for checks and show their latest pings
+#[derive(Clap)]
+#[clap(setting = AppSettings::ColoredHelp)]
+struct Search {
+    /// Search term to find in the list of all pings
+    search_term: String,
 }
 
 fn main() -> Result<()> {
@@ -74,6 +83,9 @@ fn main() -> Result<()> {
         }
         SubCommand::Pings(p) => {
             pings(settings, &p.check_id)?;
+        }
+        SubCommand::Search(s) => {
+            search(settings, s.search_term)?;
         }
     }
 
@@ -117,7 +129,29 @@ fn pings(settings: Settings, check_id: &str) -> Result<()> {
 fn list(settings: Settings) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
     let checks = client.get_checks()?;
+    print_checks(checks)
+}
 
+fn search(settings: Settings, search_term: String) -> Result<()> {
+    let client = manage::get_client(settings.token, settings.ua)?;
+    let checks: Vec<Check> = client
+        .get_checks()?
+        .into_iter()
+        .filter(|check| {
+            check
+                .name
+                .to_lowercase()
+                .contains(&search_term.to_lowercase())
+        })
+        .collect();
+    if checks.is_empty() {
+        Err(eyre!("No checks matched search term '{}'", search_term))
+    } else {
+        print_checks(checks)
+    }
+}
+
+fn print_checks(checks: Vec<Check>) -> Result<()> {
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(prettytable::row!["ID", "Name", "Last Ping"]);

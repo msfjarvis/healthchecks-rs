@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Adds the `search` command to list latest ping for checks matching a search term
+
 ## [2.0.0]
 
 ### Fixed

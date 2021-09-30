@@ -16,7 +16,7 @@ readme = "README.md"
 clap = "3.0.0-beta.4"
 color-eyre = { version = "0.5.11", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.0.0"}
-subprocess = "0.2.7"
+subprocess = "0.2.8"
 
 [badges]
 maintenance = { status = "actively-developed" }

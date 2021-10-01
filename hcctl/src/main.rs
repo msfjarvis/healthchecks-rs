@@ -1,65 +1,19 @@
+mod cli;
+
 use std::env::var;
 
 use chrono::{
     prelude::{DateTime, Datelike, Timelike},
     Utc,
 };
-use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
+use clap::Clap;
+use cli::{Opts, Settings, SubCommand};
 use color_eyre::{eyre::eyre, Result};
 use prettytable::{cell, format, row, Table};
 
 use healthchecks::{manage, model::Check};
 
 const HEALTHCHECKS_TOKEN_VAR: &str = "HEALTHCHECKS_TOKEN";
-
-#[derive(Debug)]
-struct Settings {
-    token: String,
-    ua: Option<String>,
-}
-
-#[derive(Clap)]
-#[clap(
-    name = crate_name!(),
-    version = crate_version!(),
-    author = crate_authors!(),
-    about = crate_description!(),
-    setting = AppSettings::ColoredHelp,
-    setting = AppSettings::DeriveDisplayOrder,
-    setting = AppSettings::SubcommandRequiredElseHelp,
-)]
-struct Opts {
-    #[clap(subcommand)]
-    subcommand: SubCommand,
-}
-
-#[derive(Clap)]
-enum SubCommand {
-    List(List),
-    Pings(Pings),
-    Search(Search),
-}
-
-/// Lists the checks in your account with their last ping
-#[derive(Clap)]
-#[clap(setting = AppSettings::ColoredHelp)]
-struct List {}
-
-/// Get the last 10 pings for the given check ID
-#[derive(Clap)]
-#[clap(setting = AppSettings::ColoredHelp)]
-struct Pings {
-    /// ID of the check whose pings are being fetched
-    check_id: String,
-}
-
-/// Search for checks and show their latest pings
-#[derive(Clap)]
-#[clap(setting = AppSettings::ColoredHelp)]
-struct Search {
-    /// Search term to find in the list of all pings
-    search_term: String,
-}
 
 fn main() -> Result<()> {
     color_eyre::install()?;

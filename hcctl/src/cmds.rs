@@ -89,7 +89,7 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
 }
 
 fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String> {
-    let date = DateTime::parse_from_rfc3339(&date_str)?;
+    let date = DateTime::parse_from_rfc3339(date_str)?;
     let duration = now.signed_duration_since(date);
     let hours = duration.num_hours();
     Ok(format!(

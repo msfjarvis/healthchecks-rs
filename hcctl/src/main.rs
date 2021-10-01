@@ -8,12 +8,13 @@ use cli::{Opts, Settings, SubCommand};
 use color_eyre::{eyre::eyre, Result};
 
 const HEALTHCHECKS_TOKEN_VAR: &str = "HEALTHCHECKS_TOKEN";
+const HEALTHCHECKS_USERAGENT: &str = "HEALTHCHECKS_USERAGENT";
 
 fn main() -> Result<()> {
     color_eyre::install()?;
     let opts = Opts::parse();
 
-    let ua = match var("HEALTHCHECKS_USERAGENT") {
+    let ua = match var(HEALTHCHECKS_USERAGENT) {
         Ok(f) => Some(f),
         Err(_) => None,
     };

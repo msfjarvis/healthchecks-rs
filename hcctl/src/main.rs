@@ -7,7 +7,7 @@ use clap::Clap;
 use cli::{Opts, Settings, SubCommand};
 use color_eyre::{eyre::eyre, Result};
 
-const HEALTHCHECKS_TOKEN_VAR: &str = "HEALTHCHECKS_TOKEN";
+const HEALTHCHECKS_TOKEN: &str = "HEALTHCHECKS_TOKEN";
 const HEALTHCHECKS_USERAGENT: &str = "HEALTHCHECKS_USERAGENT";
 
 fn main() -> Result<()> {
@@ -19,10 +19,10 @@ fn main() -> Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        token: if let Ok(token) = var(HEALTHCHECKS_TOKEN_VAR) {
+        token: if let Ok(token) = var(HEALTHCHECKS_TOKEN) {
             token
         } else {
-            return Err(eyre!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN_VAR));
+            return Err(eyre!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN));
         },
         ua,
     };

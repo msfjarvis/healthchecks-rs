@@ -50,7 +50,7 @@ fn search_pings(client: ManageClient, search_term: String) -> Result<Vec<Ping>> 
             return Some(client.list_logged_pings(id.as_str()));
         })
         .take_while(|result| result.is_ok())
-        .map(|api_result| api_result.unwrap() )
+        .map(|api_result| api_result.unwrap())
         .flatten()
         .collect();
 

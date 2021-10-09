@@ -256,6 +256,7 @@ dependencies = [
  "color-eyre",
  "healthchecks",
  "prettytable-rs",
+ "uuid",
 ]
 
 [[package]]

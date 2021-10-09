@@ -13,6 +13,7 @@ pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 
 /// Struct that encapsulates the API key used to communicate with the healthchecks.io
 /// management API. Instances of this struct expose methods to query the API.
+#[derive(Clone)]
 pub struct ManageClient {
     pub(crate) api_key: String,
     pub(crate) user_agent: String,

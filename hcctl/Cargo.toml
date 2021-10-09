@@ -18,3 +18,4 @@ clap = "3.0.0-beta.4"
 color-eyre = { version = "0.5.11", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.0.0"}
 prettytable-rs = { version = "0.8.0", default-features = false }
+uuid = { version = "0.8.2", default-features = false }

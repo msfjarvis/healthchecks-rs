@@ -5,12 +5,70 @@ use chrono::{
 use color_eyre::{eyre::eyre, Result};
 use healthchecks::{manage, model::Check};
 use prettytable::{cell, format, row, Table};
+use uuid::Uuid;
 
 use crate::cli::Settings;
+use healthchecks::manage::ManageClient;
+use healthchecks::model::Ping;
 
 pub(crate) fn pings(settings: Settings, check_id: &str) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
-    let mut pings = client.list_logged_pings(check_id)?;
+    let pings = match Uuid::parse_str(check_id) {
+        Ok(_) => client.list_logged_pings(check_id)?,
+        Err(_) => search_pings(client, check_id.to_string())?,
+    };
+
+    print_pings(pings)
+}
+
+pub(crate) fn list(settings: Settings) -> Result<()> {
+    let client = manage::get_client(settings.token, settings.ua)?;
+    print_checks(client.get_checks()?)
+}
+
+pub(crate) fn search(settings: Settings, search_term: String) -> Result<()> {
+    let client = manage::get_client(settings.token, settings.ua)?;
+
+    match search_checks(client, search_term) {
+        Ok(checks) => print_checks(checks),
+        Err(error) => Err(error),
+    }
+}
+
+fn search_pings(client: ManageClient, search_term: String) -> Result<Vec<Ping>> {
+    let pings: Vec<Ping> = search_checks(client.clone(), search_term.to_owned())?
+        .iter()
+        .flat_map(|check| Some(client.list_logged_pings(check.id()?.as_str())))
+        .flatten()
+        .flatten()
+        .collect();
+
+    if pings.is_empty() {
+        Err(eyre!("No pings matched search term '{}'", search_term))
+    } else {
+        Ok(pings)
+    }
+}
+
+fn search_checks(client: ManageClient, search_term: String) -> Result<Vec<Check>> {
+    let checks: Vec<Check> = client
+        .get_checks()?
+        .into_iter()
+        .filter(|check| {
+            check
+                .name
+                .to_lowercase()
+                .contains(&search_term.to_lowercase())
+        })
+        .collect();
+    if checks.is_empty() {
+        Err(eyre!("No checks matched search term '{}'", search_term))
+    } else {
+        Ok(checks)
+    }
+}
+
+fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row!["Number", "Time", "Type", "Duration"]);
@@ -40,31 +98,6 @@ pub(crate) fn pings(settings: Settings, check_id: &str) -> Result<()> {
     }
     table.printstd();
     Ok(())
-}
-
-pub(crate) fn list(settings: Settings) -> Result<()> {
-    let client = manage::get_client(settings.token, settings.ua)?;
-    let checks = client.get_checks()?;
-    print_checks(checks)
-}
-
-pub(crate) fn search(settings: Settings, search_term: String) -> Result<()> {
-    let client = manage::get_client(settings.token, settings.ua)?;
-    let checks: Vec<Check> = client
-        .get_checks()?
-        .into_iter()
-        .filter(|check| {
-            check
-                .name
-                .to_lowercase()
-                .contains(&search_term.to_lowercase())
-        })
-        .collect();
-    if checks.is_empty() {
-        Err(eyre!("No checks matched search term '{}'", search_term))
-    } else {
-        print_checks(checks)
-    }
 }
 
 fn print_checks(checks: Vec<Check>) -> Result<()> {

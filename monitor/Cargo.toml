@@ -2,7 +2,7 @@
 name = "healthchecks-monitor"
 version = "3.0.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
-edition = "2018"
+edition = "2021"
 description = "monitor runs a given command and reports its result to https://healthchecks.io"
 repository = "https://github.com/msfjarvis/healthchecks-rs"
 homepage = "https://github.com/msfjarvis/healthchecks-rs"

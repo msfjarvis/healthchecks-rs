@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.md")]
 /// Error types for public API
 pub mod errors;
 /// Functions for interacting with the Healthchecks management API.

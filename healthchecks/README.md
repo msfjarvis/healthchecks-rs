@@ -25,10 +25,10 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 ## Usage (pinging API)
 
 ```rust
-use healthchecks::config::get_config;
+use healthchecks::ping::get_client;
 
 fn main() {
-    let config = get_config("my-uuid-that-is-definitely-not-real");
+    let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap();
     config.report_failure();
     config.report_success();
 }
@@ -37,10 +37,10 @@ fn main() {
 If you want to set a custom user agent for filtering purposes (default is `healthcheck-rs/$library_version`)
 
 ```rust
-use healthchecks::config::get_config;
+use healthchecks::ping::get_client;
 
 fn main() {
-    let config = get_config("my-uuid-that-is-definitely-not-real").set_user_agent("very-fancy-useragent");
+    let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap().set_user_agent("very-fancy-useragent");
     config.report_failure();
     config.report_success();
 }
@@ -50,10 +50,12 @@ fn main() {
 You can also start a timer to record durations on [healthchecks.io](https://healthchecks.io/).
 
 ```rust
-use healthchecks::config::get_config;
+use healthchecks::ping::get_client;
+
+fn do_long_running_task() {}
 
 fn main() {
-    let config = get_config("my-uuid-that-is-definitely-not-real");
+    let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap();
     config.start_timer();
     do_long_running_task();
     config.report_success();

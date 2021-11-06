@@ -1,7 +1,7 @@
 mod cli;
 mod exec;
 
-use clap::Clap;
+use clap::Parser;
 use color_eyre::{eyre::eyre, Result};
 use healthchecks::ping::get_client;
 use std::env::var;

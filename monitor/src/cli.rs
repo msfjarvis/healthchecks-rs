@@ -1,15 +1,14 @@
-use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Clap};
+use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Parser};
 
 /// This is useful to have a good-looking default in the clap generated help.
 const FAKE_EMPTY_STRING: &str = "\"\"";
 
-#[derive(Clap)]
+#[derive(Parser)]
 #[clap(
     name = crate_name!(),
     version = crate_version!(),
     author = crate_authors!(),
     about = crate_description!(),
-    setting = AppSettings::ColoredHelp,
     setting = AppSettings::DeriveDisplayOrder,
 )]
 pub(crate) struct Opts {

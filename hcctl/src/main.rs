@@ -3,7 +3,7 @@ mod cmds;
 
 use std::env::var;
 
-use clap::Clap;
+use clap::Parser;
 use cli::{Opts, Settings, SubCommand};
 use color_eyre::{eyre::eyre, Result};
 

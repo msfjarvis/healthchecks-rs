@@ -1,0 +1,57 @@
+targets = [
+  { triple = "x86_64-unknown-linux-gnu" },
+  { triple = "aarch64-unknown-linux-gnu" },
+  { triple = "x86_64-unknown-linux-musl" },
+  { triple = "aarch64-apple-darwin" },
+  { triple = "x86_64-apple-darwin" },
+  { triple = "x86_64-pc-windows-msvc" },
+]
+
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "warn"
+notice = "warn"
+ignore = [
+    "RUSTSEC-2020-0159", # localtime_r has not been a problem in practice
+    "RUSTSEC-2020-0071", # same localtime_r vulnerability, but for the time crate
+]
+[licenses]
+unlicensed = "deny"
+allow = [
+    "MIT",
+    "Apache-2.0",
+]
+copyleft = "allow"
+allow-osi-fsf-free = "neither"
+default = "deny"
+confidence-threshold = 0.8
+exceptions = [
+  { allow = ["BSD-3-Clause"], name = "instant", version = "*" },
+  { allow = ["MIT", "ISC", "OpenSSL"], name = "ring", version = "*" },
+  { allow = ["ISC"], name = "untrusted", version = "*" },
+  { allow = ["ISC"], name = "webpki", version = "*" },
+]
+
+[[licenses.clarify]]
+name = "ring"
+version = "*"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+  { path = "LICENSE", hash = 0xbd0eed23 }
+]
+
+[licenses.private]
+ignore = false
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+highlight = "all"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-git = []

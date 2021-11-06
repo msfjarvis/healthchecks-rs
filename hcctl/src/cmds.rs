@@ -3,8 +3,10 @@ use chrono::{
     Utc,
 };
 use color_eyre::{eyre::eyre, Result};
+use comfy_table::modifiers::UTF8_ROUND_CORNERS;
+use comfy_table::presets::UTF8_FULL;
+use comfy_table::{ContentArrangement, Table};
 use healthchecks::{manage, model::Check};
-use prettytable::{cell, format, row, Table};
 use uuid::Uuid;
 
 use crate::cli::Settings;
@@ -70,8 +72,11 @@ fn search_checks(client: ManageClient, search_term: String) -> Result<Vec<Check>
 
 fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
     let mut table = Table::new();
-    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(row!["Number", "Time", "Type", "Duration"]);
+    table
+        .load_preset(UTF8_FULL)
+        .apply_modifier(UTF8_ROUND_CORNERS)
+        .set_content_arrangement(ContentArrangement::Dynamic)
+        .set_header(vec!["Number", "Time", "Type", "Duration"]);
     pings.truncate(10);
     for ping in pings {
         let utc_time = DateTime::parse_from_rfc3339(&ping.date)?.naive_utc();
@@ -89,22 +94,25 @@ fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
         } else {
             "".to_owned()
         };
-        table.add_row(row![
+        table.add_row(vec![
             format!("#{}", ping.n),
             time_str,
             ping.type_field,
-            duration_str
+            duration_str,
         ]);
     }
-    table.printstd();
+
+    println!("{}", table);
     Ok(())
 }
 
 fn print_checks(checks: Vec<Check>) -> Result<()> {
     let mut table = Table::new();
-    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(prettytable::row!["ID", "Name", "Last Ping"]);
-
+    table
+        .load_preset(UTF8_FULL)
+        .apply_modifier(UTF8_ROUND_CORNERS)
+        .set_content_arrangement(ContentArrangement::Dynamic)
+        .set_header(vec!["ID", "Name", "Last Ping"]);
     let now = Utc::now();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
@@ -113,11 +121,10 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
             "-".to_owned()
         };
         let id = check.id().unwrap_or_else(|| "-".to_owned());
-        table.add_row(prettytable::row![id, check.name, date]);
+        table.add_row(vec![id, check.name, date]);
     }
 
-    table.printstd();
-
+    println!("{}", table);
     Ok(())
 }
 

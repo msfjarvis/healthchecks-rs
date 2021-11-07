@@ -5,7 +5,7 @@ use std::env::var;
 
 use clap::Parser;
 use cli::{Opts, Settings, SubCommand};
-use color_eyre::{eyre::eyre, Result};
+use color_eyre::Result;
 
 const HEALTHCHECKS_TOKEN: &str = "HEALTHCHECKS_TOKEN";
 const HEALTHCHECKS_USERAGENT: &str = "HEALTHCHECKS_USERAGENT";
@@ -19,11 +19,7 @@ fn main() -> Result<()> {
         Err(_) => None,
     };
     let settings = Settings {
-        token: if let Ok(token) = var(HEALTHCHECKS_TOKEN) {
-            token
-        } else {
-            return Err(eyre!("{} must be set to run hcctl", HEALTHCHECKS_TOKEN));
-        },
+        token: var(HEALTHCHECKS_TOKEN)?,
         ua,
     };
     match opts.subcommand {

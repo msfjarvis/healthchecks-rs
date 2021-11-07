@@ -26,19 +26,12 @@ fn main() -> Result<()> {
         Some(opts.user_agent)
     };
     let settings = Settings {
-        check_id: if let Ok(token) = var(HEALTHCHECKS_CHECK_ID_VAR) {
-            token
-        } else {
-            return Err(eyre!(
-                "{} must be set to run monitor",
-                HEALTHCHECKS_CHECK_ID_VAR
-            ));
-        },
+        check_id: var(HEALTHCHECKS_CHECK_ID_VAR)?,
         ua,
     };
     let mut client = get_client(&settings.check_id)?;
     if let Some(user_agent) = settings.ua {
-        client = client.set_user_agent(&user_agent)
+        client = client.set_user_agent(&user_agent);
     }
     if opts.timer {
         client.start_timer();
@@ -54,16 +47,15 @@ fn main() -> Result<()> {
         Ok(_) => {
             client.report_success();
         }
-        Err(logs) => match logs {
-            Some(log) => {
+        Err(logs) => {
+            if let Some(log) = logs {
                 client.report_failure_with_logs(&log);
                 return Err(eyre!("Failed to run '{}', stdout: {}", &cmd, &log));
-            }
-            None => {
+            } else {
                 client.report_failure();
                 return Err(eyre!("Failed to run '{}'", &cmd));
             }
-        },
+        }
     }
     Ok(())
 }

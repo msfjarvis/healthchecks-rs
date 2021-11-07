@@ -93,7 +93,7 @@ pub struct Channel {
 /// Represents a new check that is initialized locally then created on healthchecks.io
 /// using the admin API. It contains a lot less fields than the [`Check`]
 /// struct so we implement it separately.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct NewCheck {
     /// Name of the check.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -138,26 +138,9 @@ pub struct NewCheck {
     pub unique: Option<Vec<String>>,
 }
 
-impl Default for NewCheck {
-    fn default() -> Self {
-        NewCheck {
-            name: None,
-            tags: None,
-            channels: None,
-            desc: None,
-            timeout: None,
-            grace: None,
-            schedule: None,
-            tz: None,
-            unique: None,
-            manual_resume: None,
-        }
-    }
-}
-
 /// All fields in this struct are optional and every non-None value signifies that
 /// we want the server to replace the existing value with the one we're sending.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatedCheck {
     /// Name of the check.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -196,22 +179,6 @@ pub struct UpdatedCheck {
     /// are configured.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<String>,
-}
-
-impl Default for UpdatedCheck {
-    fn default() -> Self {
-        UpdatedCheck {
-            name: None,
-            tags: None,
-            desc: None,
-            timeout: None,
-            grace: None,
-            schedule: None,
-            tz: None,
-            manual_resume: None,
-            channels: None,
-        }
-    }
 }
 
 /// Represents a ping that a check has received.

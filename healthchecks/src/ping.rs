@@ -73,7 +73,7 @@ impl PingClient {
             .get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.to_owned().call();
+            let resp = request.clone().call();
             if resp.is_ok() {
                 return true;
             }
@@ -93,7 +93,7 @@ impl PingClient {
             .get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.to_owned().call();
+            let resp = request.clone().call();
             if resp.is_ok() {
                 return true;
             }
@@ -127,7 +127,7 @@ impl PingClient {
             .post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.to_owned().send_string(data);
+            let resp = request.clone().send_string(data);
             if resp.is_ok() {
                 return true;
             }
@@ -147,7 +147,7 @@ impl PingClient {
             .get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.to_owned().call();
+            let resp = request.clone().call();
             if resp.is_ok() {
                 return true;
             }

@@ -1,2 +1,9 @@
-with import <nixpkgs> { };
-mkShell { buildInputs = [ clang_11 lld_11 cargo rustc pkgconfig openssl ]; }
+with import <nixpkgs> { overlays = [ (import <rust-overlay>) ]; };
+mkShell {
+  buildInputs = [
+    (rust-bin.selectLatestNightlyWith (toolchain:
+      toolchain.default.override {
+        extensions = [ "rust-analyzer-preview" "rust-src" "rustfmt-preview" ];
+      }))
+  ];
+}

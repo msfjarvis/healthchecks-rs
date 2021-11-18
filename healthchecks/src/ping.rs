@@ -47,6 +47,7 @@ pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
 
 impl PingClient {
     /// Set the user agent for the given config
+    #[must_use]
     pub fn set_user_agent(mut self, user_agent: &str) -> PingClient {
         self.user_agent = user_agent.to_owned();
         self
@@ -66,6 +67,7 @@ impl PingClient {
     /// std::thread::sleep(Duration::from_millis(1000));
     /// client.report_success();
     /// ```
+    #[must_use]
     pub fn report_success(&self) -> bool {
         let mut retries: i8 = 0;
         let request = self
@@ -86,6 +88,7 @@ impl PingClient {
     }
 
     /// Report failure to healthchecks.io. Returns a boolean indicating whether the request succeeded.
+    #[must_use]
     pub fn report_failure(&self) -> bool {
         let mut retries: i8 = 0;
         let request = self
@@ -120,6 +123,7 @@ impl PingClient {
     /// std::thread::sleep(Duration::from_millis(1000));
     /// client.report_failure_with_logs("slept too much...zzzzzzz");
     /// ```
+    #[must_use]
     pub fn report_failure_with_logs(&self, data: &str) -> bool {
         let mut retries: i8 = 0;
         let request = self
@@ -140,6 +144,7 @@ impl PingClient {
     }
 
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
+    #[must_use]
     pub fn start_timer(&self) -> bool {
         let mut retries: i8 = 0;
         let request = self

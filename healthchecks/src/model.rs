@@ -73,6 +73,7 @@ pub struct Check {
 
 impl Check {
     /// Get the unique identifier of a [`Check`].
+    #[must_use]
     pub fn id(&self) -> Option<String> {
         if let Some(ref url) = self.ping_url {
             url.split('/').last().map(|id| id.to_owned())

@@ -34,7 +34,9 @@ fn main() -> Result<()> {
         client = client.set_user_agent(&user_agent);
     }
     if opts.timer {
-        client.start_timer();
+        if !client.start_timer() {
+            eprintln!("Failed to start timer");
+        }
     }
     let cmd = opts.command.join(" ");
     let mut tries = 1;
@@ -45,14 +47,20 @@ fn main() -> Result<()> {
     }
     match command_result {
         Ok(_) => {
-            client.report_success();
+            if !client.report_success() {
+                eprintln!("Failed to report success");
+            }
         }
         Err(logs) => {
             if let Some(log) = logs {
-                client.report_failure_with_logs(&log);
+                if !client.report_failure_with_logs(&log) {
+                    eprintln!("Failed to report failure");
+                }
                 return Err(eyre!("Failed to run '{}', stdout: {}", &cmd, &log));
             } else {
-                client.report_failure();
+                if !client.report_failure() {
+                    eprintln!("Failed to report failure");
+                };
                 return Err(eyre!("Failed to run '{}'", &cmd));
             }
         }

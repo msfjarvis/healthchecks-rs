@@ -30,7 +30,7 @@ fn main() -> Result<()> {
             cmds::pings(settings, &p.check_id)?;
         }
         SubCommand::Search(s) => {
-            cmds::search(settings, s.search_term)?;
+            cmds::search(settings, &s.search_term)?;
         }
     }
 

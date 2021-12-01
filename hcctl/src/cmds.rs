@@ -17,7 +17,7 @@ pub(crate) fn pings(settings: Settings, check_id: &str) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
     let pings = match Uuid::parse_str(check_id) {
         Ok(_) => client.list_logged_pings(check_id)?,
-        Err(_) => search_pings(client, check_id.to_string())?,
+        Err(_) => search_pings(&client, check_id)?,
     };
 
     print_pings(pings)
@@ -28,17 +28,17 @@ pub(crate) fn list(settings: Settings) -> Result<()> {
     print_checks(client.get_checks()?)
 }
 
-pub(crate) fn search(settings: Settings, search_term: String) -> Result<()> {
+pub(crate) fn search(settings: Settings, search_term: &str) -> Result<()> {
     let client = manage::get_client(settings.token, settings.ua)?;
 
-    match search_checks(client, search_term) {
+    match search_checks(&client, search_term) {
         Ok(checks) => print_checks(checks),
         Err(error) => Err(error),
     }
 }
 
-fn search_pings(client: ManageClient, search_term: String) -> Result<Vec<Ping>> {
-    let pings: Vec<Ping> = search_checks(client.clone(), search_term.clone())?
+fn search_pings(client: &ManageClient, search_term: &str) -> Result<Vec<Ping>> {
+    let pings: Vec<Ping> = search_checks(client, search_term)?
         .iter()
         .filter_map(|check| Some(client.list_logged_pings(check.id()?.as_str())))
         .flatten()
@@ -52,7 +52,7 @@ fn search_pings(client: ManageClient, search_term: String) -> Result<Vec<Ping>> 
     }
 }
 
-fn search_checks(client: ManageClient, search_term: String) -> Result<Vec<Check>> {
+fn search_checks(client: &ManageClient, search_term: &str) -> Result<Vec<Check>> {
     let checks: Vec<Check> = client
         .get_checks()?
         .into_iter()

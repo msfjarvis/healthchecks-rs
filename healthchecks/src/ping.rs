@@ -18,6 +18,7 @@ pub struct PingClient {
     pub(crate) uuid: String,
     pub(crate) user_agent: String,
     pub(crate) ureq_agent: Agent,
+    pub(crate) api_url: String,
 }
 
 /// Create an instance of [`PingClient`] from a String UUID
@@ -34,13 +35,23 @@ pub struct PingClient {
 /// let client = get_client("2d0a34bd-854d-490e-be2c-1493f7053460").unwrap();
 /// ```
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
+    get_client_with_url(uuid, HEALTHCHECK_PING_URL)
+}
+
+pub fn get_client_with_url(
+    uuid: &str,
+    api_url: &str,
+) -> Result<PingClient, HealthchecksConfigError> {
     if Uuid::parse_str(uuid).is_err() {
         Err(HealthchecksConfigError::InvalidUuid(uuid.to_string()))
+    } else if api_url.is_empty() {
+        Err(HealthchecksConfigError::EmptyApiUrl)
     } else {
         Ok(PingClient {
             uuid: uuid.to_owned(),
             user_agent: default_user_agent().to_owned(),
             ureq_agent: AgentBuilder::new().timeout(Duration::from_secs(5)).build(),
+            api_url: HEALTHCHECK_PING_URL.to_owned(),
         })
     }
 }
@@ -72,7 +83,7 @@ impl PingClient {
         let mut retries: i8 = 0;
         let request = self
             .ureq_agent
-            .get(&format!("{}/{}", HEALTHCHECK_PING_URL, self.uuid))
+            .get(&format!("{}/{}", self.api_url, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
             let resp = request.clone().call();
@@ -93,7 +104,7 @@ impl PingClient {
         let mut retries: i8 = 0;
         let request = self
             .ureq_agent
-            .get(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
+            .get(&format!("{}/{}/fail", self.api_url, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
             let resp = request.clone().call();
@@ -128,7 +139,7 @@ impl PingClient {
         let mut retries: i8 = 0;
         let request = self
             .ureq_agent
-            .post(&format!("{}/{}/fail", HEALTHCHECK_PING_URL, self.uuid))
+            .post(&format!("{}/{}/fail", self.api_url, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
             let resp = request.clone().send_string(data);
@@ -149,7 +160,7 @@ impl PingClient {
         let mut retries: i8 = 0;
         let request = self
             .ureq_agent
-            .get(&format!("{}/{}/start", HEALTHCHECK_PING_URL, self.uuid))
+            .get(&format!("{}/{}/start", self.api_url, self.uuid))
             .set("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
             let resp = request.clone().call();

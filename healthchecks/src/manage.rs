@@ -17,6 +17,7 @@ pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 pub struct ManageClient {
     pub(crate) api_key: String,
     pub(crate) user_agent: String,
+    pub(crate) api_url: String,
 }
 
 /// Create an instance of [`ManageClient`] from a given API key. No validation
@@ -25,21 +26,27 @@ pub fn get_client(
     api_key: String,
     user_agent: Option<String>,
 ) -> Result<ManageClient, HealthchecksConfigError> {
+    get_client_with_url(api_key, user_agent, HEALTHCHECK_API_URL.to_owned())
+}
+
+pub fn get_client_with_url(
+    api_key: String,
+    user_agent: Option<String>,
+    api_url: String,
+) -> Result<ManageClient, HealthchecksConfigError> {
     if api_key.is_empty() {
         Err(HealthchecksConfigError::EmptyApiKey)
-    } else if let Some(ua) = user_agent {
-        if ua.is_empty() {
-            Err(HealthchecksConfigError::EmptyUserAgent)
-        } else {
-            Ok(ManageClient {
-                api_key,
-                user_agent: ua,
-            })
-        }
+    } else if matches!(user_agent, Some(ref ua) if ua.is_empty()) {
+        Err(HealthchecksConfigError::EmptyUserAgent)
+    } else if api_url.is_empty() {
+        Err(HealthchecksConfigError::EmptyApiUrl)
     } else {
+        let user_agent = user_agent.unwrap_or_else(|| default_user_agent().to_owned());
+
         Ok(ManageClient {
             api_key,
-            user_agent: default_user_agent().to_owned(),
+            user_agent,
+            api_url,
         })
     }
 }
@@ -69,7 +76,7 @@ impl ManageClient {
         struct ChecksResult {
             pub checks: Vec<Check>,
         }
-        let r = self.ureq_get(format!("{}/{}", HEALTHCHECK_API_URL, "checks"));
+        let r = self.ureq_get(format!("{}/{}", self.api_url, "checks"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChecksResult>()?.checks),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -82,7 +89,7 @@ impl ManageClient {
 
     /// Get a [`Check`] with the given UUID or unique key.
     pub fn get_check(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_get(format!("{}/{}/{}", HEALTHCHECK_API_URL, "checks", check_id));
+        let r = self.ureq_get(format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -103,7 +110,7 @@ impl ManageClient {
         struct ChannelsResult {
             pub channels: Vec<Channel>,
         }
-        let r = self.ureq_get(format!("{}/{}", HEALTHCHECK_API_URL, "channels"));
+        let r = self.ureq_get(format!("{}/{}", self.api_url, "channels"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChannelsResult>()?.channels),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
@@ -116,7 +123,7 @@ impl ManageClient {
 
     /// Pauses the [`Check`] with the given UUID or unique key.
     pub fn pause(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_post(format!("{}/checks/{}/pause", HEALTHCHECK_API_URL, check_id));
+        let r = self.ureq_post(format!("{}/checks/{}/pause", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
@@ -137,7 +144,7 @@ impl ManageClient {
         struct PingsResult {
             pub pings: Vec<Ping>,
         }
-        let r = self.ureq_post(format!("{}/checks/{}/pings", HEALTHCHECK_API_URL, check_id));
+        let r = self.ureq_post(format!("{}/checks/{}/pings", self.api_url, check_id));
         match r.send_string("") {
             Ok(response) => Ok(response.into_json::<PingsResult>()?.pings),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -154,7 +161,7 @@ impl ManageClient {
 
     /// Get a list of check's status changes with the given UUID or unique key.
     pub fn list_status_changes(&self, check_id: &str) -> ApiResult<Vec<Flip>> {
-        let r = self.ureq_post(format!("{}/checks/{}/flips", HEALTHCHECK_API_URL, check_id));
+        let r = self.ureq_post(format!("{}/checks/{}/flips", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Vec<Flip>>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -171,7 +178,7 @@ impl ManageClient {
 
     /// Deletes the [`Check`] with the given UUID or unique key.
     pub fn delete(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_delete(format!("{}/{}/{}", HEALTHCHECK_API_URL, "checks", check_id));
+        let r = self.ureq_delete(format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -189,7 +196,7 @@ impl ManageClient {
     /// Creates a new check with the given [`NewCheck`] configuration.
     pub fn create_check(&self, check: NewCheck) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(format!("{}/{}/", HEALTHCHECK_API_URL, "checks"));
+        let r = self.ureq_post(format!("{}/{}/", self.api_url, "checks"));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)
@@ -215,7 +222,7 @@ impl ManageClient {
     /// Update the check with the given `check_id` with the data from `check`.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(format!("{}/{}/{}", HEALTHCHECK_API_URL, "checks", check_id));
+        let r = self.ureq_post(format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)

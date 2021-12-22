@@ -54,9 +54,9 @@ pub enum HealthchecksConfigError {
     /// Empty User Agent
     #[error("User Agent must not be empty")]
     EmptyUserAgent,
-	/// Empty API url
-	#[error("API url must not be empty")]
-	EmptyApiUrl,
+    /// Empty API url
+    #[error("API url must not be empty")]
+    EmptyApiUrl,
     /// Invalid UUID
     #[error("invalid UUID: {0}")]
     InvalidUuid(String),

@@ -1,4 +1,4 @@
-use clap::{crate_authors, crate_description, crate_name, crate_version, AppSettings, Parser};
+use clap::{AppSettings, Parser};
 
 #[derive(Debug)]
 pub(crate) struct Settings {
@@ -7,14 +7,8 @@ pub(crate) struct Settings {
 }
 
 #[derive(Parser)]
-#[clap(
-    name = crate_name!(),
-    version = crate_version!(),
-    author = crate_authors!(),
-    about = crate_description!(),
-    setting = AppSettings::DeriveDisplayOrder,
-    setting = AppSettings::SubcommandRequiredElseHelp,
-)]
+#[clap(author, version, about)]
+#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub(crate) struct Opts {
     #[clap(subcommand)]
     pub(crate) subcommand: SubCommand,

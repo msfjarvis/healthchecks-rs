@@ -10,3 +10,14 @@ name: Check Rust code
 jobs:
   check:
     uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
+
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate LSIF data
+        uses: sourcegraph/lsif-rust-action@main
+      - name: Upload LSIF data
+        uses: sourcegraph/lsif-upload-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

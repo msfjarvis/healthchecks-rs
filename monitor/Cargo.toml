@@ -14,7 +14,7 @@ readme = "README.md"
 
 [dependencies]
 clap = { version = "3.0.0", features = ["color", "derive"] }
-color-eyre = { version = "0.5.11", default-features = false }
+color-eyre = { version = "0.6.0", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.0.2"}
 subprocess = "0.2.8"
 

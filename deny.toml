@@ -50,6 +50,10 @@ ignore = false
 multiple-versions = "deny"
 wildcards = "deny"
 highlight = "all"
+skip = [
+  # comfy_table has a transitive dependency on an older version of heck
+  { name = "heck", version = "=0.3.3" },
+]
 
 [sources]
 unknown-registry = "deny"

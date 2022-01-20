@@ -9,6 +9,7 @@ homepage = "https://github.com/msfjarvis/healthchecks-rs"
 license = "MIT/Apache-2.0"
 keywords = ["healthchecks"]
 readme = "README.md"
+include = ["src/**/*", "../LICENSE-*", "README.md"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

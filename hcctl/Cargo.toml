@@ -15,7 +15,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 
 [dependencies]
 chrono = "0.4.19"
-clap = { version = "3.0.9", features = ["color", "derive"] }
+clap = { version = "3.0.12", features = ["color", "derive"] }
 color-eyre = { version = "0.6.0", default-features = false }
 comfy-table = "5.0.0"
 healthchecks = { path = "../healthchecks", version = "^3.0.2"}

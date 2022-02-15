@@ -11,9 +11,8 @@ const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
 // factor: https://blog.healthchecks.io/2020/01/fighting-packet-loss-with-curl/
 const MAX_RETRIES: i8 = 20;
 
-/// Struct that encapsulates the UUID that uniquely identifies your
-/// healthchecks.io endpoint. Instances of this expose methods to
-/// report status to healthchecks.io
+/// Client type for communication with the healthchecks.io ping API for a single
+/// check.
 pub struct PingClient {
     pub(crate) uuid: String,
     pub(crate) user_agent: String,
@@ -21,23 +20,14 @@ pub struct PingClient {
     pub(crate) api_url: String,
 }
 
-/// Create an instance of [`PingClient`] from a String UUID
-/// and a custom User-Agent header value. This method runs basic UUID validation and returns Err
+/// Create an instance of [`PingClient`] from the UUID of a check. This method runs basic UUID validation and
+/// returns an [`Err`](std::result::Result::Err) value wrapping [`HealthchecksConfigError`](crate::errors::HealthchecksConfigError)
 /// when the UUID is invalid.
-///
-/// # Usage
-///
-/// Starts a timer, sleeps for a second and then reports success.
-///
-/// ```rust
-/// use healthchecks::ping::get_client;
-///
-/// let client = get_client("2d0a34bd-854d-490e-be2c-1493f7053460").unwrap();
-/// ```
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     get_client_with_url(uuid, HEALTHCHECK_PING_URL)
 }
 
+/// Same as [`get_client`](crate::ping::get_client), with the ability
 pub fn get_client_with_url(
     uuid: &str,
     api_url: &str,

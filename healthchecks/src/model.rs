@@ -86,14 +86,17 @@ impl Check {
 /// Represents an integration, like email or sms.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Channel {
+    /// UUID for this integration.
     pub id: String,
+    /// "Pretty name" for the integration, typically shown in the healthchecks web UI.
     pub name: String,
+    /// Type of integration, such as "telegram" or "email".
     pub kind: String,
 }
 
 /// Represents a new check that is initialized locally then created on healthchecks.io
-/// using the admin API. It contains a lot less fields than the [`Check`]
-/// struct so we implement it separately.
+/// using the admin API. It skips over many fields from the [`Check`]
+/// struct that are generated server-side by healthchecks.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct NewCheck {
     /// Name of the check.
@@ -139,8 +142,9 @@ pub struct NewCheck {
     pub unique: Option<Vec<String>>,
 }
 
-/// All fields in this struct are optional and every non-None value signifies that
-/// we want the server to replace the existing value with the one we're sending.
+/// Represents an existing check which needs some or all of its values updated
+/// on the healthchecks server. Fields that do not need updates should be set to
+/// [`None`](std::option::Option::None) and will be skipped from serialization.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatedCheck {
     /// Name of the check.
@@ -217,7 +221,8 @@ pub struct Ping {
     pub duration: Option<f64>,
 }
 
-/// Represents a "flip" this check has experienced.
+/// Represents a "flip" in state this check has experienced. This event
+/// is generated when a check transitions between the up and down state.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Flip {
     /// RFC3339 timestamp for when the change occured

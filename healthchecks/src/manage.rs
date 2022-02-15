@@ -11,8 +11,7 @@ const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 /// Typealias to prevent some repetitiveness in function definitions
 pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 
-/// Struct that encapsulates the API key used to communicate with the healthchecks.io
-/// management API. Instances of this struct expose methods to query the API.
+/// Client type for communication with the healthchecks.io management API.
 #[derive(Clone)]
 pub struct ManageClient {
     pub(crate) api_key: String,
@@ -20,8 +19,10 @@ pub struct ManageClient {
     pub(crate) api_url: String,
 }
 
-/// Create an instance of [`ManageClient`] from a given API key. No validation
-/// is performed.
+/// Create an instance of [`ManageClient`] from a given API key and an
+/// optional custom user agent. Basic validation is performed but an
+/// invalid API key will go through this method and only fail when
+/// actually interacting with the API.
 pub fn get_client(
     api_key: String,
     user_agent: Option<String>,
@@ -29,6 +30,9 @@ pub fn get_client(
     get_client_with_url(api_key, user_agent, HEALTHCHECK_API_URL.to_owned())
 }
 
+/// Create an instance of [`ManageClient`] with a custom endpoint for the API.
+/// This is identical to [`get_client`](crate::manage::get_client) which uses it internally,
+/// but doesn't default to the hosted version at [healthchecks.io](https://healthchecks.io).
 pub fn get_client_with_url(
     api_key: String,
     user_agent: Option<String>,

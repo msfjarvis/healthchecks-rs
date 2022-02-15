@@ -1,6 +1,5 @@
 use healthchecks::errors::HealthchecksApiError;
 use healthchecks::manage::get_client;
-use healthchecks::model::NewCheck;
 use std::result::Result;
 
 fn main() -> Result<(), HealthchecksApiError> {
@@ -11,7 +10,8 @@ fn main() -> Result<(), HealthchecksApiError> {
     for check in config.get_checks()? {
         println!("{:?}", check);
     }
-    let new_check: NewCheck = Default::default();
-    println!("{:?}", config.create_check(new_check)?);
+    for channel in config.get_channels()? {
+        println!("{:?}", channel);
+    }
     Ok(())
 }

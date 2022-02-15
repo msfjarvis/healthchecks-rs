@@ -18,5 +18,5 @@ chrono = "0.4.19"
 clap = { version = "3.0.14", features = ["color", "derive"] }
 color-eyre = { version = "0.6.0", default-features = false }
 comfy-table = "5.0.0"
-healthchecks = { path = "../healthchecks", version = "^3.0.2"}
+healthchecks = { path = "../healthchecks", version = "^3.0.3"}
 uuid = { version = "0.8.2", default-features = false }

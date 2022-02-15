@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.4]
+
+### Changed
+
+- Reword and improve documentation throughout the crate
+
 ## [3.0.3]
 
 ### Added
@@ -63,6 +69,7 @@ Initial release
 [3.0.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.1
 [3.0.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.2
 [3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.3
+[3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.4
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

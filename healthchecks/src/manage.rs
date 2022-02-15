@@ -51,6 +51,15 @@ pub fn get_client_with_url(
     }
 }
 
+/// When creating a new check, it's possible that the check already existed.
+/// This enum conveys that information.
+///
+/// See [`ManageClient::upsert_check`]
+pub enum UpsertResult {
+    Created,
+    Updated,
+}
+
 impl ManageClient {
     fn ureq_get(&self, path: String) -> Request {
         get(&path)
@@ -195,6 +204,22 @@ impl ManageClient {
 
     /// Creates a new check with the given [`NewCheck`] configuration.
     pub fn create_check(&self, check: NewCheck) -> ApiResult<Check> {
+        self.upsert_check(check).and_then(|(result, check)| {
+            if let UpsertResult::Created = result {
+                Ok(check)
+            } else {
+                Err(HealthchecksApiError::ExistingCheckMatched)
+            }
+        })
+    }
+
+    /// Creates a new check with the given [`NewCheck`] configuration.
+    ///
+    /// The [`unique`] field can be used to update existing checks, provided the checks can be found.
+    /// Otherwise, it will be created.
+    ///
+    /// [`unique`]: NewCheck::unique
+    pub fn upsert_check(&self, check: NewCheck) -> ApiResult<(UpsertResult, Check)> {
         let check_json = serde_json::to_value(check)?;
         let r = self.ureq_post(format!("{}/{}/", self.api_url, "checks"));
         match r
@@ -202,8 +227,8 @@ impl ManageClient {
             .send_json(check_json)
         {
             Ok(response) => match response.status() {
-                201 => Ok(response.into_json::<Check>()?),
-                200 => Err(HealthchecksApiError::ExistingCheckMatched),
+                201 => Ok((UpsertResult::Created, response.into_json::<Check>()?)),
+                200 => Ok((UpsertResult::Updated, response.into_json::<Check>()?)),
                 _ => Err(HealthchecksApiError::UnexpectedError(format!(
                     "Invalid result code: {}",
                     response.status()

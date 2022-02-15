@@ -4,7 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-##[3.0.0]
+## [3.0.3]
+
+### Added
+
+- Add support to return an existing check while creating if an existing one is found ([#27])
+
+## [3.0.2]
+
+### Added
+
+- Add support for custom API URLs in ping module
+
+## [3.0.1]
+
+### Added
+
+- Add support for custom API URLs in management module ([#22])
+
+## [3.0.0]
 
 ### Added
 
@@ -41,4 +59,10 @@ Initial release
 [1.0.0]: https://github.com/msfjarvis/healthchecks-rs
 [1.0.1]: https://github.com/msfjarvis/healthchecks-rs
 [2.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-2.0.0
-[2.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-3.0.0
+[3.0.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-3.0.0
+[3.0.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.1
+[3.0.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.2
+[3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.3
+
+[#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
+[#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

@@ -40,8 +40,7 @@ pub(crate) fn search(settings: Settings, search_term: &str) -> Result<()> {
 fn search_pings(client: &ManageClient, search_term: &str) -> Result<Vec<Ping>> {
     let pings: Vec<Ping> = search_checks(client, search_term)?
         .iter()
-        .filter_map(|check| Some(client.list_logged_pings(check.id()?.as_str())))
-        .flatten()
+        .filter_map(|check| client.list_logged_pings(check.id()?.as_str()).ok())
         .flatten()
         .collect();
 
@@ -90,7 +89,7 @@ fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
             time.minute(),
         );
         let duration_str = if let Some(duration) = ping.duration {
-            format!("{0:.3} sec", duration)
+            format!("{duration:.3} sec")
         } else {
             "".to_owned()
         };
@@ -102,7 +101,7 @@ fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
         ]);
     }
 
-    println!("{}", table);
+    println!("{table}");
     Ok(())
 }
 
@@ -124,7 +123,7 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
         table.add_row(vec![id, check.name, date]);
     }
 
-    println!("{}", table);
+    println!("{table}");
     Ok(())
 }
 
@@ -132,15 +131,12 @@ fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String
     let date = DateTime::parse_from_rfc3339(date_str)?;
     let duration = now.signed_duration_since(date);
     let hours = duration.num_hours();
-    Ok(format!(
-        "{} hour(s) and {} minute(s) ago",
-        hours,
-        if hours == 0 {
-            duration.num_minutes()
-        } else {
-            duration.num_minutes() % hours
-        }
-    ))
+    let minutes = if hours == 0 {
+        duration.num_minutes()
+    } else {
+        duration.num_minutes() % hours
+    };
+    Ok(format!("{hours} hour(s) and {minutes} minute(s) ago"))
 }
 
 #[cfg(test)]

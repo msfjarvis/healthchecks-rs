@@ -29,7 +29,6 @@ allow-osi-fsf-free = "neither"
 default = "deny"
 confidence-threshold = 0.8
 exceptions = [
-  { allow = ["BSD-3-Clause"], name = "instant", version = "*" },
   { allow = ["MIT", "ISC", "OpenSSL"], name = "ring", version = "*" },
   { allow = ["ISC"], name = "untrusted", version = "*" },
   { allow = ["ISC"], name = "webpki", version = "*" },

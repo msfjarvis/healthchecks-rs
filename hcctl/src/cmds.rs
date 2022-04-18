@@ -141,9 +141,9 @@ fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String
 
 #[cfg(test)]
 mod tests {
-    use chrono::TimeZone;
+    use chrono::{TimeZone, Utc};
 
-    use super::*;
+    use crate::cmds::human_readable_duration;
 
     #[test]
     fn duration_parses_correctly() {

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.5]
+
+### Changed
+
+- Bump `uuid` dependency to `1.0.0`
+
 ## [3.0.4]
 
 ### Changed
@@ -70,6 +76,7 @@ Initial release
 [3.0.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.2
 [3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.3
 [3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.4
+[3.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.5
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

@@ -14,7 +14,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "3.1.11", features = ["color", "derive"] }
+clap = { version = "3.1.12", features = ["color", "derive"] }
 color-eyre = { version = "0.6.1", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.0.4"}
 subprocess = "0.2.8"

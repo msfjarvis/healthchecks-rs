@@ -11,3 +11,6 @@ name: Check Rust code
 jobs:
   check:
     uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
+    with:
+      # Keep in sync with healthchecks/Cargo.toml
+      msrv: 1.58.0

@@ -17,7 +17,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 clap = { version = "3.1.18", features = ["color", "derive"] }
 color-eyre = { version = "0.6.1", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.0.4"}
-subprocess = "0.2.8"
+subprocess = "0.2.9"
 
 [badges]
 maintenance = { status = "actively-developed" }

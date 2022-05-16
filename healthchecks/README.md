@@ -63,6 +63,10 @@ fn main() {
 
 ```
 
+## Minimum supported Rust Version
+
+healthchecks' MSRV is 1.57.0
+
 ## Licensing
 
 Dual licensed under Apache 2.0 or MIT at your option.

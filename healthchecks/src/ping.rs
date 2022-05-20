@@ -13,6 +13,7 @@ const MAX_RETRIES: i8 = 20;
 
 /// Client type for communication with the healthchecks.io ping API for a single
 /// check.
+#[allow(clippy::module_name_repetitions)]
 pub struct PingClient {
     pub(crate) uuid: String,
     pub(crate) user_agent: String,

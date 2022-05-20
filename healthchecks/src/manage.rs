@@ -12,6 +12,7 @@ const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
 pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 
 /// Client type for communication with the healthchecks.io management API.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Clone)]
 pub struct ManageClient {
     pub(crate) api_key: String,
@@ -65,20 +66,20 @@ pub enum UpsertResult {
 }
 
 impl ManageClient {
-    fn ureq_get(&self, path: String) -> Request {
-        get(&path)
+    fn ureq_get(&self, path: &str) -> Request {
+        get(path)
             .set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)
     }
 
-    fn ureq_post(&self, path: String) -> Request {
-        post(&path)
+    fn ureq_post(&self, path: &str) -> Request {
+        post(path)
             .set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)
     }
 
-    fn ureq_delete(&self, path: String) -> Request {
-        delete(&path)
+    fn ureq_delete(&self, path: &str) -> Request {
+        delete(path)
             .set("X-Api-Key", &self.api_key)
             .set("User-Agent", &self.user_agent)
     }
@@ -89,7 +90,7 @@ impl ManageClient {
         struct ChecksResult {
             pub checks: Vec<Check>,
         }
-        let r = self.ureq_get(format!("{}/{}", self.api_url, "checks"));
+        let r = self.ureq_get(&format!("{}/{}", self.api_url, "checks"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChecksResult>()?.checks),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -102,7 +103,7 @@ impl ManageClient {
 
     /// Get a [`Check`] with the given UUID or unique key.
     pub fn get_check(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_get(format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self.ureq_get(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -123,7 +124,7 @@ impl ManageClient {
         struct ChannelsResult {
             pub channels: Vec<Channel>,
         }
-        let r = self.ureq_get(format!("{}/{}", self.api_url, "channels"));
+        let r = self.ureq_get(&format!("{}/{}", self.api_url, "channels"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChannelsResult>()?.channels),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
@@ -136,7 +137,7 @@ impl ManageClient {
 
     /// Pauses the [`Check`] with the given UUID or unique key.
     pub fn pause(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_post(format!("{}/checks/{}/pause", self.api_url, check_id));
+        let r = self.ureq_post(&format!("{}/checks/{}/pause", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
@@ -157,7 +158,7 @@ impl ManageClient {
         struct PingsResult {
             pub pings: Vec<Ping>,
         }
-        let r = self.ureq_post(format!("{}/checks/{}/pings", self.api_url, check_id));
+        let r = self.ureq_post(&format!("{}/checks/{}/pings", self.api_url, check_id));
         match r.send_string("") {
             Ok(response) => Ok(response.into_json::<PingsResult>()?.pings),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -174,7 +175,7 @@ impl ManageClient {
 
     /// Get a list of check's status changes with the given UUID or unique key.
     pub fn list_status_changes(&self, check_id: &str) -> ApiResult<Vec<Flip>> {
-        let r = self.ureq_post(format!("{}/checks/{}/flips", self.api_url, check_id));
+        let r = self.ureq_post(&format!("{}/checks/{}/flips", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Vec<Flip>>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -191,7 +192,7 @@ impl ManageClient {
 
     /// Deletes the [`Check`] with the given UUID or unique key.
     pub fn delete(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_delete(format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self.ureq_delete(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
@@ -225,7 +226,7 @@ impl ManageClient {
     /// [`unique`]: NewCheck::unique
     pub fn upsert_check(&self, check: NewCheck) -> ApiResult<(UpsertResult, Check)> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(format!("{}/{}/", self.api_url, "checks"));
+        let r = self.ureq_post(&format!("{}/{}/", self.api_url, "checks"));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)
@@ -251,7 +252,7 @@ impl ManageClient {
     /// Update the check with the given `check_id` with the data from `check`.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self.ureq_post(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)

@@ -1,6 +1,6 @@
 [package]
 name = "healthchecks"
-version = "3.0.5"
+version = "3.0.6"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2021"
 description = "Simple library to notify healthchecks.io from inside applications"

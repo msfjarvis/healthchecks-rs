@@ -65,7 +65,7 @@ fn main() {
 
 ## Minimum supported Rust Version
 
-healthchecks' MSRV is 1.57.0
+healthchecks' MSRV is 1.58.0
 
 ## Licensing
 

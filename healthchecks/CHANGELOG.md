@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.6]
+
+- Declare MSRV as `1.58.0`. This was always the case, but it is now conveyed through the `rust-version` field.
+- Add an `# Errors` section to the rustdoc of all `Result`-returning public methods
+
 ## [3.0.5]
 
 ### Changed
@@ -77,6 +82,7 @@ Initial release
 [3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.3
 [3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.4
 [3.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.5
+[3.0.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.6
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

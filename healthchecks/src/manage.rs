@@ -283,7 +283,7 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
-    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice, 
+    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
     /// please report it on GitHub if you encounter an error of this type.
     /// - Returns [`HealthchecksApiError::ExistingCheckMatched`] if the check already exists.
     pub fn create_check(&self, check: NewCheck) -> ApiResult<Check> {
@@ -310,7 +310,7 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
-    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice, 
+    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
     /// please report it on GitHub if you encounter an error of this type.
     pub fn upsert_check(&self, check: NewCheck) -> ApiResult<(UpsertResult, Check)> {
         let check_json = serde_json::to_value(check)?;
@@ -346,7 +346,7 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
-    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice, 
+    /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
     /// please report it on GitHub if you encounter an error of this type.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;

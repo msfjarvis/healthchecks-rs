@@ -21,14 +21,22 @@ pub struct PingClient {
     pub(crate) api_url: String,
 }
 
-/// Create an instance of [`PingClient`] from the UUID of a check. This method runs basic UUID validation and
-/// returns an [`Err`](std::result::Result::Err) value wrapping [`HealthchecksConfigError`](crate::errors::HealthchecksConfigError)
-/// when the UUID is invalid.
+/// Create an instance of [`PingClient`] from the UUID of a check.
+///
+/// # Errors
+/// - Returns [`HealthchecksConfigError::InvalidUuid`] if `uuid` is not
+/// a valid UUID
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     get_client_with_url(uuid, HEALTHCHECK_PING_URL)
 }
 
-/// Same as [`get_client`](crate::ping::get_client), with the ability
+/// Same as [`get_client`](crate::ping::get_client), with the ability to use a custom instance of the
+/// healthchecks server.
+/// # Errors
+///
+/// - Returns [`HealthchecksConfigError::InvalidUuid`] if `uuid` is not
+/// a valid UUID
+/// - Returns [`HealthchecksConfigError::EmptyApiUrl`] if `api_url` is empty.
 pub fn get_client_with_url(
     uuid: &str,
     api_url: &str,

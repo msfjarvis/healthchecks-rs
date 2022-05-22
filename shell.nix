@@ -8,5 +8,6 @@ mkShell {
         ++ pkgs.lib.optionals pkgs.stdenv.isLinux
         [ "x86_64-unknown-linux-gnu" ];
     })
-  ];
+  ] ++ pkgs.lib.optionals stdenv.isDarwin
+    [ pkgs.darwin.apple_sdk.frameworks.Security ];
 }

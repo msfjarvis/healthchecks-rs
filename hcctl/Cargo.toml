@@ -19,4 +19,4 @@ clap = { version = "3.1.18", features = ["color", "derive"] }
 color-eyre = { version = "0.6.1", default-features = false }
 comfy-table = "5.0.1"
 healthchecks = { path = "../healthchecks", version = "^3.0.6"}
-uuid = { version = "1.0.0", default-features = false }
+uuid = { version = "1.1.0", default-features = false }

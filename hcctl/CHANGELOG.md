@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Remove chrono dependency
+- Upgrade to `time` 0.3.9
+
 ## [2.0.2]
 
 ### Changed

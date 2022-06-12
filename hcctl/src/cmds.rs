@@ -1,12 +1,9 @@
-use chrono::{
-    prelude::{DateTime, Datelike, Timelike},
-    Utc,
-};
 use color_eyre::{eyre::eyre, Result};
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{ContentArrangement, Table};
 use healthchecks::{manage, model::Check};
+use time::{format_description::well_known::Rfc3339, OffsetDateTime, UtcOffset};
 use uuid::Uuid;
 
 use crate::cli::Settings;
@@ -78,7 +75,7 @@ fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
         .set_header(vec!["Number", "Time", "Type", "Duration"]);
     pings.truncate(10);
     for ping in pings {
-        let utc_time = DateTime::parse_from_rfc3339(&ping.date)?.naive_utc();
+        let utc_time = OffsetDateTime::parse(&ping.date, &Rfc3339)?.to_offset(UtcOffset::UTC);
         let date = utc_time.date();
         let time = utc_time.time();
         let time_str = format!(
@@ -112,7 +109,7 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
         .apply_modifier(UTF8_ROUND_CORNERS)
         .set_content_arrangement(ContentArrangement::Dynamic)
         .set_header(vec!["ID", "Name", "Last Ping"]);
-    let now = Utc::now();
+    let now = OffsetDateTime::now_utc();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
             human_readable_duration(&now, date_str)?
@@ -127,35 +124,35 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
     Ok(())
 }
 
-fn human_readable_duration(now: &DateTime<Utc>, date_str: &str) -> Result<String> {
-    let date = DateTime::parse_from_rfc3339(date_str)?;
-    let duration = now.signed_duration_since(date);
-    let hours = duration.num_hours();
+fn human_readable_duration(now: &OffsetDateTime, date_str: &str) -> Result<String> {
+    let date = OffsetDateTime::parse(date_str, &Rfc3339)?;
+    let duration = *now - date;
+    let hours = duration.whole_hours();
     let minutes = if hours == 0 {
-        duration.num_minutes()
+        duration.whole_minutes()
     } else {
-        duration.num_minutes() % hours
+        duration.whole_minutes() % hours
     };
     Ok(format!("{hours} hour(s) and {minutes} minute(s) ago"))
 }
 
 #[cfg(test)]
 mod tests {
-    use chrono::{TimeZone, Utc};
+    use time::macros::datetime;
 
     use crate::cmds::human_readable_duration;
 
     #[test]
     fn duration_parses_correctly() {
-        let now = &Utc.ymd(2021, 1, 26).and_hms(19, 38, 0);
-        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
+        let now = datetime!(2021-01-26 19:38:00 UTC);
+        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "5 hour(s) and 2 minute(s) ago");
     }
 
     #[test]
     fn duration_parses_correctly_with_only_minutes() {
-        let now = &Utc.ymd(2021, 1, 26).and_hms(14, 38, 0);
-        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
+        let now = datetime!(2021-01-26 14:38:00 UTC);
+        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "0 hour(s) and 37 minute(s) ago");
     }
 }

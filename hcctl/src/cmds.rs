@@ -112,7 +112,7 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
     let now = OffsetDateTime::now_utc();
     for check in checks {
         let date = if let Some(ref date_str) = check.last_ping {
-            human_readable_duration(&now, date_str)?
+            human_readable_duration(now, date_str)?
         } else {
             "-".to_owned()
         };
@@ -124,9 +124,9 @@ fn print_checks(checks: Vec<Check>) -> Result<()> {
     Ok(())
 }
 
-fn human_readable_duration(now: &OffsetDateTime, date_str: &str) -> Result<String> {
+fn human_readable_duration(now: OffsetDateTime, date_str: &str) -> Result<String> {
     let date = OffsetDateTime::parse(date_str, &Rfc3339)?;
-    let duration = *now - date;
+    let duration = now - date;
     let hours = duration.whole_hours();
     let minutes = if hours == 0 {
         duration.whole_minutes()
@@ -145,14 +145,14 @@ mod tests {
     #[test]
     fn duration_parses_correctly() {
         let now = datetime!(2021-01-26 19:38:00 UTC);
-        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
+        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "5 hour(s) and 2 minute(s) ago");
     }
 
     #[test]
     fn duration_parses_correctly_with_only_minutes() {
         let now = datetime!(2021-01-26 14:38:00 UTC);
-        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
+        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "0 hour(s) and 37 minute(s) ago");
     }
 }

@@ -138,29 +138,21 @@ fn human_readable_duration(now: &OffsetDateTime, date_str: &str) -> Result<Strin
 
 #[cfg(test)]
 mod tests {
-    use time::Date;
+    use time::macros::datetime;
 
     use crate::cmds::human_readable_duration;
 
     #[test]
     fn duration_parses_correctly() {
-        let now = &Date::from_calendar_date(2021, time::Month::January, 26)
-            .unwrap()
-            .with_hms(19, 38, 0)
-            .unwrap()
-            .assume_utc();
-        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
+        let now = datetime!(2021-01-26 19:38:00 UTC);
+        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "5 hour(s) and 2 minute(s) ago");
     }
 
     #[test]
     fn duration_parses_correctly_with_only_minutes() {
-        let now = &Date::from_calendar_date(2021, time::Month::January, 26)
-            .unwrap()
-            .with_hms(14, 38, 0)
-            .unwrap()
-            .assume_utc();
-        let duration = human_readable_duration(now, "2021-01-26T14:00:24+00:00").unwrap();
+        let now = datetime!(2021-01-26 14:38:00 UTC);
+        let duration = human_readable_duration(&now, "2021-01-26T14:00:24+00:00").unwrap();
         assert_eq!(duration, "0 hour(s) and 37 minute(s) ago");
     }
 }

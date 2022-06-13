@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.0]
+
+### Changed
+
+- Bump `uuid` dependency to `1.1.x`
+
 ## [3.0.6]
+
+### Changed
 
 - Declare MSRV as `1.58.0`. This was always the case, but it is now conveyed through the `rust-version` field.
 - Add an `# Errors` section to the rustdoc of all `Result`-returning public methods

@@ -236,7 +236,7 @@ checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 
 [[package]]
 name = "hcctl"
-version = "2.0.2"
+version = "2.0.3"
 dependencies = [
  "clap",
  "color-eyre",

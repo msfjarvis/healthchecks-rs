@@ -88,7 +88,7 @@ fn print_pings(mut pings: Vec<Ping>) -> Result<()> {
         let duration_str = if let Some(duration) = ping.duration {
             format!("{duration:.3} sec")
         } else {
-            "".to_owned()
+            "-".to_owned()
         };
         table.add_row(vec![
             format!("#{}", ping.n),

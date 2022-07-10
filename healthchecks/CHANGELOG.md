@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.1]
+
+### Changed
+
+- Bump `ureq` version requirement to `~2.5`
+
 ## [3.1.0]
 
 ### Changed
@@ -91,6 +97,8 @@ Initial release
 [3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.4
 [3.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.5
 [3.0.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.6
+[3.1.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.0
+[3.1.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.1
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

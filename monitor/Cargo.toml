@@ -15,7 +15,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 
 [dependencies]
 clap = { version = "3.2.8", features = [ "color", "deprecated", "derive" ] }
-color-eyre = { version = "0.6.1", default-features = false }
+color-eyre = { version = "0.6.2", default-features = false }
 healthchecks = { path = "../healthchecks", version = "^3.1.1" }
 subprocess = "0.2.9"
 

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.2]
+
+### Changed
+
+- Set minimum required version of `thiserror` to `v1.0.2` to fix builds with `-Z minimal-versions`
+
 ## [3.1.1]
 
 ### Changed
@@ -99,6 +105,7 @@ Initial release
 [3.0.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.0.6
 [3.1.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.0
 [3.1.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.1
+[3.1.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.2
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27

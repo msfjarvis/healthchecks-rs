@@ -4,5 +4,16 @@
     "config:base",
     "github>msfjarvis/shared-workflows//renovate/rust",
     "github>msfjarvis/shared-workflows//renovate/automerge"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "thiserror"
+      ],
+      "managers": [
+        "cargo"
+      ],
+      "enabled": false
+    }
   ]
 }

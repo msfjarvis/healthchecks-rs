@@ -18,8 +18,8 @@ clap = { version = "3.2.16", features = [ "color", "deprecated", "derive" ] }
 color-eyre = { version = "0.6.2", default-features = false }
 comfy-table = "6.0.0"
 healthchecks = { path = "../healthchecks", version = "^3.1.2" }
-time = { version = "0.3.12", features = ["parsing"] }
+time = { version = "0.3.13", features = ["parsing"] }
 uuid = { version = "1.1.2", default-features = false }
 
 [dev-dependencies]
-time = { version = "0.3.12", features = ["parsing", "macros"] }
+time = { version = "0.3.13", features = ["parsing", "macros"] }

@@ -38,3 +38,13 @@ pub(crate) struct Search {
     /// Search term to find in the list of all pings
     pub(crate) search_term: String,
 }
+
+#[cfg(test)]
+mod test {
+    use super::Opts;
+
+    #[test]
+    fn cli_assert() {
+        <Opts as clap::CommandFactory>::command().debug_assert()
+    }
+}

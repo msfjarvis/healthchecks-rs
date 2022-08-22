@@ -1,9 +1,22 @@
 use subprocess::{Exec, Redirection};
 
-pub(crate) fn run_command(
+pub(crate) fn run_with_retry(
     command: &str,
+    retries: u8,
     save_logs: bool,
-) -> std::result::Result<(), Option<String>> {
+) -> Result<(), Option<String>> {
+    let mut logs = String::new();
+    for _ in 0..retries {
+        match run_command(command, save_logs) {
+            Ok(_) => return Ok(()),
+            Err(Some(e)) => logs.push_str(&e),
+            Err(_) => {}
+        }
+    }
+    return Err(Some(logs));
+}
+
+fn run_command(command: &str, save_logs: bool) -> Result<(), Option<String>> {
     if save_logs {
         let capture_data = Exec::shell(command)
             .stdout(Redirection::Pipe)

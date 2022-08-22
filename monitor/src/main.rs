@@ -1,6 +1,7 @@
 mod cli;
 mod exec;
 
+use crate::{cli::Opts, exec::run_with_retry};
 use clap::Parser;
 use color_eyre::{eyre::eyre, Result};
 use healthchecks::ping::get_client;
@@ -16,7 +17,7 @@ struct Settings {
 
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let opts = cli::Opts::parse();
+    let opts = Opts::parse();
     let ua = if opts.has_user_agent() {
         match var("HEALTHCHECKS_USERAGENT") {
             Ok(f) => Some(f),
@@ -37,12 +38,7 @@ fn main() -> Result<()> {
         eprintln!("Failed to start timer");
     }
     let cmd = opts.command.join(" ");
-    let mut tries = 1;
-    let mut command_result = exec::run_command(&cmd, opts.save_logs);
-    while tries < opts.retry_count && command_result.is_err() {
-        command_result = exec::run_command(&cmd, opts.save_logs);
-        tries += 1;
-    }
+    let command_result = run_with_retry(&cmd, opts.retry_count, opts.save_logs);
     match command_result {
         Ok(_) => {
             if !client.report_success() {

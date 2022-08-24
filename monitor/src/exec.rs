@@ -13,7 +13,7 @@ pub(crate) fn run_with_retry(
             Err(_) => {}
         }
     }
-    return Err(Some(logs));
+    Err(Some(logs))
 }
 
 fn run_command(command: &str, save_logs: bool) -> Result<(), Option<String>> {

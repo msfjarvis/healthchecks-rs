@@ -45,6 +45,6 @@ mod test {
 
     #[test]
     fn cli_assert() {
-        <Opts as clap::CommandFactory>::command().debug_assert()
+        <Opts as clap::CommandFactory>::command().debug_assert();
     }
 }

@@ -29,6 +29,7 @@ exceptions = [
   { allow = ["MIT", "ISC", "OpenSSL"], name = "ring", version = "*" },
   { allow = ["ISC"], name = "untrusted", version = "*" },
   { allow = ["ISC"], name = "webpki", version = "*" },
+  { allow = ["Unicode-DFS-2016"], name = "unicode-ident", version = "*" },
 ]
 
 [[licenses.clarify]]

@@ -1,4 +1,4 @@
-use clap::{AppSettings, Parser};
+use clap::Parser;
 
 #[derive(Debug)]
 pub(crate) struct Settings {
@@ -7,10 +7,9 @@ pub(crate) struct Settings {
 }
 
 #[derive(Parser)]
-#[clap(author, version, about)]
-#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
+#[command(author, version, about)]
 pub(crate) struct Opts {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     pub(crate) subcommand: SubCommand,
 }
 

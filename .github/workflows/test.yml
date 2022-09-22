@@ -13,4 +13,4 @@ jobs:
     uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
     with:
       # Keep in sync with healthchecks/Cargo.toml
-      msrv: 1.59.0
+      msrv: 1.64.0

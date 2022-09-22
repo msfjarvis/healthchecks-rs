@@ -9,3 +9,6 @@ members = [
 codegen-units = 1
 lto = "thin"
 panic = "abort"
+
+[workspace.dependencies]
+clap = { version = "4.0.0-rc.2", features = [ "color", "deprecated", "derive" ] }

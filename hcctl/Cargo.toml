@@ -19,7 +19,7 @@ color-eyre = { version = "0.6.2", default-features = false }
 comfy-table = "6.1.0"
 healthchecks = { path = "../healthchecks", version = "^3.1.2" }
 time = { version = "0.3.15", features = ["parsing"] }
-uuid = { version = "1.2.0", default-features = false }
+uuid = { version = "1.2.1", default-features = false }
 
 [dev-dependencies]
 time = { version = "0.3.15", features = ["parsing", "macros"] }

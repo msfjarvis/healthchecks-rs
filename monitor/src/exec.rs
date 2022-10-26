@@ -5,15 +5,14 @@ pub(crate) fn run_with_retry(
     retries: u8,
     save_logs: bool,
 ) -> Result<(), Option<String>> {
-    let mut logs = String::new();
+    let mut logs: Option<String> = None;
     for _ in 0..retries {
         match run_command(command, save_logs) {
             Ok(_) => return Ok(()),
-            Err(Some(e)) => logs.push_str(&e),
-            Err(_) => {}
+            Err(e) => logs = e,
         }
     }
-    Err(Some(logs))
+    Err(logs)
 }
 
 fn run_command(command: &str, save_logs: bool) -> Result<(), Option<String>> {

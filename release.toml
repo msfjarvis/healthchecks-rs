@@ -1,7 +1,4 @@
 allow-branch = ["main"]
-consolidate-pushes = true
-dependent-version = "upgrade"
-dev-version = false
 push = true
 pre-release-commit-message = "chore(release): bump {{crate_name}} to version {{version}}"
 sign-commit = true

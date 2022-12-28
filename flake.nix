@@ -73,16 +73,13 @@
         // {
           pname = "workspace-deps";
         });
-      hcctl-fmt = craneLib.cargoFmt (commonArgs
-        // {
-          inherit cargoArtifacts;
-          pname = "hcctl";
-          cargoExtraArgs = hcctlArgs;
-        });
+      fmt = craneLib.cargoFmt (commonArgs // {
+        inherit cargoArtifacts;
+      });
       hcctl-clippy = craneLib.cargoClippy (commonArgs
         // {
           pname = "hcctl";
-          cargoArtifacts = hcctl-fmt;
+          cargoArtifacts = fmt;
           cargoExtraArgs = hcctlArgs;
         });
       hcctl = craneLib.buildPackage (
@@ -101,16 +98,10 @@
           partitionType = "count";
         });
 
-      monitor-fmt = craneLib.cargoFmt (commonArgs
-        // {
-          inherit cargoArtifacts;
-          pname = "monitor";
-          cargoExtraArgs = monitorArgs;
-        });
       monitor-clippy = craneLib.cargoClippy (commonArgs
         // {
           pname = "monitor";
-          cargoArtifacts = monitor-fmt;
+          cargoArtifacts = fmt;
           cargoExtraArgs = monitorArgs;
         });
       monitor = craneLib.buildPackage (
@@ -129,16 +120,10 @@
           partitionType = "count";
         });
 
-      healthchecks-fmt = craneLib.cargoFmt (commonArgs
-        // {
-          inherit cargoArtifacts;
-          pname = "healthchecks";
-          cargoExtraArgs = healthchecksArgs;
-        });
       healthchecks-clippy = craneLib.cargoClippy (commonArgs
         // {
           pname = "healthchecks";
-          cargoArtifacts = healthchecks-fmt;
+          cargoArtifacts = fmt;
           cargoExtraArgs = healthchecksArgs;
         });
       healthchecks = craneLib.buildPackage (
@@ -167,18 +152,16 @@
       checks = {
         inherit
           audit
+          fmt
           hcctl
           hcctl-clippy
-          hcctl-fmt
           hcctl-nextest
           healthchecks
           healthchecks-msrv
           healthchecks-clippy
-          healthchecks-fmt
           healthchecks-nextest
           monitor
           monitor-clippy
-          monitor-fmt
           monitor-nextest
           ;
       };

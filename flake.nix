@@ -87,6 +87,7 @@
         // {
           pname = "hcctl";
           cargoArtifacts = hcctl-clippy;
+          cargoExtraArgs = hcctlArgs;
         }
       );
       hcctl-nextest = craneLib.cargoNextest (commonArgs
@@ -109,6 +110,7 @@
         // {
           pname = "monitor";
           cargoArtifacts = monitor-clippy;
+          cargoExtraArgs = monitorArgs;
         }
       );
       monitor-nextest = craneLib.cargoNextest (commonArgs
@@ -131,6 +133,7 @@
         // {
           pname = "healthchecks";
           cargoArtifacts = healthchecks-clippy;
+          cargoExtraArgs = healthchecksArgs;
         }
       );
       healthchecks-nextest = craneLib.cargoNextest (commonArgs

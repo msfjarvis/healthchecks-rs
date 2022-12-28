@@ -10,7 +10,7 @@ on:
 name: Check Rust code
 jobs:
   check:
-    uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
-    with:
-      # Keep in sync with healthchecks/Cargo.toml
-      msrv: 1.64.0
+    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      cachix-token: ${{ secrets.CACHIX_AUTH_TOKEN }}

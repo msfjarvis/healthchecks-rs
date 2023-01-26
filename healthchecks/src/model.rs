@@ -23,6 +23,9 @@ pub struct Check {
     /// Current status of the check.
     pub status: String,
 
+    #[cfg(feature = "v2")]
+    pub started: bool,
+
     /// UTC timestamp of the last known ping.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_ping: Option<String>,

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.4]
+
+### Added
+
+- Support [v2 management API] behind the `v2` feature flag
+
+## [3.1.3]
+
+### Changed
+
+- Raise MSRV to 1.64.0
+
 ## [3.1.2]
 
 ### Changed
@@ -106,6 +118,10 @@ Initial release
 [3.1.0]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.0
 [3.1.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.1
 [3.1.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.2
+[3.1.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.3
+[3.1.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.4
+
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27
+[v2 management api]: https://healthchecks.io/docs/api/

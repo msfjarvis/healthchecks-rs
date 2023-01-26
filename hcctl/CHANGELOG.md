@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.6]
+
+## Changed
+
+- Upgrade to `healthchecks` 3.1.4 and opt-into V2 management API
+
+## [2.0.5]
+
+## Changed
+
+- Upgrade to `clap` 4.0
+
+## [2.0.4]
+
+## Changed
+
+- Upgrade to `clap` 3.2
+
+
 ## [2.0.3]
 
 ### Changed
@@ -43,3 +62,6 @@ Initial release
 [2.0.1]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.1
 [2.0.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.2
 [2.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.3
+[2.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.4
+[2.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.5
+[2.0.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/hcctl-2.0.6

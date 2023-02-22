@@ -73,9 +73,10 @@
         // {
           pname = "workspace-deps";
         });
-      fmt = craneLib.cargoFmt (commonArgs // {
-        inherit cargoArtifacts;
-      });
+      fmt = craneLib.cargoFmt (commonArgs
+        // {
+          inherit cargoArtifacts;
+        });
       hcctl-clippy = craneLib.cargoClippy (commonArgs
         // {
           pname = "hcctl";

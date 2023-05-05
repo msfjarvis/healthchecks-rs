@@ -208,6 +208,8 @@
           nil
           rustStable
         ];
+
+        CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
       };
     });
 }

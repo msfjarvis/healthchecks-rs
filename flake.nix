@@ -55,47 +55,66 @@
       rustMsrv = pkgs.rust-bin.stable."1.64.0".default;
 
       craneLib = (crane.mkLib pkgs).overrideToolchain rustStable;
+      markdownFilter = path: _type: builtins.match ".*md$" path != null;
+      markdownOrCargo = path: type:
+        (markdownFilter path type) || (craneLib.filterCargoSources path type);
+
       commonArgs = {
-        src = ./.;
+        src = pkgs.lib.cleanSourceWith {
+          src = craneLib.path ./.;
+          filter = markdownOrCargo;
+        };
         buildInputs = [];
         nativeBuildInputs = [];
         cargoClippyExtraArgs = "--all-targets -- --deny warnings";
       };
-      src = ./.;
       hcctlArgs = "-p hcctl";
       healthchecksArgs = "-p healthchecks";
       monitorArgs = "-p healthchecks-monitor";
 
-      audit = craneLib.cargoAudit {
-        inherit src advisory-db;
+      hcctlName = craneLib.crateNameFromCargoToml {
+        cargoToml = ./hcctl/Cargo.toml;
       };
+      healthchecksName = craneLib.crateNameFromCargoToml {
+        cargoToml = ./healthchecks/Cargo.toml;
+      };
+      monitorName = craneLib.crateNameFromCargoToml {
+        cargoToml = ./monitor/Cargo.toml;
+      };
+      workspaceName = craneLib.crateNameFromCargoToml {cargoToml = ./Cargo.toml;};
+
+      audit = craneLib.cargoAudit (commonArgs
+        // {
+          inherit advisory-db;
+          inherit (workspaceName) pname version;
+        });
       cargoArtifacts = craneLib.buildDepsOnly (commonArgs
         // {
-          pname = "workspace-deps";
+          inherit (workspaceName) pname version;
         });
       fmt = craneLib.cargoFmt (commonArgs
         // {
-          inherit cargoArtifacts;
+          inherit (workspaceName) pname version;
         });
       hcctl-clippy = craneLib.cargoClippy (commonArgs
         // {
-          pname = "hcctl";
-          cargoArtifacts = fmt;
+          inherit (hcctlName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = hcctlArgs;
         });
       hcctl = craneLib.buildPackage (
         commonArgs
         // {
-          pname = "hcctl";
-          cargoArtifacts = hcctl-clippy;
+          inherit (hcctlName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = hcctlArgs;
           doCheck = false;
         }
       );
       hcctl-nextest = craneLib.cargoNextest (commonArgs
         // {
-          pname = "hcctl";
-          cargoArtifacts = hcctl;
+          inherit (hcctlName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = hcctlArgs;
           partitions = 1;
           partitionType = "count";
@@ -103,23 +122,23 @@
 
       monitor-clippy = craneLib.cargoClippy (commonArgs
         // {
-          pname = "monitor";
-          cargoArtifacts = fmt;
+          inherit (monitorName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = monitorArgs;
         });
       monitor = craneLib.buildPackage (
         commonArgs
         // {
-          pname = "monitor";
-          cargoArtifacts = monitor-clippy;
+          inherit (monitorName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = monitorArgs;
           doCheck = false;
         }
       );
       monitor-nextest = craneLib.cargoNextest (commonArgs
         // {
-          pname = "monitor";
-          cargoArtifacts = monitor;
+          inherit (monitorName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = monitorArgs;
           partitions = 1;
           partitionType = "count";
@@ -127,31 +146,32 @@
 
       healthchecks-clippy = craneLib.cargoClippy (commonArgs
         // {
-          pname = "healthchecks";
-          cargoArtifacts = fmt;
+          inherit (healthchecksName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = healthchecksArgs;
         });
       healthchecks = craneLib.buildPackage (
         commonArgs
         // {
-          pname = "healthchecks";
-          cargoArtifacts = healthchecks-clippy;
+          inherit (healthchecksName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = healthchecksArgs;
           doCheck = false;
         }
       );
       healthchecks-nextest = craneLib.cargoNextest (commonArgs
         // {
-          pname = "healthchecks";
-          cargoArtifacts = healthchecks;
+          inherit (healthchecksName) pname version;
+          inherit cargoArtifacts;
           cargoExtraArgs = healthchecksArgs;
           partitions = 1;
           partitionType = "count";
         });
       healthchecks-msrv = ((crane.mkLib pkgs).overrideToolchain rustMsrv).buildPackage (commonArgs
         // {
+          inherit (healthchecksName) version;
+          inherit cargoArtifacts;
           pname = "healthchecks-msrv";
-          cargoArtifacts = healthchecks;
           cargoExtraArgs = healthchecksArgs;
           doCheck = false;
         });
@@ -180,7 +200,7 @@
       apps.default = flake-utils.lib.mkApp {drv = hcctl;};
 
       devShells.default = pkgs.mkShell {
-        inputsFrom = builtins.attrValues self.checks;
+        inputsFrom = builtins.attrValues self.checks.${system};
 
         nativeBuildInputs = with pkgs; [
           cargo-nextest

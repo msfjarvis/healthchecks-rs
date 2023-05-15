@@ -3,19 +3,19 @@
 
   inputs = {
     nixpkgs = {url = "github:NixOS/nixpkgs/nixpkgs-unstable";};
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     flake-utils = {url = "github:numtide/flake-utils";};
 
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
     };
 
     crane = {
@@ -24,7 +24,6 @@
         flake-compat.follows = "flake-compat";
         flake-utils.follows = "flake-utils";
         nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
       };
     };
 
@@ -32,27 +31,32 @@
       url = "github:rustsec/advisory-db";
       flake = false;
     };
+
+    # Keep in sync with healthchecks/Cargo.toml
+    rust-msrv = {
+      url = "https://static.rust-lang.org/dist/channel-rust-1.64.0.toml";
+      flake = false;
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    fenix,
     crane,
     flake-utils,
     advisory-db,
-    rust-overlay,
+    rust-msrv,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [(import rust-overlay)];
-      };
+      pkgs = import nixpkgs {inherit system;};
 
-      rustStable =
-        pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-      # Keep in sync with healthchecks/Cargo.toml
-      rustMsrv = pkgs.rust-bin.stable."1.64.0".default;
+      rustStable = (import fenix {inherit pkgs;}).fromToolchainFile {
+        file = ./rust-toolchain.toml;
+        sha256 = "sha256-eMJethw5ZLrJHmoN2/l0bIyQjoTX1NsvalWSscTixpI=";
+      };
+      rustMsrv = (fenix.packages.${system}.fromManifestFile rust-msrv).minimalToolchain;
 
       craneLib = (crane.mkLib pkgs).overrideToolchain rustStable;
       markdownFilter = path: _type: builtins.match ".*md$" path != null;

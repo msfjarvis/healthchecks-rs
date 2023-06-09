@@ -11,7 +11,7 @@ lto = "thin"
 panic = "abort"
 
 [workspace.dependencies]
-clap = { version = "4.3.2", features = [ "color", "deprecated", "derive" ] }
+clap = { version = "4.3.3", features = [ "color", "deprecated", "derive" ] }
 
 [workspace.package]
 version = "1.0.0"

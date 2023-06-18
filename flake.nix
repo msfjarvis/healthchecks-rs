@@ -174,7 +174,6 @@
       healthchecks-msrv = ((crane.mkLib pkgs).overrideToolchain rustMsrv).buildPackage (commonArgs
         // {
           inherit (healthchecksName) version;
-          inherit cargoArtifacts;
           pname = "healthchecks-msrv";
           cargoExtraArgs = healthchecksArgs;
           doCheck = false;

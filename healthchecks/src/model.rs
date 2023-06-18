@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde_derive::{Deserialize, Serialize};
 
 /// This struct encapsulates a check as represented in the healthchecks.io
 /// API. Fields marked optional are either optional in the default API response

@@ -109,7 +109,7 @@ impl ManageClient {
     /// preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     pub fn get_checks(&self) -> ApiResult<Vec<Check>> {
-        #[derive(serde::Deserialize)]
+        #[derive(serde_derive::Deserialize)]
         struct ChecksResult {
             pub checks: Vec<Check>,
         }
@@ -159,7 +159,7 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::PossibleReadOnlyKey`] if the API key does not have access and could potentially be a [read-only key](https://healthchecks.io/docs/api/).
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn get_channels(&self) -> ApiResult<Vec<Channel>> {
-        #[derive(serde::Deserialize)]
+        #[derive(serde_derive::Deserialize)]
         struct ChannelsResult {
             pub channels: Vec<Channel>,
         }
@@ -209,7 +209,7 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn list_logged_pings(&self, check_id: &str) -> ApiResult<Vec<Ping>> {
-        #[derive(serde::Deserialize)]
+        #[derive(serde_derive::Deserialize)]
         struct PingsResult {
             pub pings: Vec<Ping>,
         }

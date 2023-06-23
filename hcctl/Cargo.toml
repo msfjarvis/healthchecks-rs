@@ -15,7 +15,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 
 [dependencies]
 clap.workspace = true
-color-eyre = { version = "0.6.2", default-features = false }
+color-eyre.workspace = true
 comfy-table = "7.0.1"
 healthchecks.workspace = true
 time = { version = "0.3.22", features = ["parsing"] }

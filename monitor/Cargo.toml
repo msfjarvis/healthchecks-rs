@@ -16,7 +16,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 [dependencies]
 clap.workspace = true
 color-eyre = { version = "0.6.2", default-features = false }
-healthchecks = { path = "../healthchecks", version = "^3.1.4" }
+healthchecks.workspace = true
 subprocess = "0.2.9"
 
 [badges]

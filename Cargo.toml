@@ -12,6 +12,7 @@ panic = "abort"
 
 [workspace.dependencies]
 clap = { version = "4.3.6", features = [ "color", "deprecated", "derive" ] }
+healthchecks = { path = "healthchecks", version = "^3.1.4" }
 
 [workspace.package]
 version = "1.0.0"

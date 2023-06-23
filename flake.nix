@@ -71,6 +71,8 @@
         buildInputs = [];
         nativeBuildInputs = [];
         cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+        # https://github.com/ipetkov/crane/issues/312
+        extraDummyScript = "rm -f $(find $out | grep bin/crane-dummy/main.rs)";
       };
       hcctlArgs = "-p hcctl";
       healthchecksArgs = "-p healthchecks";
@@ -85,7 +87,10 @@
       monitorName = craneLib.crateNameFromCargoToml {
         cargoToml = ./monitor/Cargo.toml;
       };
-      workspaceName = craneLib.crateNameFromCargoToml {cargoToml = ./Cargo.toml;};
+      workspaceName = {
+        version = "1.0.0";
+        pname = "healthchecks-rs";
+      };
 
       audit = craneLib.cargoAudit (commonArgs
         // {

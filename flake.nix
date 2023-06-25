@@ -1,48 +1,34 @@
 {
   description = "healthchecks-rs monorepo";
 
-  inputs = {
-    nixpkgs = {url = "github:NixOS/nixpkgs/nixpkgs-unstable";};
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  inputs.systems.url = "github:msfjarvis/flake-systems";
 
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+  inputs.advisory-db.url = "github:rustsec/advisory-db";
+  inputs.advisory-db.flake = false;
 
-    flake-utils = {url = "github:numtide/flake-utils";};
+  inputs.crane.url = "github:ipetkov/crane";
+  inputs.crane.inputs.flake-compat.follows = "flake-compat";
+  inputs.crane.inputs.flake-utils.follows = "flake-utils";
+  inputs.crane.inputs.nixpkgs.follows = "nixpkgs";
 
-    flake-compat = {
-      url = "github:nix-community/flake-compat";
-      flake = false;
-    };
+  inputs.devshell.url = "github:numtide/devshell";
+  inputs.devshell.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.devshell.inputs.systems.follows = "systems";
 
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+  inputs.fenix.url = "github:nix-community/fenix";
+  inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
 
-    advisory-db = {
-      url = "github:rustsec/advisory-db";
-      flake = false;
-    };
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.flake-utils.inputs.systems.follows = "systems";
 
-    # Keep in sync with healthchecks/Cargo.toml
-    rust-msrv = {
-      url = "https://static.rust-lang.org/dist/channel-rust-1.64.0.toml";
-      flake = false;
-    };
-  };
+  inputs.flake-compat.url = "github:nix-community/flake-compat";
+  inputs.flake-compat.flake = false;
+
+  # Keep in sync with healthchecks/Cargo.toml
+  inputs.rust-msrv.url = "https://static.rust-lang.org/dist/channel-rust-1.64.0.toml";
+  inputs.rust-msrv.flake = false;
 
   outputs = {
     self,

@@ -1,9 +1,5 @@
 [workspace]
-members = [
-  "hcctl",
-  "healthchecks",
-  "monitor",
-]
+members = ["hcctl", "healthchecks", "monitor"]
 
 [profile.release]
 codegen-units = 1
@@ -11,6 +7,6 @@ lto = "thin"
 panic = "abort"
 
 [workspace.dependencies]
-clap = { version = "4.3.8", features = [ "color", "deprecated", "derive" ] }
+clap = { version = "4.3.8", features = ["color", "deprecated", "derive"] }
 healthchecks = { path = "healthchecks", version = "^3.1.4" }
 color-eyre = { version = "0.6.2", default-features = false }

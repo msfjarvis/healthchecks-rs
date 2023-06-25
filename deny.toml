@@ -17,28 +17,33 @@ notice = "warn"
 ignore = []
 [licenses]
 unlicensed = "deny"
-allow = [
-    "MIT",
-    "Apache-2.0",
-]
+allow = ["MIT", "Apache-2.0"]
 copyleft = "allow"
 allow-osi-fsf-free = "neither"
 default = "deny"
 confidence-threshold = 0.8
 exceptions = [
-  { allow = ["MIT", "ISC", "OpenSSL"], name = "ring", version = "*" },
-  { allow = ["ISC"], name = "untrusted", version = "*" },
-  { allow = ["ISC"], name = "webpki", version = "*" },
-  { allow = ["Unicode-DFS-2016"], name = "unicode-ident", version = "*" },
+  { allow = [
+    "MIT",
+    "ISC",
+    "OpenSSL",
+  ], name = "ring", version = "*" },
+  { allow = [
+    "ISC",
+  ], name = "untrusted", version = "*" },
+  { allow = [
+    "ISC",
+  ], name = "webpki", version = "*" },
+  { allow = [
+    "Unicode-DFS-2016",
+  ], name = "unicode-ident", version = "*" },
 ]
 
 [[licenses.clarify]]
 name = "ring"
 version = "*"
 expression = "MIT AND ISC AND OpenSSL"
-license-files = [
-  { path = "LICENSE", hash = 0xbd0eed23 }
-]
+license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
 
 [licenses.private]
 ignore = false

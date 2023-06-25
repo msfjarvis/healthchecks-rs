@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs = {url = "github:NixOS/nixpkgs/nixpkgs-unstable";};
 
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     fenix = {
       url = "github:nix-community/fenix";
       inputs = {
@@ -42,6 +47,7 @@
   outputs = {
     self,
     nixpkgs,
+    devshell,
     fenix,
     crane,
     flake-utils,
@@ -50,7 +56,10 @@
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {inherit system;};
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [devshell.overlays.default];
+      };
 
       rustStable = (import fenix {inherit pkgs;}).fromToolchainFile {
         file = ./rust-toolchain.toml;
@@ -207,17 +216,22 @@
       apps.monitor = flake-utils.lib.mkApp {drv = monitor;};
       apps.default = flake-utils.lib.mkApp {drv = hcctl;};
 
-      devShells.default = pkgs.mkShell {
-        inputsFrom = builtins.attrValues self.checks.${system};
+      devShells.default = pkgs.devshell.mkShell {
+        bash = {interactive = "";};
 
-        nativeBuildInputs = with pkgs; [
+        env = [
+          {
+            name = "DEVSHELL_NO_MOTD";
+            value = 1;
+          }
+        ];
+
+        packages = with pkgs; [
           cargo-nextest
           cargo-release
           nil
           rustStable
         ];
-
-        CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
       };
     });
 }

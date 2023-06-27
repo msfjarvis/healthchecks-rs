@@ -19,7 +19,7 @@ color-eyre.workspace = true
 comfy-table = "7.0.1"
 healthchecks.workspace = true
 time = { version = "0.3.22", features = ["parsing"] }
-uuid = { version = "1.4.0", default-features = false, features = ["v1"] }
+uuid.workspace = true
 
 [dev-dependencies]
 time = { version = "0.3.22", features = ["parsing", "macros"] }

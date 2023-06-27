@@ -7,5 +7,5 @@ pub mod manage;
 pub mod model;
 /// Functions for interacting with the Healthchecks pinging API.
 pub mod ping;
-/// Internal utility functions
-pub(crate) mod util;
+/// The default User-Agent header value for the library
+pub(crate) const DEFAULT_USER_AGENT: &str = concat!("healthchecks-rs", "/", env!("CARGO_PKG_VERSION"));

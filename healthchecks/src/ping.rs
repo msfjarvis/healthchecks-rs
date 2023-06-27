@@ -1,5 +1,4 @@
-use crate::errors::HealthchecksConfigError;
-use crate::util::default_user_agent;
+use crate::{errors::HealthchecksConfigError, DEFAULT_USER_AGENT};
 use std::result::Result;
 use std::time::Duration;
 use ureq::{Agent, AgentBuilder};
@@ -48,7 +47,7 @@ pub fn get_client_with_url(
     } else {
         Ok(PingClient {
             uuid: uuid.to_owned(),
-            user_agent: default_user_agent().to_owned(),
+            user_agent: DEFAULT_USER_AGENT.to_string(),
             ureq_agent: AgentBuilder::new().timeout(Duration::from_secs(5)).build(),
             api_url: HEALTHCHECK_PING_URL.to_owned(),
         })

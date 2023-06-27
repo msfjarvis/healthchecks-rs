@@ -1,7 +1,6 @@
 use crate::{
     errors::{HealthchecksApiError, HealthchecksConfigError},
-    model::{Channel, Check, Flip, NewCheck, Ping, UpdatedCheck},
-    util::default_user_agent,
+    model::{Channel, Check, Flip, NewCheck, Ping, UpdatedCheck}, DEFAULT_USER_AGENT,
 };
 use std::result::Result;
 use ureq::{delete, get, post, Error, Request};
@@ -63,7 +62,7 @@ pub fn get_client_with_url(
     } else if api_url.is_empty() {
         Err(HealthchecksConfigError::EmptyApiUrl)
     } else {
-        let user_agent = user_agent.unwrap_or_else(|| default_user_agent().to_owned());
+        let user_agent = user_agent.unwrap_or_else(|| DEFAULT_USER_AGENT.to_string());
 
         Ok(ManageClient {
             api_key,

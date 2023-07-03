@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.5]
+
+- Upgrade to `healthchecks` 3.1.5
+
 ## [3.0.4]
 
 - Upgrade to `healthchecks` 3.1.4
@@ -57,3 +61,4 @@ Initial release
 [3.0.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.2
 [3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.3
 [3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.4
+[3.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.5

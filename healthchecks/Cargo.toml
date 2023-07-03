@@ -24,6 +24,7 @@ uuid.workspace = true
 
 [features]
 v2 = []
+v3 = ["v2"]
 
 [badges]
 maintenance = { status = "actively-developed" }

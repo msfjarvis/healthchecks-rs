@@ -6,11 +6,13 @@ use crate::{
 use std::result::Result;
 use ureq::{delete, get, post, Error, Request};
 
-#[cfg(not(feature = "v2"))]
-const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v1/";
-
-#[cfg(feature = "v2")]
-const HEALTHCHECK_API_URL: &str = "https://healthchecks.io/api/v2/";
+const HEALTHCHECK_API_URL: &str = if cfg!(v3) {
+    "https://healthchecks.io/api/v3"
+} else if cfg!(v2) {
+    "https://healthchecks.io/api/v2"
+} else {
+    "https://healthchecks.io/api/v1"
+};
 
 /// Typealias to prevent some repetitiveness in function definitions
 pub type ApiResult<T> = Result<T, HealthchecksApiError>;

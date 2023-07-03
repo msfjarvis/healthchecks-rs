@@ -26,6 +26,9 @@ pub struct Check {
     #[cfg(feature = "v2")]
     pub started: bool,
 
+    #[cfg(feature = "v3")]
+    pub slug: Option<String>,
+
     /// UTC timestamp of the last known ping.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_ping: Option<String>,

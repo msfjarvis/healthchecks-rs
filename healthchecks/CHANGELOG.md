@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Support [v3 management API] behind the `v3` feature flag. `v3` automatically selects `v2`.
+
 ## [3.1.4]
 
 ### Added
@@ -125,3 +129,4 @@ Initial release
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27
 [v2 management api]: https://healthchecks.io/docs/api/
+[v3 management api]: https://healthchecks.io/docs/api/

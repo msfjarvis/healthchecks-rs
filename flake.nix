@@ -215,6 +215,7 @@
         packages = with pkgs; [
           cargo-nextest
           cargo-release
+          cargo-semver-checks
           nil
           rustStable
         ];

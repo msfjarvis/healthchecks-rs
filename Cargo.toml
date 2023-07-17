@@ -10,4 +10,4 @@ panic = "abort"
 clap = { version = "4.3.12", features = ["color", "deprecated", "derive"] }
 healthchecks = { path = "healthchecks", version = "^3.1.5", features = ["v3"] }
 color-eyre = { version = "0.6.2", default-features = false }
-uuid = { version = "1.4.0", default-features = false, features = ["v1"] }
+uuid = { version = "1.4.1", default-features = false, features = ["v1"] }

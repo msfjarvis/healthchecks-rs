@@ -16,8 +16,8 @@ rust-version = "1.64.0"
 
 [dependencies]
 thiserror = ">=1.0.2"
-serde = { version = "1.0.181", default-features = false }
-serde_derive = "1.0.181"
+serde = { version = "1.0.182", default-features = false }
+serde_derive = "1.0.182"
 serde_json = "1.0.104"
 ureq = { version = "2.7.1", features = ["json"] }
 uuid.workspace = true

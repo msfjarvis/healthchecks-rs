@@ -1,4 +1,4 @@
-# healthchecks-rs [![Built with Garnix](https://img.shields.io/static/v1?label=Built%20with&message=Garnix&color=blue&style=flat&logo=nixos&link=https://garnix.io&labelColor=111212)](https://garnix.io)
+# healthchecks-rs [![Built with Garnix](https://img.shields.io/endpoint?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fmsfjarvis%2Fhealthchecks-rs%3Fbranch%3Dmain)](https://garnix.io)
 
 Rust crates for working with [healthchecks.io]. The repository contains these crates:
 

@@ -216,6 +216,7 @@
           cargo-semver-checks
           nil
           rustStable
+          stdenv.cc
         ];
       };
     });

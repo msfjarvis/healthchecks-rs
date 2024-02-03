@@ -18,8 +18,8 @@ clap.workspace = true
 color-eyre.workspace = true
 comfy-table = "7.1.0"
 healthchecks.workspace = true
-time = { version = "0.3.32", features = ["parsing"] }
+time = { version = "0.3.33", features = ["parsing"] }
 uuid.workspace = true
 
 [dev-dependencies]
-time = { version = "0.3.32", features = ["parsing", "macros"] }
+time = { version = "0.3.33", features = ["parsing", "macros"] }

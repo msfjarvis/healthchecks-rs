@@ -15,7 +15,7 @@
   inputs.devshell.inputs.nixpkgs.follows = "nixpkgs";
   inputs.devshell.inputs.flake-utils.follows = "flake-utils";
 
-  inputs.fenix.url = "github:nix-community/fenix";
+  inputs.fenix.url = "github:nix-community/fenix/staging";
   inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -47,7 +47,7 @@
 
       rustStable = (import fenix {inherit pkgs;}).fromToolchainFile {
         file = ./rust-toolchain.toml;
-        sha256 = "sha256-rLP8+fTxnPHoR96ZJiCa/5Ans1OojI7MLsmSqR2ip8o=";
+        sha256 = "sha256-SXRtAuO4IqNOQq+nLbrsDFbVk+3aVA8NNpSZsKlVH/8=";
       };
       rustMsrv = (fenix.packages.${system}.fromManifestFile rust-msrv).minimalToolchain;
 

@@ -179,7 +179,6 @@
     in {
       checks = {
         inherit
-          audit
           fmt
           hcctl
           hcctl-clippy
@@ -192,6 +191,8 @@
           monitor-clippy
           monitor-nextest
           ;
+        # TODO: Re-enable once https://github.com/NixOS/nixpkgs/issues/288064 is fixed
+        # inherit audit;
       };
 
       packages.default = hcctl;

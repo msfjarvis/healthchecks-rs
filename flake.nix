@@ -29,7 +29,6 @@
   inputs.rust-msrv.flake = false;
 
   outputs = {
-    self,
     nixpkgs,
     devshell,
     fenix,
@@ -67,9 +66,6 @@
         # https://github.com/ipetkov/crane/issues/312
         extraDummyScript = "rm -f $(find $out | grep bin/crane-dummy/main.rs)";
       };
-      hcctlArgs = "-p hcctl";
-      healthchecksArgs = "-p healthchecks";
-      monitorArgs = "-p healthchecks-monitor";
 
       hcctlName = craneLib.crateNameFromCargoToml {
         cargoToml = ./hcctl/Cargo.toml;
@@ -98,74 +94,44 @@
         // {
           inherit (workspaceName) pname version;
         });
-      hcctl-clippy = craneLib.cargoClippy (commonArgs
-        // {
-          inherit (hcctlName) pname version;
-          inherit cargoArtifacts;
-          cargoExtraArgs = hcctlArgs;
-        });
+
       hcctl = craneLib.buildPackage (
         commonArgs
         // {
           inherit (hcctlName) pname version;
           inherit cargoArtifacts;
-          cargoExtraArgs = hcctlArgs;
+          cargoExtraArgs = "-p hcctl";
           doCheck = false;
         }
       );
-      hcctl-nextest = craneLib.cargoNextest (commonArgs
-        // {
-          inherit (hcctlName) pname version;
-          inherit cargoArtifacts;
-          cargoExtraArgs = hcctlArgs;
-          partitions = 1;
-          partitionType = "count";
-        });
 
-      monitor-clippy = craneLib.cargoClippy (commonArgs
-        // {
-          inherit (monitorName) pname version;
-          inherit cargoArtifacts;
-          cargoExtraArgs = monitorArgs;
-        });
       monitor = craneLib.buildPackage (
         commonArgs
         // {
           inherit (monitorName) pname version;
           inherit cargoArtifacts;
-          cargoExtraArgs = monitorArgs;
+          cargoExtraArgs = "-p healthchecks-monitor";
           doCheck = false;
         }
       );
-      monitor-nextest = craneLib.cargoNextest (commonArgs
-        // {
-          inherit (monitorName) pname version;
-          inherit cargoArtifacts;
-          cargoExtraArgs = monitorArgs;
-          partitions = 1;
-          partitionType = "count";
-        });
 
-      healthchecks-clippy = craneLib.cargoClippy (commonArgs
-        // {
-          inherit (healthchecksName) pname version;
-          inherit cargoArtifacts;
-          cargoExtraArgs = healthchecksArgs;
-        });
-      healthchecks = craneLib.buildPackage (
+      workspace = craneLib.buildPackage (
         commonArgs
         // {
           inherit (healthchecksName) pname version;
           inherit cargoArtifacts;
-          cargoExtraArgs = healthchecksArgs;
           doCheck = false;
         }
       );
-      healthchecks-nextest = craneLib.cargoNextest (commonArgs
+      workspace-clippy = craneLib.cargoClippy (commonArgs
         // {
           inherit (healthchecksName) pname version;
           inherit cargoArtifacts;
-          cargoExtraArgs = healthchecksArgs;
+        });
+      workspace-nextest = craneLib.cargoNextest (commonArgs
+        // {
+          inherit (healthchecksName) pname version;
+          inherit cargoArtifacts;
           partitions = 1;
           partitionType = "count";
         });
@@ -173,33 +139,20 @@
         // {
           inherit (healthchecksName) version;
           pname = "healthchecks-msrv";
-          cargoExtraArgs = healthchecksArgs;
+          cargoExtraArgs = "-p healthchecks";
           doCheck = false;
         });
     in {
       checks = {
-        inherit
-          fmt
-          hcctl
-          hcctl-clippy
-          hcctl-nextest
-          healthchecks
-          healthchecks-msrv
-          healthchecks-clippy
-          healthchecks-nextest
-          monitor
-          monitor-clippy
-          monitor-nextest
-          ;
-        # TODO: Re-enable once https://github.com/NixOS/nixpkgs/issues/288064 is fixed
-        # inherit audit;
+        inherit audit fmt workspace workspace-clippy healthchecks-msrv workspace-nextest;
       };
 
-      packages.default = hcctl;
+      packages = {
+        inherit hcctl monitor;
+      };
 
       apps.hcctl = flake-utils.lib.mkApp {drv = hcctl;};
       apps.monitor = flake-utils.lib.mkApp {drv = monitor;};
-      apps.default = flake-utils.lib.mkApp {drv = hcctl;};
 
       devShells.default = pkgs.devshell.mkShell {
         bash = {interactive = "";};

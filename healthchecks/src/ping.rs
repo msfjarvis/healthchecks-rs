@@ -58,7 +58,7 @@ impl PingClient {
     /// Set the user agent for the given config
     #[must_use]
     pub fn set_user_agent(mut self, user_agent: &str) -> PingClient {
-        self.user_agent = user_agent.to_owned();
+        user_agent.clone_into(&mut self.user_agent);
         self
     }
 

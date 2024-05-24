@@ -40,7 +40,7 @@ fn main() -> Result<()> {
     let cmd = opts.command.join(" ");
     let command_result = run_with_retry(&cmd, opts.retry_count, opts.save_logs);
     match command_result {
-        Ok(_) => {
+        Ok(()) => {
             if !client.report_success() {
                 eprintln!("Failed to report success");
             }

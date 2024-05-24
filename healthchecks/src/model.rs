@@ -245,7 +245,7 @@ mod tests {
 
     #[test]
     fn new_check_does_not_serialize_nulls() {
-        let new_check: NewCheck = Default::default();
+        let new_check = NewCheck::default();
         let value = to_value(new_check);
         assert!(value.is_ok());
         assert_eq!(value.unwrap().to_string(), "{}");
@@ -253,7 +253,7 @@ mod tests {
 
     #[test]
     fn updated_check_does_not_serialize_nulls() {
-        let updated_check: UpdatedCheck = Default::default();
+        let updated_check = UpdatedCheck::default();
         let value = to_value(updated_check);
         assert!(value.is_ok());
         assert_eq!(value.unwrap().to_string(), "{}");

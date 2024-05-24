@@ -8,7 +8,7 @@ pub(crate) fn run_with_retry(
     let mut logs: Option<String> = None;
     for _ in 0..retries {
         match run_command(command, save_logs) {
-            Ok(_) => return Ok(()),
+            Ok(()) => return Ok(()),
             Err(e) => logs = e,
         }
     }

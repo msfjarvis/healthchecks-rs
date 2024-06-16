@@ -27,7 +27,7 @@ A simple Rust library that allows pinging [healthchecks.io](https://healthchecks
 ```rust
 use healthchecks::ping::get_client;
 
-fn main() {
+fn ping_api() {
     let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap();
     config.report_failure();
     config.report_success();
@@ -39,7 +39,7 @@ If you want to set a custom user agent for filtering purposes (default is `healt
 ```rust
 use healthchecks::ping::get_client;
 
-fn main() {
+fn custom_user_agent() {
     let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap().set_user_agent("very-fancy-useragent");
     config.report_failure();
     config.report_success();
@@ -54,7 +54,7 @@ use healthchecks::ping::get_client;
 
 fn do_long_running_task() {}
 
-fn main() {
+fn timer() {
     let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap();
     config.start_timer();
     do_long_running_task();

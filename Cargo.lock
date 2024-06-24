@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "healthchecks"
-version = "3.1.6"
+version = "3.1.7"
 dependencies = [
  "serde",
  "serde_derive",

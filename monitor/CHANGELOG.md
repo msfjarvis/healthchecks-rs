@@ -2,22 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## Unreleased
+
+## [3.0.7]
+
+### Changed
+
+- Upgrade to `healthchecks` 3.1.7
+
+## [3.0.6]
+
+### Changed
+
+- Upgrade to `healthchecks` 3.1.6
 
 ## [3.0.5]
+
+### Changed
 
 - Upgrade to `healthchecks` 3.1.5
 
 ## [3.0.4]
 
+### Changed
+
 - Upgrade to `healthchecks` 3.1.4
 
 ## [3.0.3]
+
+### Changed
 
 - Revert back to old logging behaviour from before hcctl 3.0.2
 - Upgrade to `clap` 4.0
 
 ## [3.0.2]
+
+### Changed
 
 - Upgrade to `clap` 3.2
 - Rework retries to combine logs of each run in the final failure ping
@@ -62,3 +82,5 @@ Initial release
 [3.0.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.3
 [3.0.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.4
 [3.0.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.5
+[3.0.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.6
+[3.0.7]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-monitor-3.0.7

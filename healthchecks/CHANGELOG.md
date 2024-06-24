@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.7]
+
+### Changed
+
+- Update `serde`
+
+## [3.1.6]
+
+### Changed
+
+- Update `serde`
+
+## [3.1.5]
+
 ### Added
 
 - Support [v3 management API] behind the `v3` feature flag. `v3` automatically selects `v2`.
@@ -124,6 +138,9 @@ Initial release
 [3.1.2]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.2
 [3.1.3]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.3
 [3.1.4]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.4
+[3.1.5]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.5
+[3.1.6]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.6
+[3.1.7]: https://github.com/msfjarvis/healthchecks-rs/releases/tag/healthchecks-v3.1.7
 
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22

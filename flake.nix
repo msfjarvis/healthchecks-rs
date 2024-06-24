@@ -63,8 +63,6 @@
         buildInputs = [];
         nativeBuildInputs = [];
         cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-        # https://github.com/ipetkov/crane/issues/312
-        extraDummyScript = "rm -f $(find $out | grep bin/crane-dummy/main.rs)";
       };
 
       hcctlName = craneLib.crateNameFromCargoToml {

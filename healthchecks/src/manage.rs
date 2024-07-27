@@ -6,9 +6,9 @@ use crate::{
 use std::result::Result;
 use ureq::{delete, get, post, Error, Request};
 
-const HEALTHCHECK_API_URL: &str = if cfg!(v3) {
+const HEALTHCHECK_API_URL: &str = if cfg!(feature = "v3") {
     "https://healthchecks.io/api/v3"
-} else if cfg!(v2) {
+} else if cfg!(feature = "v2") {
     "https://healthchecks.io/api/v2"
 } else {
     "https://healthchecks.io/api/v1"
@@ -35,7 +35,7 @@ pub struct ManageClient {
 ///
 /// - Returns [`HealthchecksConfigError::EmptyApiKey`] if `api_key` is empty.
 /// - Returns [`HealthchecksConfigError::EmptyUserAgent`] if `user_agent` is [`Some`] but the underlying
-/// [`String`] is empty.
+///   [`String`] is empty.
 pub fn get_client(
     api_key: String,
     user_agent: Option<String>,
@@ -51,7 +51,7 @@ pub fn get_client(
 ///
 /// - Returns [`HealthchecksConfigError::EmptyApiKey`] if `api_key` is empty.
 /// - Returns [`HealthchecksConfigError::EmptyUserAgent`] if `user_agent` is [`Some`] but the underlying
-/// [`String`] is empty.
+///   [`String`] is empty.
 /// - Returns [`HealthchecksConfigError::EmptyApiUrl`] if `api_url` is empty.
 pub fn get_client_with_url(
     api_key: String,
@@ -108,7 +108,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     pub fn get_checks(&self) -> ApiResult<Vec<Check>> {
         #[derive(serde_derive::Deserialize)]
@@ -131,7 +131,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -156,7 +156,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::PossibleReadOnlyKey`] if the API key does not have access and could potentially be a [read-only key](https://healthchecks.io/docs/api/).
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -181,7 +181,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::PossibleReadOnlyKey`] if the API key does not have access and could potentially be a [read-only key](https://healthchecks.io/docs/api/).
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -206,7 +206,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -235,7 +235,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -260,7 +260,7 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
@@ -285,12 +285,12 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
-    /// please report it on GitHub if you encounter an error of this type.
+    ///   please report it on GitHub if you encounter an error of this type.
     /// - Returns [`HealthchecksApiError::ExistingCheckMatched`] if the check already exists.
     pub fn create_check(&self, check: NewCheck) -> ApiResult<Check> {
         self.upsert_check(check).and_then(|(result, check)| {
@@ -312,12 +312,12 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
-    /// please report it on GitHub if you encounter an error of this type.
+    ///   please report it on GitHub if you encounter an error of this type.
     pub fn upsert_check(&self, check: NewCheck) -> ApiResult<(UpsertResult, Check)> {
         let check_json = serde_json::to_value(check)?;
         let r = self.ureq_post(&format!("{}/{}/", self.api_url, "checks"));
@@ -348,12 +348,12 @@ impl ManageClient {
     /// # Errors
     /// - Returns [`HealthchecksApiError::InvalidApiKey`] if the API key is invalid
     /// - Returns [`HealthchecksApiError::TransportError`] if there was a network problem
-    /// preventing the API request from completing.
+    ///   preventing the API request from completing.
     /// - Returns [`HealthchecksApiError::UnexpectedError`] if the healthchecks server responded unexpectedly.
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     /// - Returns [`HealthchecksApiError::NotWellFormed`] if the request body was malformed. This should never happen in practice,
-    /// please report it on GitHub if you encounter an error of this type.
+    ///   please report it on GitHub if you encounter an error of this type.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
         let r = self.ureq_post(&format!("{}/{}/{}", self.api_url, "checks", check_id));

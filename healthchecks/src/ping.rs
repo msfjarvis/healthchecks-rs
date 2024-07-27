@@ -24,7 +24,7 @@ pub struct PingClient {
 ///
 /// # Errors
 /// - Returns [`HealthchecksConfigError::InvalidUuid`] if `uuid` is not
-/// a valid UUID
+///   a valid UUID
 pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
     get_client_with_url(uuid, HEALTHCHECK_PING_URL)
 }
@@ -34,7 +34,7 @@ pub fn get_client(uuid: &str) -> Result<PingClient, HealthchecksConfigError> {
 /// # Errors
 ///
 /// - Returns [`HealthchecksConfigError::InvalidUuid`] if `uuid` is not
-/// a valid UUID
+///   a valid UUID
 /// - Returns [`HealthchecksConfigError::EmptyApiUrl`] if `api_url` is empty.
 pub fn get_client_with_url(
     uuid: &str,

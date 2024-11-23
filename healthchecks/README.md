@@ -65,7 +65,7 @@ fn timer() {
 
 ## Minimum supported Rust Version
 
-healthchecks' MSRV is 1.67.0
+healthchecks' MSRV is 1.72.0
 
 ## Licensing
 

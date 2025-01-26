@@ -1,7 +1,7 @@
 use crate::{errors::HealthchecksConfigError, DEFAULT_USER_AGENT};
 use std::result::Result;
 use std::time::Duration;
-use ureq::{Agent, AgentBuilder};
+use ureq::Agent;
 use uuid::Uuid;
 
 const HEALTHCHECK_PING_URL: &str = "https://hc-ping.com";
@@ -45,10 +45,13 @@ pub fn get_client_with_url(
     } else if api_url.is_empty() {
         Err(HealthchecksConfigError::EmptyApiUrl)
     } else {
+        let config = Agent::config_builder()
+            .timeout_global(Some(Duration::from_secs(5)))
+            .build();
         Ok(PingClient {
             uuid: uuid.to_owned(),
             user_agent: DEFAULT_USER_AGENT.to_string(),
-            ureq_agent: AgentBuilder::new().timeout(Duration::from_secs(5)).build(),
+            ureq_agent: Agent::new_with_config(config),
             api_url: HEALTHCHECK_PING_URL.to_owned(),
         })
     }
@@ -82,9 +85,9 @@ impl PingClient {
         let request = self
             .ureq_agent
             .get(&format!("{}/{}", self.api_url, self.uuid))
-            .set("User-Agent", &self.user_agent);
+            .header("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.clone().call();
+            let resp = request.call();
             if resp.is_ok() {
                 return true;
             }
@@ -103,9 +106,9 @@ impl PingClient {
         let request = self
             .ureq_agent
             .get(&format!("{}/{}/fail", self.api_url, self.uuid))
-            .set("User-Agent", &self.user_agent);
+            .header("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.clone().call();
+            let resp = request.call();
             if resp.is_ok() {
                 return true;
             }
@@ -138,15 +141,15 @@ impl PingClient {
         let request = self
             .ureq_agent
             .post(&format!("{}/{}/fail", self.api_url, self.uuid))
-            .set("User-Agent", &self.user_agent);
+            .header("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.clone().send_string(data);
+            let resp = request.send(data);
             if resp.is_ok() {
                 return true;
             }
             retries += 1;
         }
-        if request.send_string(data).is_ok() {
+        if request.send(data).is_ok() {
             return true;
         }
         false
@@ -159,9 +162,9 @@ impl PingClient {
         let request = self
             .ureq_agent
             .get(&format!("{}/{}/start", self.api_url, self.uuid))
-            .set("User-Agent", &self.user_agent);
+            .header("User-Agent", &self.user_agent);
         while retries < MAX_RETRIES {
-            let resp = request.clone().call();
+            let resp = request.call();
             if resp.is_ok() {
                 return true;
             }

@@ -4,7 +4,12 @@ use crate::{
     DEFAULT_USER_AGENT,
 };
 use std::result::Result;
-use ureq::{delete, get, post, Error, Request};
+use ureq::{
+    delete, get,
+    http::{HeaderValue, Request},
+    middleware::MiddlewareNext,
+    post, Agent, Error, RequestBuilder, SendBody,
+};
 
 const HEALTHCHECK_API_URL: &str = if cfg!(feature = "v3") {
     "https://healthchecks.io/api/v3"
@@ -23,7 +28,16 @@ pub type ApiResult<T> = Result<T, HealthchecksApiError>;
 pub struct ManageClient {
     pub(crate) api_key: String,
     pub(crate) user_agent: String,
+    pub(crate) ureq_agent: Agent,
     pub(crate) api_url: String,
+}
+
+fn header_middleware(mut req: Request<SendBody>, next: MiddlewareNext) {
+    req.headers_mut()
+        .insert("X-Api-Key", HeaderValue::from_str(&api_key).unwrap());
+    req.headers_mut()
+        .insert("User-Agent", HeaderValue::from_str(&user_agent).unwrap());
+    next.handle(req)
 }
 
 /// Create an instance of [`ManageClient`] from a given API key and an
@@ -66,10 +80,15 @@ pub fn get_client_with_url(
         Err(HealthchecksConfigError::EmptyApiUrl)
     } else {
         let user_agent = user_agent.unwrap_or_else(|| DEFAULT_USER_AGENT.to_string());
+        let config = Agent::config_builder()
+            .middleware(header_middleware)
+            .build();
+        let ureq_agent = Agent::new_with_config(config);
 
         Ok(ManageClient {
             api_key,
             user_agent,
+            ureq_agent,
             api_url,
         })
     }
@@ -85,24 +104,6 @@ pub enum UpsertResult {
 }
 
 impl ManageClient {
-    fn ureq_get(&self, path: &str) -> Request {
-        get(path)
-            .set("X-Api-Key", &self.api_key)
-            .set("User-Agent", &self.user_agent)
-    }
-
-    fn ureq_post(&self, path: &str) -> Request {
-        post(path)
-            .set("X-Api-Key", &self.api_key)
-            .set("User-Agent", &self.user_agent)
-    }
-
-    fn ureq_delete(&self, path: &str) -> Request {
-        delete(path)
-            .set("X-Api-Key", &self.api_key)
-            .set("User-Agent", &self.user_agent)
-    }
-
     /// Get a list of [`Check`]s.
     ///
     /// # Errors
@@ -115,14 +116,13 @@ impl ManageClient {
         struct ChecksResult {
             pub checks: Vec<Check>,
         }
-        let r = self.ureq_get(&format!("{}/{}", self.api_url, "checks"));
+        let r = get(&format!("{}/{}", self.api_url, "checks"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChecksResult>()?.checks),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -136,18 +136,19 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn get_check(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_get(&format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self
+            .ureq_agent
+            .get(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -165,7 +166,9 @@ impl ManageClient {
         struct ChannelsResult {
             pub channels: Vec<Channel>,
         }
-        let r = self.ureq_get(&format!("{}/{}", self.api_url, "channels"));
+        let r = self
+            .ureq_agent
+            .get(&format!("{}/{}", self.api_url, "channels"));
         match r.call() {
             Ok(response) => Ok(response.into_json::<ChannelsResult>()?.channels),
             Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
@@ -186,18 +189,19 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::PossibleReadOnlyKey`] if the API key does not have access and could potentially be a [read-only key](https://healthchecks.io/docs/api/).
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn pause(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_post(&format!("{}/checks/{}/pause", self.api_url, check_id));
+        let r = self
+            .ureq_agent
+            .post(&format!("{}/checks/{}/pause", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::PossibleReadOnlyKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -215,18 +219,19 @@ impl ManageClient {
         struct PingsResult {
             pub pings: Vec<Ping>,
         }
-        let r = self.ureq_post(&format!("{}/checks/{}/pings", self.api_url, check_id));
-        match r.send_string("") {
+        let r = self
+            .ureq_agent
+            .post(&format!("{}/checks/{}/pings", self.api_url, check_id));
+        match r.send("") {
             Ok(response) => Ok(response.into_json::<PingsResult>()?.pings),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -240,18 +245,19 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn list_status_changes(&self, check_id: &str) -> ApiResult<Vec<Flip>> {
-        let r = self.ureq_post(&format!("{}/checks/{}/flips", self.api_url, check_id));
+        let r = self
+            .ureq_agent
+            .post(&format!("{}/checks/{}/flips", self.api_url, check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Vec<Flip>>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -265,18 +271,19 @@ impl ManageClient {
     /// - Returns [`HealthchecksApiError::AccessDenied`] if the API key does not have access to the `check_id`.
     /// - Returns [`HealthchecksApiError::NoCheckFound`] if no check was found for the given `check_id`.
     pub fn delete(&self, check_id: &str) -> ApiResult<Check> {
-        let r = self.ureq_delete(&format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self
+            .ureq_agent
+            .delete(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r.call() {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 
@@ -320,7 +327,9 @@ impl ManageClient {
     ///   please report it on GitHub if you encounter an error of this type.
     pub fn upsert_check(&self, check: NewCheck) -> ApiResult<(UpsertResult, Check)> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(&format!("{}/{}/", self.api_url, "checks"));
+        let r = self
+            .ureq_agent
+            .post(&format!("{}/{}/", self.api_url, "checks"));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)
@@ -356,22 +365,23 @@ impl ManageClient {
     ///   please report it on GitHub if you encounter an error of this type.
     pub fn update_check(&self, check: UpdatedCheck, check_id: &str) -> ApiResult<Check> {
         let check_json = serde_json::to_value(check)?;
-        let r = self.ureq_post(&format!("{}/{}/{}", self.api_url, "checks", check_id));
+        let r = self
+            .ureq_agent
+            .post(&format!("{}/{}/{}", self.api_url, "checks", check_id));
         match r
             .set("Content-Type", "application/json")
             .send_json(check_json)
         {
             Ok(response) => Ok(response.into_json::<Check>()?),
-            Err(Error::Status(400, _)) => Err(HealthchecksApiError::NotWellFormed),
-            Err(Error::Status(401, _)) => Err(HealthchecksApiError::InvalidApiKey),
-            Err(Error::Status(403, _)) => Err(HealthchecksApiError::AccessDenied),
-            Err(Error::Status(404, _)) => {
+            Err(Error::StatusCode(400)) => Err(HealthchecksApiError::NotWellFormed),
+            Err(Error::StatusCode(401)) => Err(HealthchecksApiError::InvalidApiKey),
+            Err(Error::StatusCode(403)) => Err(HealthchecksApiError::AccessDenied),
+            Err(Error::StatusCode(404)) => {
                 Err(HealthchecksApiError::NoCheckFound(check_id.to_string()))
             }
-            Err(Error::Status(_, response)) => Err(HealthchecksApiError::UnexpectedError(
-                response.into_string()?,
-            )),
-            Err(Error::Transport(err)) => Err(HealthchecksApiError::TransportError(Box::new(err))),
+            Err(e) => Err(HealthchecksApiError::Io {
+                source: e.into_io(),
+            }),
         }
     }
 }

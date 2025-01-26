@@ -185,6 +185,7 @@
           ];
 
           packages = with pkgs; [
+            bacon
             cargo-nextest
             cargo-release
             cargo-semver-checks

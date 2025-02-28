@@ -23,7 +23,7 @@
   inputs.flake-compat.flake = false;
 
   # Keep in sync with healthchecks/Cargo.toml
-  inputs.rust-msrv.url = "https://static.rust-lang.org/dist/channel-rust-1.72.0.toml";
+  inputs.rust-msrv.url = "https://static.rust-lang.org/dist/channel-rust-1.81.0.toml";
   inputs.rust-msrv.flake = false;
 
   outputs =

@@ -45,21 +45,24 @@
           overlays = [ devshell.overlays.default ];
         };
 
+        rustMsrv = (fenix.packages.${system}.fromManifestFile rust-msrv).minimalToolchain;
+
         rustStable = (import fenix { inherit pkgs; }).fromToolchainFile {
           file = ./rust-toolchain.toml;
           sha256 = "sha256-s1RPtyvDGJaX/BisLT+ifVfuhDT1nZkZ1NcK8sbwELM=";
         };
-        rustMsrv = (fenix.packages.${system}.fromManifestFile rust-msrv).minimalToolchain;
 
         craneLib = (crane.mkLib pkgs).overrideToolchain rustStable;
-        markdownFilter = path: _type: builtins.match ".*md$" path != null;
-        markdownOrCargo = path: type: (markdownFilter path type) || (craneLib.filterCargoSources path type);
-
         commonArgs = {
-          src = pkgs.lib.cleanSourceWith {
-            src = craneLib.path ./.;
-            filter = markdownOrCargo;
-          };
+          src =
+            with pkgs.lib.fileset;
+            toSource {
+              root = ./.;
+              fileset = unions [
+                (fileFilter (file: file.name == "README.md") ./.)
+                (craneLib.fileset.commonCargoSources ./.)
+              ];
+            };
           buildInputs = [ ];
           nativeBuildInputs = [ ];
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";

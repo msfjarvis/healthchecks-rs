@@ -14,10 +14,7 @@ fn main() -> Result<()> {
     color_eyre::install()?;
     let opts = Opts::parse();
 
-    let ua = match var(HEALTHCHECKS_USERAGENT) {
-        Ok(f) => Some(f),
-        Err(_) => None,
-    };
+    let ua = var(HEALTHCHECKS_USERAGENT).ok();
     let settings = Settings {
         token: var(HEALTHCHECKS_TOKEN)?,
         ua,

@@ -19,10 +19,7 @@ fn main() -> Result<()> {
     color_eyre::install()?;
     let opts = Opts::parse();
     let ua = if opts.has_user_agent() {
-        match var("HEALTHCHECKS_USERAGENT") {
-            Ok(f) => Some(f),
-            Err(_) => None,
-        }
+        var("HEALTHCHECKS_USERAGENT").ok()
     } else {
         Some(opts.user_agent)
     };
@@ -54,7 +51,7 @@ fn main() -> Result<()> {
             }
             if !client.report_failure() {
                 eprintln!("Failed to report failure");
-            };
+            }
             return Err(eyre!("Failed to run '{}'", &cmd));
         }
     }

@@ -82,7 +82,9 @@ impl Check {
     #[must_use]
     pub fn id(&self) -> Option<String> {
         if let Some(ref url) = self.ping_url {
-            url.split('/').next_back().map(std::borrow::ToOwned::to_owned)
+            url.split('/')
+                .next_back()
+                .map(std::borrow::ToOwned::to_owned)
         } else {
             None
         }

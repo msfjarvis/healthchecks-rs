@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Support specifying run IDs when pinging healthchecks.io (closes [#64])
+
 ## [3.1.7]
 
 ### Changed
@@ -145,5 +149,6 @@ Initial release
 
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27
+[#64]: https://github.com/msfjarvis/healthchecks-rs/issues/64
 [v2 management api]: https://healthchecks.io/docs/api/
 [v3 management api]: https://healthchecks.io/docs/api/

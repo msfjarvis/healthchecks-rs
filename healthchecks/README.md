@@ -63,6 +63,25 @@ fn timer() {
 
 ```
 
+You can also specify a run ID for each ping to track concurrent executions of the same job. This allows healthchecks.io to correctly calculate execution times when multiple instances of the same job run concurrently.
+
+```rust
+use healthchecks::ping::get_client;
+use uuid::Uuid;
+
+fn do_long_running_task() {}
+
+fn timer_with_run_id() {
+    // Generate a run ID (or use a deterministic method)
+    let run_id = Uuid::new_v4();
+    
+    let config = get_client("073305d2-3582-4dd6-b6a3-425e88583ca2").unwrap();
+    config.start_timer_with_run_id(Some(&run_id));
+    do_long_running_task();
+    config.report_success_with_run_id(Some(&run_id));
+}
+```
+
 ## Minimum supported Rust Version
 
 healthchecks' MSRV is 1.82.0

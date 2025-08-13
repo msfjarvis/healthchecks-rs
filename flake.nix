@@ -64,7 +64,7 @@
               ];
             };
           buildInputs = [ ];
-          nativeBuildInputs = [ ];
+          nativeBuildInputs = pkgs.lib.optionals pkgs.stdenv.buildPlatform.isDarwin [ pkgs.libiconv-darwin ];
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
 
@@ -176,6 +176,11 @@
         apps.monitor = flake-utils.lib.mkApp { drv = monitor; };
 
         devShells.default = pkgs.devshell.mkShell {
+          imports = [
+            "${devshell}/extra/language/c.nix"
+            "${devshell}/extra/language/rust.nix"
+          ];
+
           bash = {
             interactive = "";
           };
@@ -196,6 +201,9 @@
             rustStable
             stdenv.cc
           ];
+
+          language.c.libraries = commonArgs.nativeBuildInputs;
+          language.rust.enableDefaultToolchain = false;
         };
       }
     );

@@ -191,7 +191,6 @@
             bacon
             cargo-nextest
             cargo-release
-            cargo-semver-checks
             fenix.packages.${system}.rust-analyzer
             nil
             rustStable

@@ -54,21 +54,21 @@ pub fn get_client_with_url(
     }
 }
 
+/// Helper method to add `run_id` to URL if it's provided
+fn maybe_add_run_id(url: String, run_id: Option<&Uuid>) -> String {
+    if let Some(rid) = run_id {
+        format!("{url}?rid={rid}")
+    } else {
+        url
+    }
+}
+
 impl PingClient {
     /// Set the user agent for the given config
     #[must_use]
     pub fn set_user_agent(mut self, user_agent: &str) -> PingClient {
         user_agent.clone_into(&mut self.user_agent);
         self
-    }
-
-    /// Helper method to add run_id to URL if it's provided
-    fn maybe_add_run_id(&self, url: String, run_id: Option<&Uuid>) -> String {
-        if let Some(rid) = run_id {
-            format!("{}?rid={}", url, rid)
-        } else {
-            url
-        }
     }
 
     /// Report success to healthchecks.io. Returns a boolean indicating whether the request succeeded.
@@ -112,7 +112,7 @@ impl PingClient {
     #[must_use]
     pub fn report_success_with_run_id(&self, run_id: Option<&Uuid>) -> bool {
         let mut retries: i8 = 0;
-        let url = self.maybe_add_run_id(format!("{}/{}", self.api_url, self.uuid), run_id);
+        let url = maybe_add_run_id(format!("{}/{}", self.api_url, self.uuid), run_id);
         let request = self
             .ureq_agent
             .get(&url)
@@ -144,7 +144,7 @@ impl PingClient {
     #[must_use]
     pub fn report_failure_with_run_id(&self, run_id: Option<&Uuid>) -> bool {
         let mut retries: i8 = 0;
-        let url = self.maybe_add_run_id(format!("{}/{}/fail", self.api_url, self.uuid), run_id);
+        let url = maybe_add_run_id(format!("{}/{}/fail", self.api_url, self.uuid), run_id);
         let request = self
             .ureq_agent
             .get(&url)
@@ -190,7 +190,7 @@ impl PingClient {
     #[must_use]
     pub fn report_failure_with_logs_and_run_id(&self, data: &str, run_id: Option<&Uuid>) -> bool {
         let mut retries: i8 = 0;
-        let url = self.maybe_add_run_id(format!("{}/{}/fail", self.api_url, self.uuid), run_id);
+        let url = maybe_add_run_id(format!("{}/{}/fail", self.api_url, self.uuid), run_id);
         let request = self
             .ureq_agent
             .post(&url)
@@ -222,7 +222,7 @@ impl PingClient {
     #[must_use]
     pub fn start_timer_with_run_id(&self, run_id: Option<&Uuid>) -> bool {
         let mut retries: i8 = 0;
-        let url = self.maybe_add_run_id(format!("{}/{}/start", self.api_url, self.uuid), run_id);
+        let url = maybe_add_run_id(format!("{}/{}/start", self.api_url, self.uuid), run_id);
         let request = self
             .ureq_agent
             .get(&url)

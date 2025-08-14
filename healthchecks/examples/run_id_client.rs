@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Generate a new run ID (or you could use a deterministic method)
     let run_id = Uuid::new_v4();
-    println!("Using run ID: {}", run_id);
+    println!("Using run ID: {run_id}");
 
     // Get the client
     let config = get_client(&uuid)?;

@@ -1,6 +1,6 @@
 [package]
 name = "hcctl"
-version = "2.0.9"
+version = "2.1.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>", "Iain Earl <iain@itmecho.com>"]
 edition = "2021"
 description = "Command-line tool for interacting with a https://healthchecks.io account"

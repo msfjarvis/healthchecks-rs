@@ -11,7 +11,7 @@
         "thiserror",
         "comfy-table"
       ],
-      "managers": [
+      "matchManagers": [
         "cargo"
       ],
       "enabled": false

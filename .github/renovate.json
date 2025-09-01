@@ -7,8 +7,9 @@
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "thiserror"
+      "matchDepNames": [
+        "thiserror",
+        "comfy-table"
       ],
       "managers": [
         "cargo"

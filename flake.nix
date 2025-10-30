@@ -23,7 +23,7 @@
   inputs.flake-compat.flake = false;
 
   # Keep in sync with healthchecks/Cargo.toml
-  inputs.rust-msrv.url = "https://static.rust-lang.org/dist/channel-rust-1.82.0.toml";
+  inputs.rust-msrv.url = "https://static.rust-lang.org/dist/channel-rust-1.83.0.toml";
   inputs.rust-msrv.flake = false;
 
   outputs =
@@ -199,7 +199,6 @@
             fenix.packages.${system}.rust-analyzer
             nil
             rustStable
-            stdenv.cc
           ];
 
           language.c.libraries = commonArgs.nativeBuildInputs;

@@ -49,7 +49,7 @@ pub fn get_client_with_url(
             uuid: uuid.to_owned(),
             user_agent: DEFAULT_USER_AGENT.to_string(),
             ureq_agent: AgentBuilder::new().timeout(Duration::from_secs(5)).build(),
-            api_url: HEALTHCHECK_PING_URL.to_owned(),
+            api_url: api_url.to_owned(),
         })
     }
 }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Custom API URL not being respected by `PingClient` (closes [#70])
+
 ### Added
 
 - Support specifying run IDs when pinging healthchecks.io (closes [#64])
@@ -150,5 +154,6 @@ Initial release
 [#22]: https://github.com/msfjarvis/healthchecks-rs/pull/22
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27
 [#64]: https://github.com/msfjarvis/healthchecks-rs/issues/64
+[#70]: https://github.com/msfjarvis/healthchecks-rs/issues/70
 [v2 management api]: https://healthchecks.io/docs/api/
 [v3 management api]: https://healthchecks.io/docs/api/

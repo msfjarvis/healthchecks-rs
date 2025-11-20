@@ -64,7 +64,7 @@
               ];
             };
           buildInputs = [ ];
-          nativeBuildInputs = pkgs.lib.optionals pkgs.stdenv.buildPlatform.isDarwin [ pkgs.libiconv-darwin ];
+          nativeBuildInputs = pkgs.lib.optionals pkgs.stdenv.buildPlatform.isDarwin [ pkgs.darwin.libiconv ];
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
 

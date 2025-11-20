@@ -155,5 +155,5 @@ Initial release
 [#27]: https://github.com/msfjarvis/healthchecks-rs/pull/27
 [#64]: https://github.com/msfjarvis/healthchecks-rs/issues/64
 [#70]: https://github.com/msfjarvis/healthchecks-rs/issues/70
-[v2 management api]: https://healthchecks.io/docs/api/
+[v2 management api]: https://healthchecks.io/docs/apiv2/
 [v3 management api]: https://healthchecks.io/docs/api/

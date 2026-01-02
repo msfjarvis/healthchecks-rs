@@ -785,9 +785,9 @@ dependencies = [
 
 [[package]]
 name = "subprocess"
-version = "0.2.10"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d81a5649e8872d58cddf058745c730f7bcdbdfdad2babc3e9a9bd7eec3cdb8e"
+checksum = "3dafec2b709dea61d2880866e6f877d7fc95ab11a1675df407d76076b73663dc"
 dependencies = [
  "libc",
  "winapi",

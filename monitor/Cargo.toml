@@ -17,7 +17,7 @@ include = ["src/**/*", "../LICENSE-*", "README.md"]
 clap.workspace = true
 color-eyre.workspace = true
 healthchecks.workspace = true
-subprocess = "0.2.9"
+subprocess = "1.0.0"
 
 [badges]
 maintenance = { status = "actively-developed" }

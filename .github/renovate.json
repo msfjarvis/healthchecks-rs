@@ -15,6 +15,11 @@
         "cargo"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": ["rust-toolchain"],
+      "matchDepNames": ["rust"],
+      "enabled": false
     }
   ]
 }

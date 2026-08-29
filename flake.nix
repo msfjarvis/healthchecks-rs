@@ -49,7 +49,7 @@
 
         rustStable = (import fenix { inherit pkgs; }).fromToolchainFile {
           file = ./rust-toolchain.toml;
-          sha256 = "sha256-A1abGIbOtcBSdrUMhDGrER3pRM1hQP4fp9gh3Y4PKc8=";
+          sha256 = "sha256-P30Tm3O7vQAE725YtDCDHGjNrSsfZO4us11UwJGZSJo=";
         };
 
         craneLib = (crane.mkLib pkgs).overrideToolchain rustStable;

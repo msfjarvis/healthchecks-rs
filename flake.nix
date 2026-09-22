@@ -1,7 +1,7 @@
 {
   description = "healthchecks-rs monorepo";
 
-  inputs.nixpkgs.url = "https://nixexprs.msfjarvis.dev/nixexprs.tar.zst";
+  inputs.nixpkgs.url = "https://nix-channels.msfjarvis.dev/nixpkgs/latest.tar.zst";
 
   inputs.systems.url = "github:msfjarvis/flake-systems";
 

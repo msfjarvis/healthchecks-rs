@@ -84,7 +84,7 @@ fn timer_with_run_id() {
 
 ## Minimum supported Rust Version
 
-healthchecks' MSRV is 1.88.0
+healthchecks' MSRV is 1.89.0
 
 ## Licensing
 

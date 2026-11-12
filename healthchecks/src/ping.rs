@@ -124,10 +124,7 @@ impl PingClient {
             }
             retries += 1;
         }
-        if request.call().is_ok() {
-            return true;
-        }
-        false
+        request.call().is_ok()
     }
 
     /// Report failure to healthchecks.io. Returns a boolean indicating whether the request succeeded.
@@ -156,10 +153,7 @@ impl PingClient {
             }
             retries += 1;
         }
-        if request.call().is_ok() {
-            return true;
-        }
-        false
+        request.call().is_ok()
     }
 
     /// Report failure to healthchecks.io with an accompanying log snippet to help debug the failure. Returns
@@ -202,10 +196,7 @@ impl PingClient {
             }
             retries += 1;
         }
-        if request.send_string(data).is_ok() {
-            return true;
-        }
-        false
+        request.send_string(data).is_ok()
     }
 
     /// Start a timer on healthchecks.io, to measure script run times. Official documentation for it is available [here](https://healthchecks.io/docs/measuring_script_run_time/).
@@ -234,9 +225,6 @@ impl PingClient {
             }
             retries += 1;
         }
-        if request.call().is_ok() {
-            return true;
-        }
-        false
+        request.call().is_ok()
     }
 }
